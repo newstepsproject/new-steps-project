@@ -8,7 +8,7 @@ Downloading and installing Cursor is similar to any other app. You can find the 
 
 To fully utilize Cursor, you'll need a Cursor Pro Plan subscription which costs $20 per month. However, Cursor provides a free trial period for new users. You can decide whether to subscribe after trying it out.
 
-![Cursor Pro Plan](images/image2.png)
+![Cursor Pro Plan](../images/image2.png)
 
 ## Basic Interface
 
@@ -19,15 +19,15 @@ The interface consists of three main parts:
 - Middle area: Code editing space (though we'll primarily use Cursor's Agentic AI features)
 - Right sidebar: Chat area where we communicate with Cursor, give instructions, and receive responses. If you don't see this area, press Command+I to show it.
 
-![Basic Interface](images/image10.png)
+![Basic Interface](../images/image10.png)
 
 Since we'll mainly use Cursor's Agentic AI features, I recommend making the chat sidebar wider.
 
 Like VS Code, many of Cursor's features are accessed through commands in the command palette. You can press F1 to bring up the command palette. For example, if you can't remember how to bring up the chat panel, you can simply type "chat" in the command palette. It will show you options, and you can click the appropriate one to bring up the chat again. Commands also show keyboard shortcuts on the right, which you can memorize for faster access in the future.
 
-![Command Palette](images/image4.png)
+![Command Palette](../images/image4.png)
 
-![Command Options](images/image9.png)
+![Command Options](../images/image9.png)
 
 ## Important Initial Settings
 
@@ -37,13 +37,13 @@ In the bottom left corner of the chat panel, you can specify which AI model you 
 
 Your configuration should look like this (note Claude in the bottom left):
 
-![Configuration Settings](images/image8.png)
+![Configuration Settings](../images/image8.png)
 
 ## YOLO Mode Configuration
 
 Before we start our first example, we need to make one more configuration change. In the top right corner of the Cursor interface, there's a gear icon. Clicking it will take you to Cursor's settings. On the left side of the settings screen, there are four tabs: General, Models, Features, and Beta. Click the third tab (Features) and scroll down to "Enable Yolo Mode".
 
-![YOLO Mode Settings](images/image5.png)
+![YOLO Mode Settings](../images/image5.png)
 
 Here, you can configure based on your preferences:
 - If you want to review and manually confirm every command before AI executes it, leave this unchecked
@@ -57,11 +57,11 @@ Now that we have configured Cursor properly, let's try our first example to see 
 
 At this point, Cursor will use its Agent mode to analyze the task, understand the requirements, and decide to use Python to complete this task.
 
-![First Example Request](images/image1.png)
+![First Example Request](../images/image1.png)
 
 After Cursor automatically handles all the code writing, environment setup, and script execution, you'll see an image file generated in your current folder. When you click on this image file in the left sidebar, you'll see the stock price curves you requested.
 
-![Stock Price Plot](images/image3.png)
+![Stock Price Plot](../images/image3.png)
 
 This simple example demonstrates how Cursor's AI agent can understand natural language requests, write appropriate code, handle dependencies, and execute the code to produce the desired output, all without requiring you to write any code manually.
 
@@ -128,10 +128,10 @@ Next, you can use `cursor my-cursor-project` in the command line to open your ne
 
 Using this enhanced Cursor project is similar to using a regular Cursor project, but now we have access to additional tools to better complete our tasks. For example, we can say "search recent news on OpenAI" in the prompt.
 
-![Enhanced Tools Example](images/image6.png)
+![Enhanced Tools Example](../images/image6.png)
 
 In this newly configured workspace, you'll notice Cursor has gained some additional capabilities. For instance, it will first edit our `.cursorrules` file for planning, then call our system search tools, and finally browse more web pages to get the latest information. 
 
 Now you are ready to use the enhanced Cursor project to complete your other tasks!
 
-![Tool Usage Example](images/image7.png)
+![Tool Usage Example](../images/image7.png)
