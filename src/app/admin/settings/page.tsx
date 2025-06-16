@@ -1,0 +1,998 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Loader2, Save, Settings, User, MapPin, DollarSign, CreditCard, Plus, X, BookOpen, Globe, Package } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
+// Settings schema
+const settingsSchema = z.object({
+  // Project office address
+  officeAddress: z.object({
+    street: z.string().min(1, { message: 'Street address is required' }),
+    city: z.string().min(1, { message: 'City is required' }),
+    state: z.string().min(1, { message: 'State is required' }),
+    zipCode: z.string().min(1, { message: 'ZIP code is required' }),
+    country: z.string().min(1, { message: 'Country is required' }),
+  }),
+  
+  // Project officers (dynamic) - includes founder/director
+  // Only founder/director is required, others can be removed
+  projectOfficers: z.array(z.object({
+    id: z.string().optional(),
+    role: z.string().min(1, { message: 'Role is required' }),
+    name: z.string().min(1, { message: 'Name is required' }),
+    duty: z.string().min(1, { message: 'Brief duty is required' }),
+    bio: z.string().min(1, { message: 'Bio is required' }),
+    photo: z.string().optional(),
+    canRemove: z.boolean().default(true),
+  })).refine(
+    (officers) => officers.some(officer => !officer.canRemove), 
+    { message: 'At least one required officer (Founder & Director) must be present' }
+  ),
+  
+  // Our Story timeline
+  ourStory: z.array(z.object({
+    id: z.string().optional(),
+    title: z.string().min(1, { message: 'Timeline title is required' }),
+    description: z.string().min(1, { message: 'Timeline description is required' }),
+    order: z.number().default(0),
+  })).min(1, { message: 'At least one timeline item is required' }),
+  
+  // System settings
+  shippingFee: z.coerce.number().min(0, { message: 'Shipping fee must be 0 or greater' }),
+  maxShoesPerRequest: z.coerce.number().int().min(1, { message: 'Max shoes per request must be at least 1' }).default(2),
+  projectEmail: z.string().email({ message: 'Invalid email address' }).optional(),
+  projectPhone: z.string().optional(),
+  
+  // Third-party services
+  paypalClientId: z.string().optional(),
+  paypalSandboxMode: z.boolean().default(true),
+});
+
+type SettingsFormData = z.infer<typeof settingsSchema>;
+
+export default function SettingsPage() {
+  const { toast } = useToast();
+  const { data: session, status: sessionStatus } = useSession();
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [savingSection, setSavingSection] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('general');
+
+  // Helper functions for managing project officers
+  const addProjectOfficer = () => {
+    const currentOfficers = form.getValues('projectOfficers');
+    form.setValue('projectOfficers', [
+      ...currentOfficers,
+      {
+        id: `officer-${Date.now()}`,
+        role: '',
+        name: '',
+        duty: '',
+        bio: '',
+        photo: '',
+        canRemove: true,
+      },
+    ]);
+  };
+
+  const removeProjectOfficer = (index: number) => {
+    const currentOfficers = form.getValues('projectOfficers');
+    const officer = currentOfficers[index];
+    if (currentOfficers.length > 1 && officer.canRemove) {
+      form.setValue('projectOfficers', currentOfficers.filter((_, i) => i !== index));
+    }
+  };
+
+  // Helper functions for managing Our Story timeline
+  const addTimelineItem = () => {
+    const currentItems = form.getValues('ourStory');
+    const nextOrder = currentItems.length > 0 ? Math.max(...currentItems.map(item => item.order || 0)) + 1 : 1;
+    form.setValue('ourStory', [
+      ...currentItems,
+      {
+        id: `timeline-${Date.now()}`,
+        title: '',
+        description: '',
+        order: nextOrder,
+      },
+    ]);
+  };
+
+  const removeTimelineItem = (index: number) => {
+    const currentItems = form.getValues('ourStory');
+    if (currentItems.length > 1) {
+      form.setValue('ourStory', currentItems.filter((_, i) => i !== index));
+    }
+  };
+
+  // Individual save functions for each section
+  const saveSection = async (sectionName: string, sectionData: any) => {
+    setSavingSection(sectionName);
+    
+    try {
+      console.log(`Saving ${sectionName}:`, sectionData);
+      
+      const response = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(sectionData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save settings');
+      }
+      
+      toast({
+        title: "Settings saved",
+        description: `${sectionName} settings have been updated successfully.`,
+      });
+    } catch (err) {
+      console.error('Error saving settings:', err);
+      toast({
+        title: "Error",
+        description: `Failed to save ${sectionName} settings: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+    } finally {
+      setSavingSection(null);
+    }
+  };
+
+  // Section-specific save handlers
+  const saveGeneralSettings = () => {
+    const generalData = {
+      officeAddress: form.getValues('officeAddress'),
+      projectEmail: form.getValues('projectEmail'),
+      projectPhone: form.getValues('projectPhone'),
+    };
+    saveSection('General Settings', generalData);
+  };
+
+  const saveProjectOfficers = () => {
+    const officersData = {
+      projectOfficers: form.getValues('projectOfficers'),
+    };
+    saveSection('Project Officers', officersData);
+  };
+
+  const saveOurStory = () => {
+    const storyData = {
+      ourStory: form.getValues('ourStory'),
+    };
+    saveSection('Our Story', storyData);
+  };
+
+  const saveSystemSettings = () => {
+    const systemData = {
+      shippingFee: Number(form.getValues('shippingFee')),
+      maxShoesPerRequest: Number(form.getValues('maxShoesPerRequest')),
+    };
+    console.log('System data being saved:', systemData);
+    saveSection('System Settings', systemData);
+  };
+
+  const saveThirdPartyServices = () => {
+    const servicesData = {
+      paypalClientId: form.getValues('paypalClientId'),
+      paypalSandboxMode: form.getValues('paypalSandboxMode'),
+    };
+    saveSection('Third-Party Services', servicesData);
+  };
+
+  const form = useForm<SettingsFormData>({
+    resolver: zodResolver(settingsSchema),
+    defaultValues: {
+      officeAddress: {
+        street: '348 Cardona Cir',
+        city: 'San Ramon',
+        state: 'CA',
+        zipCode: '94583',
+        country: 'USA',
+      },
+      projectOfficers: [
+        {
+          id: 'founder-director',
+          role: 'Founder & Director',
+          name: 'Walter Zhang',
+          duty: 'Providing visionary leadership, setting strategic direction, making key decisions, and ensuring the mission of connecting athletes with quality sports shoes remains at the heart of every initiative',
+          bio: '9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.',
+          photo: '',
+          canRemove: false,
+        },
+        {
+          id: 'operation-manager',
+          role: 'Operation Manager',
+          name: '',
+          duty: 'Overseeing daily operations, managing inventory systems, coordinating donation logistics, processing shoe requests, and ensuring efficient workflows from donation intake to delivery',
+          bio: '',
+          photo: '',
+          canRemove: true,
+        },
+        {
+          id: 'volunteer-coordinator',
+          role: 'Volunteer Coordinator',
+          name: '',
+          duty: 'Recruiting and training volunteers, organizing community events, building partnerships with schools and sports clubs, and coordinating volunteer activities to expand our reach',
+          bio: '',
+          photo: '',
+          canRemove: true,
+        },
+      ],
+      ourStory: [
+        {
+          id: 'timeline-1',
+          title: 'The Beginning (2023)',
+          description: 'New Steps was founded by Walter Zhang after noticing the large number of perfectly usable sports shoes being discarded while many student athletes couldn\'t afford the equipment they needed. What started as a small community initiative in San Ramon quickly grew into something bigger.',
+          order: 1,
+        },
+        {
+          id: 'timeline-2',
+          title: 'Growing Our Impact (2024)',
+          description: 'As word spread, more volunteers joined our cause, and we expanded our operations to serve the entire Bay Area. We partnered with local schools, sports clubs, and community organizations to reach more athletes in need. Our network of donors and recipients expanded dramatically.',
+          order: 2,
+        },
+        {
+          id: 'timeline-3',
+          title: 'Today & Beyond (2025)',
+          description: 'Today, New Steps continues to grow, with hundreds of shoes donated and matched with athletes across California. Our vision is to expand nationwide, creating a sustainable ecosystem of sports equipment sharing that benefits communities and the environment. We\'re constantly innovating our processes to make donating and receiving shoes as seamless as possible.',
+          order: 3,
+        },
+      ],
+      shippingFee: 5,
+      paypalClientId: '',
+      paypalSandboxMode: true,
+      maxShoesPerRequest: 2,
+      projectEmail: 'newsteps.project@gmail.com',
+      projectPhone: '(916) 582-7090',
+    },
+  });
+
+  // Fetch current settings
+  const fetchSettings = async () => {
+    if (sessionStatus !== 'authenticated') {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/admin/settings', {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/login');
+          return;
+        }
+        throw new Error(`Error fetching settings: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Fetched settings:', data.settings);
+      
+      // Transform settings from key-value format to form format
+      const formData: Partial<SettingsFormData> = {};
+      
+      Object.entries(data.settings).forEach(([key, value]) => {
+        // Only include non-null, non-undefined values
+        if (value !== null && value !== undefined) {
+          if (key === 'officeAddress') {
+            formData.officeAddress = value as any;
+          } else if (key !== 'founderName' && key !== 'founderBio') {
+            // Skip deprecated founder fields
+            (formData as any)[key] = value;
+          }
+        }
+      });
+      
+      // Merge with default values instead of replacing them
+      const currentValues = form.getValues();
+      const mergedData = {
+        ...currentValues, // Keep default values
+        ...formData,      // Only override with non-null API data
+      };
+      
+      console.log('Merged form data:', mergedData);
+      
+      // Reset form with merged data
+      form.reset(mergedData as SettingsFormData);
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      toast({
+        title: "Error",
+        description: "Failed to load settings. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Photo upload handler
+  const handlePhotoUpload = async (officerIndex: number, file: File | null) => {
+    if (file) {
+      try {
+        // Create form data for file upload
+        const formData = new FormData();
+        formData.append('photo', file);
+
+        // Upload file to server
+        const response = await fetch('/api/upload/team-photo', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Update form with uploaded filename
+          const currentOfficers = form.getValues('projectOfficers');
+          currentOfficers[officerIndex].photo = result.fileName;
+          form.setValue('projectOfficers', currentOfficers);
+          
+          toast({
+            title: "Photo uploaded",
+            description: `Photo has been uploaded for ${currentOfficers[officerIndex].role}.`,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Upload failed",
+            description: result.error || 'Failed to upload photo',
+          });
+        }
+      } catch (error) {
+        console.error('Error uploading photo:', error);
+        toast({
+          variant: "destructive",
+          title: "Upload failed",
+          description: 'Failed to upload photo. Please try again.',
+        });
+      }
+    }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      fetchSettings();
+    }
+  }, [sessionStatus]);
+
+  // Show loading while checking authentication
+  if (sessionStatus === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading settings...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Project Settings</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Configure project information and system settings.
+          </p>
+        </div>
+      </div>
+
+      <Form {...form}>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="general" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              <span className="hidden sm:inline">General</span>
+            </TabsTrigger>
+            <TabsTrigger value="team" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              <span className="hidden sm:inline">Team</span>
+            </TabsTrigger>
+            <TabsTrigger value="story" className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
+              <span className="hidden sm:inline">Story</span>
+            </TabsTrigger>
+            <TabsTrigger value="system" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              <span className="hidden sm:inline">System</span>
+            </TabsTrigger>
+            <TabsTrigger value="services" className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              <span className="hidden sm:inline">Services</span>
+            </TabsTrigger>
+          </TabsList>
+
+          {/* General Settings Tab */}
+          <TabsContent value="general" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Project Office Address
+                </CardTitle>
+                <CardDescription>
+                  Official address for donations and shipping.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="officeAddress.street"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Street Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter street address" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="officeAddress.city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter city" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="officeAddress.state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter state" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="officeAddress.zipCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ZIP Code</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter ZIP code" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="officeAddress.country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter country" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-4 pt-6 border-t">
+                  <h3 className="text-lg font-medium text-gray-900">Contact Information</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="projectEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Project Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="Enter project email" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="projectPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Project Phone</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="tel" placeholder="Enter project phone" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex justify-end pt-6 border-t">
+                  <Button
+                    type="button"
+                    onClick={saveGeneralSettings}
+                    disabled={savingSection === 'General Settings'}
+                    className="w-full sm:w-auto"
+                  >
+                    {savingSection === 'General Settings' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save General Settings
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Team Settings Tab */}
+          <TabsContent value="team" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Project Officers
+                </CardTitle>
+                <CardDescription>
+                  Manage all project officers including founder/director and their information displayed on the About page.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {form.watch('projectOfficers')?.map((officer, index) => (
+                  <div key={officer.id || index} className="space-y-4 p-4 border rounded-lg relative">
+                    {form.watch('projectOfficers').length > 1 && officer.canRemove && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute top-2 right-2 h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => removeProjectOfficer(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                    
+                    <h3 className="text-lg font-medium">
+                      {officer.role || `Officer #${index + 1}`}
+                      {!officer.canRemove && <span className="text-xs text-gray-500 ml-2">(Required)</span>}
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name={`projectOfficers.${index}.role`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Role</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="e.g., Founder & Director" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name={`projectOfficers.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Enter person's name" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name={`projectOfficers.${index}.duty`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Brief Duty</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              placeholder="Brief description of duties and responsibilities"
+                              className="min-h-[60px]"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`projectOfficers.${index}.bio`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Bio</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              placeholder="Personal biography and background information"
+                              className="min-h-[80px]"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`projectOfficers.${index}.photo`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Photo</FormLabel>
+                          <FormControl>
+                            <div className="flex items-center gap-4">
+                              <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handlePhotoUpload(index, e.target.files?.[0] || null)}
+                                className="flex-1"
+                              />
+                              {field.value && (
+                                <span className="text-sm text-green-600">✓ Uploaded: {field.value}</span>
+                              )}
+                            </div>
+                          </FormControl>
+                          <p className="text-xs text-gray-500">Upload a clear headshot photo (JPG, PNG)</p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addProjectOfficer}
+                    className="w-full sm:flex-1"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add New Officer
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    onClick={saveProjectOfficers}
+                    disabled={savingSection === 'Project Officers'}
+                    className="w-full sm:flex-1"
+                  >
+                    {savingSection === 'Project Officers' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Project Officers
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Our Story Tab */}
+          <TabsContent value="story" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
+                  Our Story Timeline
+                </CardTitle>
+                <CardDescription>
+                  Configure the timeline shown in the "Our Story" section on the About page.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {form.watch('ourStory')?.map((item, index) => (
+                  <div key={item.id || index} className="space-y-4 p-4 border rounded-lg relative">
+                    {form.watch('ourStory').length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute top-2 right-2 h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => removeTimelineItem(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                    
+                    <h3 className="text-lg font-medium">
+                      Timeline Item #{index + 1}
+                    </h3>
+                    
+                    <FormField
+                      control={form.control}
+                      name={`ourStory.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="e.g., The Beginning (2023)" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`ourStory.${index}.description`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              placeholder="Describe this milestone in your project's story..."
+                              className="min-h-[100px]"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addTimelineItem}
+                    className="w-full sm:flex-1"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Timeline Item
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    onClick={saveOurStory}
+                    disabled={savingSection === 'Our Story'}
+                    className="w-full sm:flex-1"
+                  >
+                    {savingSection === 'Our Story' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Our Story
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* System Settings Tab */}
+          <TabsContent value="system" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  System Settings
+                </CardTitle>
+                <CardDescription>
+                  Configure system behavior and limits.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="shippingFee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Shipping Fee ($)</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="Enter shipping fee"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="maxShoesPerRequest"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Max Shoes Per Request</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            min="1"
+                            placeholder="Enter max shoes per request"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="flex justify-end pt-6 border-t">
+                  <Button
+                    type="button"
+                    onClick={saveSystemSettings}
+                    disabled={savingSection === 'System Settings'}
+                    className="w-full sm:w-auto"
+                  >
+                    {savingSection === 'System Settings' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save System Settings
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Services Tab */}
+          <TabsContent value="services" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Third-Party Services
+                </CardTitle>
+                <CardDescription>
+                  Configure payment and external service integrations.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="paypalClientId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>PayPal Client ID</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter PayPal client ID" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="paypalSandboxMode"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          PayPal Sandbox Mode
+                        </FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Enable for testing, disable for production
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-end pt-6 border-t">
+                  <Button
+                    type="button"
+                    onClick={saveThirdPartyServices}
+                    disabled={savingSection === 'Third-Party Services'}
+                    className="w-full sm:w-auto"
+                  >
+                    {savingSection === 'Third-Party Services' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Third-Party Services
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </Form>
+    </div>
+  );
+} 
