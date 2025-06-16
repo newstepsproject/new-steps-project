@@ -46,7 +46,7 @@ export default function Home() {
           <div className="lg:w-1/2 relative animate-fade-in animate-delay-200">
             <div className="relative h-[350px] md:h-[450px] lg:h-[550px] w-full rounded-xl overflow-hidden shadow-card">
               <Image 
-                src="/images/iStock-1992141503.jpg" 
+                src="/images/shoe-collection.jpg" 
                 alt="Collection of colorful sports shoes on green turf" 
                 fill
                 priority
@@ -133,7 +133,7 @@ export default function Home() {
           <div className="rounded-xl overflow-hidden shadow-lg mb-12 animate-fade-in">
             <div className="relative h-[300px] md:h-[400px] w-full">
               <Image 
-                src="/images/iStock-544810576.jpg" 
+                src="/images/diverse-team.jpg" 
                 alt="Young athletes standing in a circle with their sports shoes around a soccer ball" 
                 fill
                 className="object-cover"
