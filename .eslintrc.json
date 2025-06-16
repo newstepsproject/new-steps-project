@@ -1,0 +1,22 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    // Disable rules that might slow down development
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-console": "off",
+    "no-unused-vars": "off",
+    // Add more performance-related rules
+    "import/no-cycle": "off",
+    "react/no-unused-prop-types": "off",
+    "react/no-unescaped-entities": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "public/",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "src/scripts/"
+  ]
+}
