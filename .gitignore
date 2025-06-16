@@ -1,7 +1,10 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -33,20 +36,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# AWS credential files
-newsteps-key.pem venv/
+# python virtual environment
+venv/
 
 # Sensitive files
 credentials
 newsteps-key.pem
-*.pem
-.env.local
 project_description.md
-# Sensitive files
-credentials
-*.pem
-.env
-.env.local
 
 # Build artifacts
 .tsbuildinfo
+
+# Local documentation
+docs-local/
