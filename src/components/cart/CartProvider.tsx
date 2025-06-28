@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { getAppSettings } from '@/lib/settings';
 
 // Define the type for a cart item
 export interface CartItem {
@@ -28,8 +29,8 @@ interface CartContextType {
   maxItems: number; // New property for the maximum allowed items
 }
 
-// Maximum number of shoes allowed in a single request
-const MAX_ITEMS_PER_REQUEST = 2;
+// Default maximum number of shoes allowed in a single request
+const DEFAULT_MAX_ITEMS_PER_REQUEST = 2;
 
 // Create the context with a default value
 const CartContext = createContext<CartContextType>({
@@ -40,7 +41,7 @@ const CartContext = createContext<CartContextType>({
   isInCart: () => false,
   itemCount: 0,
   canAddMore: true,
-  maxItems: MAX_ITEMS_PER_REQUEST,
+  maxItems: DEFAULT_MAX_ITEMS_PER_REQUEST,
 });
 
 // Hook for easy access to the cart context
@@ -51,16 +52,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Use local storage to persist cart between sessions
   const [items, setItems] = useState<CartItem[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [maxItems, setMaxItems] = useState(DEFAULT_MAX_ITEMS_PER_REQUEST);
 
-  // Load cart from localStorage on initial render (client-side only)
+  // Load cart from localStorage and max items setting on initial render (client-side only)
   useEffect(() => {
     setMounted(true);
+    
+    // Load max items from settings
+    getAppSettings().then(settings => {
+      setMaxItems(settings.maxShoesPerRequest);
+    }).catch(error => {
+      console.error('Error loading max items setting:', error);
+      setMaxItems(DEFAULT_MAX_ITEMS_PER_REQUEST);
+    });
+    
     const storedCart = localStorage.getItem('shoeCart');
     if (storedCart) {
       try {
         const parsedCart = JSON.parse(storedCart);
         // Ensure we don't load more than the maximum allowed items
-        setItems(parsedCart.slice(0, MAX_ITEMS_PER_REQUEST));
+        setItems(parsedCart.slice(0, maxItems));
       } catch (error) {
         console.error('Error parsing cart from localStorage:', error);
         localStorage.removeItem('shoeCart');
@@ -78,7 +89,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Add an item to the cart
   const addItem = (item: CartItem): boolean => {
     // Check if we've reached the maximum number of items
-    if (items.length >= MAX_ITEMS_PER_REQUEST) {
+    if (items.length >= maxItems) {
       return false; // Cannot add more items
     }
 
@@ -112,7 +123,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const itemCount = items.length;
 
   // Check if more items can be added
-  const canAddMore = itemCount < MAX_ITEMS_PER_REQUEST;
+  const canAddMore = itemCount < maxItems;
 
   // The value to be provided to consuming components
   const value = {
@@ -123,7 +134,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     isInCart,
     itemCount,
     canAddMore,
-    maxItems: MAX_ITEMS_PER_REQUEST,
+    maxItems,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

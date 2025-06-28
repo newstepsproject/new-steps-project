@@ -33,6 +33,8 @@ import {
   SHOE_CONDITIONS 
 } from '@/constants/config';
 import { ArrowLeft, Save, Upload, X, Camera } from 'lucide-react';
+import { createCompressedDataURL, formatFileSize } from '@/lib/image-utils';
+import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -69,6 +71,7 @@ const shoeSchema = z.object({
 
 export default function EditShoePage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -76,10 +79,11 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [fromDonation, setFromDonation] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   // Setup form
   const form = useForm<z.infer<typeof shoeSchema>>({
-    resolver: zodResolver(shoeSchema),
+    resolver: zodResolver(shoeSchema) as any,
     defaultValues: {
       id: params.id,
       sku: '',
@@ -106,20 +110,55 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
   const sortedSports = [...SHOE_SPORTS].sort((a, b) => a.localeCompare(b));
   const sortedBrands = [...SHOE_BRANDS].sort((a, b) => a.localeCompare(b));
 
-  // Handle image file selection
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle image file selection with mobile compression
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      setImageFiles(prev => [...prev, ...files]);
-      
-      // Create preview URLs
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImageUrls(prev => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
+    if (files.length === 0) return;
+
+    setUploadingImages(true);
+
+    try {
+      const newFiles: File[] = [];
+      const newUrls: string[] = [];
+      let totalOriginalSize = 0;
+      let totalCompressedSize = 0;
+
+      for (const file of files) {
+        totalOriginalSize += file.size;
+        
+        // Use mobile compression for admin uploads
+        const compressedDataURL = await createCompressedDataURL(file, true);
+        newUrls.push(compressedDataURL);
+        
+        // Convert compressed data URL back to File for upload
+        const response = await fetch(compressedDataURL);
+        const blob = await response.blob();
+        const compressedFile = new File([blob], file.name, { type: file.type });
+        newFiles.push(compressedFile);
+        
+        totalCompressedSize += compressedFile.size;
+      }
+
+      setImageFiles(prev => [...prev, ...newFiles]);
+      setImageUrls(prev => [...prev, ...newUrls]);
+
+      // Show compression feedback
+      if (files.length > 0) {
+        const compressionRatio = Math.round((1 - totalCompressedSize / totalOriginalSize) * 100);
+        toast({
+          title: "Images processed successfully",
+          description: `${files.length} image(s) processed. Compressed by ~${compressionRatio}% (${formatFileSize(totalOriginalSize)} → ${formatFileSize(totalCompressedSize)})`,
+        });
+      }
+    } catch (error) {
+      console.error('Error processing images:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload failed",
+        description: "Failed to process images. Please try again.",
       });
+    } finally {
+      setUploadingImages(false);
     }
   };
 
@@ -435,6 +474,7 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
                             id="picture"
                             type="file"
                             accept="image/*"
+                            capture="environment"
                             className="hidden"
                             onChange={handleImageSelect}
                             multiple

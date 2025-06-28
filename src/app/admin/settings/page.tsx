@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Save, Settings, User, MapPin, DollarSign, CreditCard, Plus, X, BookOpen, Globe, Package } from 'lucide-react';
+import { Loader2, Save, Settings, User, MapPin, DollarSign, CreditCard, Plus, X, BookOpen, Globe, Package, Camera, Upload } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ const settingsSchema = z.object({
     duty: z.string().min(1, { message: 'Brief duty is required' }),
     bio: z.string().min(1, { message: 'Bio is required' }),
     photo: z.string().optional(),
-    canRemove: z.boolean().default(true),
+    canRemove: z.boolean(),
   })).refine(
     (officers) => officers.some(officer => !officer.canRemove), 
     { message: 'At least one required officer (Founder & Director) must be present' }
@@ -47,7 +47,7 @@ const settingsSchema = z.object({
     id: z.string().optional(),
     title: z.string().min(1, { message: 'Timeline title is required' }),
     description: z.string().min(1, { message: 'Timeline description is required' }),
-    order: z.number().default(0),
+    order: z.number(),
   })).min(1, { message: 'At least one timeline item is required' }),
   
   // System settings
@@ -55,6 +55,9 @@ const settingsSchema = z.object({
   maxShoesPerRequest: z.coerce.number().int().min(1, { message: 'Max shoes per request must be at least 1' }).default(2),
   projectEmail: z.string().email({ message: 'Invalid email address' }).optional(),
   projectPhone: z.string().optional(),
+  contactEmail: z.string().email({ message: 'Invalid email address' }).optional(),
+  supportEmail: z.string().email({ message: 'Invalid email address' }).optional(),
+  donationsEmail: z.string().email({ message: 'Invalid email address' }).optional(),
   
   // Third-party services
   paypalClientId: z.string().optional(),
@@ -162,6 +165,9 @@ export default function SettingsPage() {
       officeAddress: form.getValues('officeAddress'),
       projectEmail: form.getValues('projectEmail'),
       projectPhone: form.getValues('projectPhone'),
+      contactEmail: form.getValues('contactEmail'),
+      supportEmail: form.getValues('supportEmail'),
+      donationsEmail: form.getValues('donationsEmail'),
     };
     saveSection('General Settings', generalData);
   };
@@ -198,7 +204,7 @@ export default function SettingsPage() {
   };
 
   const form = useForm<SettingsFormData>({
-    resolver: zodResolver(settingsSchema),
+    resolver: zodResolver(settingsSchema) as any,
     defaultValues: {
       officeAddress: {
         street: '348 Cardona Cir',
@@ -262,6 +268,9 @@ export default function SettingsPage() {
       maxShoesPerRequest: 2,
       projectEmail: 'newsteps.project@gmail.com',
       projectPhone: '(916) 582-7090',
+      contactEmail: 'newsteps.project@gmail.com',
+      supportEmail: 'newsteps.project@gmail.com',
+      donationsEmail: 'newsteps.project@gmail.com',
     },
   });
 
@@ -329,47 +338,64 @@ export default function SettingsPage() {
     }
   };
 
-  // Photo upload handler
+  // Photo upload handler with mobile compression
   const handlePhotoUpload = async (officerIndex: number, file: File | null) => {
-    if (file) {
-      try {
-        // Create form data for file upload
-        const formData = new FormData();
-        formData.append('photo', file);
+    if (!file) return;
 
-        // Upload file to server
-        const response = await fetch('/api/upload/team-photo', {
-          method: 'POST',
-          body: formData,
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          // Update form with uploaded filename
-          const currentOfficers = form.getValues('projectOfficers');
-          currentOfficers[officerIndex].photo = result.fileName;
-          form.setValue('projectOfficers', currentOfficers);
-          
-          toast({
-            title: "Photo uploaded",
-            description: `Photo has been uploaded for ${currentOfficers[officerIndex].role}.`,
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Upload failed",
-            description: result.error || 'Failed to upload photo',
-          });
-        }
-      } catch (error) {
-        console.error('Error uploading photo:', error);
+    try {
+      // Import compression utilities
+      const { processImageForUpload, formatFileSize } = await import('@/lib/image-utils');
+      
+      // Process image with mobile compression
+      const processed = await processImageForUpload(file, true);
+      
+      if (!processed.valid) {
         toast({
           variant: "destructive",
           title: "Upload failed",
-          description: 'Failed to upload photo. Please try again.',
+          description: processed.error || 'Invalid image file',
+        });
+        return;
+      }
+
+      // Create form data for file upload
+      const formData = new FormData();
+      formData.append('photo', processed.file);
+
+      // Upload compressed file to server
+      const response = await fetch('/api/upload/team-photo', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Update form with uploaded filename
+        const currentOfficers = form.getValues('projectOfficers');
+        currentOfficers[officerIndex].photo = result.fileName;
+        form.setValue('projectOfficers', currentOfficers);
+        
+        // Show compression feedback
+        const compressionRatio = Math.round((1 - processed.compressedSize / processed.originalSize) * 100);
+        toast({
+          title: "Photo uploaded successfully",
+          description: `Photo uploaded for ${currentOfficers[officerIndex].role}. Compressed by ${compressionRatio}% (${formatFileSize(processed.originalSize)} → ${formatFileSize(processed.compressedSize)})`,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Upload failed",
+          description: result.error || 'Failed to upload photo',
         });
       }
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload failed",
+        description: 'Failed to upload photo. Please try again.',
+      });
     }
   };
 
@@ -556,6 +582,50 @@ export default function SettingsPage() {
                       )}
                     />
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="contactEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Contact Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="Enter contact email" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="supportEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Support Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="Enter support email" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="donationsEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Donations Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="Enter donations email" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
                 
                 <div className="flex justify-end pt-6 border-t">
@@ -688,12 +758,44 @@ export default function SettingsPage() {
                           <FormLabel>Photo</FormLabel>
                           <FormControl>
                             <div className="flex items-center gap-4">
-                              <Input
+                              {/* Hidden file inputs */}
+                              <input
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => handlePhotoUpload(index, e.target.files?.[0] || null)}
-                                className="flex-1"
+                                className="hidden"
+                                id={`photo-upload-${index}`}
                               />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                capture="environment"
+                                onChange={(e) => handlePhotoUpload(index, e.target.files?.[0] || null)}
+                                className="hidden"
+                                id={`photo-camera-${index}`}
+                              />
+                              
+                              {/* Two separate buttons */}
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => document.getElementById(`photo-upload-${index}`)?.click()}
+                                className="flex items-center gap-2"
+                              >
+                                <Upload className="h-4 w-4" />
+                                Upload File
+                              </Button>
+                              
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => document.getElementById(`photo-camera-${index}`)?.click()}
+                                className="flex items-center gap-2"
+                              >
+                                <Camera className="h-4 w-4" />
+                                Take Photo
+                              </Button>
+                              
                               {field.value && (
                                 <span className="text-sm text-green-600">✓ Uploaded: {field.value}</span>
                               )}
@@ -995,4 +1097,4 @@ export default function SettingsPage() {
       </Form>
     </div>
   );
-} 
+}

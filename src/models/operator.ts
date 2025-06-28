@@ -58,6 +58,6 @@ operatorSchema.index({ isActive: 1 });
 
 // Create and export the model
 export const OperatorModel: Model<OperatorDocument> = 
-  models.Operator || mongoose.model<OperatorDocument>('Operator', operatorSchema);
+  (models?.Operator as Model<OperatorDocument>) || mongoose.model<OperatorDocument>('Operator', operatorSchema);
 
 export default OperatorModel; 

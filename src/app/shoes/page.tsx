@@ -190,10 +190,10 @@ export default function ShoesPage() {
       {/* Hero Section */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-brand-50 to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Request Shoes</h1>
-          <p className="text-xl text-gray-700 max-w-2xl mx-auto mb-8">
-            Browse our collection of donated sports shoes and request what you need.
-            Quality sports footwear at no cost.
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Request Free Sports Shoes</h1>
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-6">
+            Browse our collection of quality donated athletic footwear and request what you need.
+            From basketball to running shoes - completely free for young athletes.
           </p>
           <div className="relative max-w-md mx-auto">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

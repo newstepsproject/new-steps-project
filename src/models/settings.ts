@@ -33,6 +33,6 @@ const settingsSchema = new mongoose.Schema<SettingsDocument>({
 
 // Create and export the model
 export const SettingsModel: Model<SettingsDocument> = 
-  models.Settings || mongoose.model<SettingsDocument>('Settings', settingsSchema);
+  (models?.Settings as Model<SettingsDocument>) || mongoose.model<SettingsDocument>('Settings', settingsSchema);
 
 export default SettingsModel; 

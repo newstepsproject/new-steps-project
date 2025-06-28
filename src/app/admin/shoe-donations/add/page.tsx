@@ -84,7 +84,6 @@ export default function AddShoeDonationPage() {
 
       <UnifiedShoeForm 
         onSubmit={handleSubmit}
-        maxItems={10}
       />
     </div>
   );

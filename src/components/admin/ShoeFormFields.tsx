@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2, Camera, X } from 'lucide-react';
+import { Plus, Trash2, Camera, X, Upload } from 'lucide-react';
 import { SHOE_BRANDS, SHOE_CONDITIONS, SHOE_SPORTS, SHOE_GENDERS, SHOE_STATUSES } from '@/constants/config';
+import { createCompressedDataURL, formatFileSize } from '@/lib/image-utils';
+import { useToast } from '@/hooks/use-toast';
 
 export interface ShoeFormItem {
   id?: string; // Optional for existing items
@@ -39,6 +41,9 @@ export function ShoeFormFields({
   readOnly = false,
   singleItemMode = false
 }: ShoeFormFieldsProps) {
+  const { toast } = useToast();
+  const [uploadingImages, setUploadingImages] = useState<{ [key: string]: boolean }>({});
+  
   // Sort brands and sports alphabetically
   const sortedBrands = [...SHOE_BRANDS].sort((a, b) => a.localeCompare(b));
   const sortedSports = [...SHOE_SPORTS].sort((a, b) => a.localeCompare(b));
@@ -74,19 +79,56 @@ export function ShoeFormFields({
     setItems(newItems);
   };
 
-  // Handle image upload for a specific item
-  const handleImageSelect = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle image upload for a specific item with mobile compression
+  const handleImageSelect = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      // Process each file
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const newItems = [...items];
-          newItems[index].images = [...newItems[index].images, reader.result as string];
-          setItems(newItems);
-        };
-        reader.readAsDataURL(file);
+    if (files.length === 0) return;
+
+    const uploadKey = `${index}-${Date.now()}`;
+    setUploadingImages(prev => ({ ...prev, [uploadKey]: true }));
+
+    try {
+      // Process each file with mobile compression
+      const processedImages: string[] = [];
+      let totalOriginalSize = 0;
+      let totalCompressedSize = 0;
+
+      for (const file of files) {
+        totalOriginalSize += file.size;
+        
+        // Use mobile compression for admin uploads
+        const compressedDataURL = await createCompressedDataURL(file, true);
+        processedImages.push(compressedDataURL);
+        
+        // Estimate compressed size (rough calculation)
+        totalCompressedSize += Math.round(compressedDataURL.length * 0.75);
+      }
+
+      // Update the items with compressed images
+      const newItems = [...items];
+      newItems[index].images = [...newItems[index].images, ...processedImages];
+      setItems(newItems);
+
+      // Show compression feedback
+      if (files.length > 0) {
+        const compressionRatio = Math.round((1 - totalCompressedSize / totalOriginalSize) * 100);
+        toast({
+          title: "Images uploaded successfully",
+          description: `${files.length} image(s) uploaded. Compressed by ~${compressionRatio}% (${formatFileSize(totalOriginalSize)} → ${formatFileSize(totalCompressedSize)})`,
+        });
+      }
+    } catch (error) {
+      console.error('Error processing images:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload failed",
+        description: "Failed to process images. Please try again.",
+      });
+    } finally {
+      setUploadingImages(prev => {
+        const newState = { ...prev };
+        delete newState[uploadKey];
+        return newState;
       });
     }
   };
@@ -119,27 +161,57 @@ export function ShoeFormFields({
           {/* Image Upload Area */}
           {!readOnly && (
             <div className="space-y-4">
-              <label htmlFor={`image-upload-${index}`} className="block">
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer">
-                  <Camera className="mx-auto h-12 w-12 text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-600">
-                    Tap to upload images *
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Take photos or select from gallery
-                  </p>
+              {/* Hidden file inputs */}
+              <input
+                id={`image-upload-${index}`}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => handleImageSelect(index, e)}
+                className="hidden"
+                disabled={readOnly}
+              />
+              <input
+                id={`image-camera-${index}`}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={(e) => handleImageSelect(index, e)}
+                className="hidden"
+                disabled={readOnly}
+              />
+              
+              {/* Two separate buttons */}
+              <div className="flex items-center space-x-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById(`image-upload-${index}`)?.click()}
+                  className="flex items-center gap-2 flex-1"
+                  disabled={Object.keys(uploadingImages).length > 0}
+                >
+                  <Upload className="h-4 w-4" />
+                  {Object.keys(uploadingImages).length > 0 ? 'Processing...' : 'Upload Files'}
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById(`image-camera-${index}`)?.click()}
+                  className="flex items-center gap-2 flex-1"
+                  disabled={Object.keys(uploadingImages).length > 0}
+                >
+                  <Camera className="h-4 w-4" />
+                  {Object.keys(uploadingImages).length > 0 ? 'Processing...' : 'Take Photo'}
+                </Button>
+              </div>
+              
+              {Object.keys(uploadingImages).length > 0 && (
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400 mx-auto"></div>
+                  <p className="text-xs text-gray-500 mt-2">Compressing for web...</p>
                 </div>
-                <input
-                  id={`image-upload-${index}`}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  capture="environment"
-                  onChange={(e) => handleImageSelect(index, e)}
-                  className="hidden"
-                  disabled={readOnly}
-                />
-              </label>
+              )}
 
               {/* Image Previews */}
               {item.images.length > 0 && (

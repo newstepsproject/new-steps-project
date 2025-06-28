@@ -5,8 +5,14 @@ import { Check } from 'lucide-react';
 import { getAppSettings, getActiveProjectOfficers, getOurStoryTimeline } from '@/lib/settings';
 
 export const metadata = {
-  title: 'About Us | New Steps',
-  description: 'Learn about our mission to connect donated sports shoes with athletes in need.',
+  title: 'About Us | Our Mission to Connect Athletes with Sports Shoes',
+  description: 'Discover how New Steps Project started and our mission to make sports accessible for everyone by connecting donated athletic footwear with young athletes in need. Meet our team and learn our story.',
+  keywords: 'about new steps project, sports shoe donation mission, youth athletics support, community sports program, athletic equipment sharing',
+  openGraph: {
+    title: 'About New Steps Project | Making Sports Accessible',
+    description: 'Learn about our mission to connect donated sports shoes with young athletes in need.',
+    images: ['/images/aboutus.png'],
+  },
 };
 
 export default async function AboutPage() {
@@ -34,8 +40,8 @@ export default async function AboutPage() {
             <div className="md:w-1/2 animate-fade-in">
               <div className="relative h-[350px] md:h-[450px] w-full rounded-xl overflow-hidden shadow-card">
                 <Image 
-                  src="/images/diverse-team.jpg" 
-                  alt="Diverse group of athletes helping each other" 
+                  src="/images/aboutus.png" 
+                  alt="About New Steps Project - Our mission to connect athletes with quality sports shoes" 
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
                 />

@@ -40,7 +40,7 @@ interface MoneyDonation {
   createdAt: string;
   updatedAt: string;
   notes?: string;
-  donationId?: string;
+  donationId: string;
   checkNumber?: string;
 }
 

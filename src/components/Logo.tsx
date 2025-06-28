@@ -3,16 +3,15 @@ import Link from 'next/link';
 
 export default function Logo() {
   return (
-    <Link href="/" className="flex items-center space-x-2">
+    <Link href="/" className="flex items-center">
       <Image
-        src="/images/logo.png"
+        src="/images/new_logo_no_bg.png"
         alt="New Steps Project Logo"
-        width={40}
-        height={40}
-        className="w-auto h-10"
+        width={360}
+        height={100}
+        className="w-auto h-24"
         priority
       />
-      <span className="font-bold text-xl">New Steps Project</span>
     </Link>
   );
 } 

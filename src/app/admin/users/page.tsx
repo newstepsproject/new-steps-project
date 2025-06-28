@@ -151,8 +151,10 @@ export default function UsersPage() {
       }
       
       // Add sorting
-      const sortParam = filters.sortDirection === 'desc' ? `-${filters.sortField}` : filters.sortField;
-      params.append('sort', sortParam);
+      if (filters.sortField) {
+        const sortParam = filters.sortDirection === 'desc' ? `-${filters.sortField}` : filters.sortField;
+        params.append('sort', sortParam);
+      }
       
       // Fetch data from API
       const response = await fetch(`/api/admin/users?${params.toString()}`, {
@@ -203,7 +205,7 @@ export default function UsersPage() {
   };
 
   // Handle role change
-  const handleRoleChange = async (userId: string, role: UserRole) => {
+  const handleRoleChange = async (userId: string, role: string) => {
     try {
       const response = await fetch('/api/admin/users', {
         method: 'PATCH',
@@ -319,10 +321,6 @@ export default function UsersPage() {
       <MobileFilters
         filters={filters}
         onFilterChange={handleFilterChange}
-        filterOptions={{
-          statuses: Object.values(UserRole),
-        }}
-        statusLabel="Role"
       />
 
       <Card>
@@ -368,7 +366,7 @@ export default function UsersPage() {
               filters={filters}
               onFilterChange={handleFilterChange}
               onSort={handleSort}
-              statusOptions={Object.values(UserRole)}
+
             />
           </div>
 

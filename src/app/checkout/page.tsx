@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ShoppingCart, ChevronLeft, Package, TruckIcon, HomeIcon, CreditCard, Check, Loader2, Hash, DollarSign, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
+import { getAppSettings } from '@/lib/settings';
 
 // PayPal payment response type
 interface PayPalPaymentResult {
@@ -62,9 +63,19 @@ export default function CheckoutPage() {
   const paypalScriptRef = useRef<HTMLScriptElement | null>(null);
   
   // Calculate order totals - SIMPLIFIED LOGIC
-  const shippingCost = formData.deliveryMethod === 'pickup' ? 0 : 5;
+  const [shippingFee, setShippingFee] = useState(5); // Default value
+  const shippingCost = formData.deliveryMethod === 'pickup' ? 0 : shippingFee;
   const totalCost = shippingCost;
   const needsPayment = totalCost > 0;
+
+  // Load shipping fee from settings
+  useEffect(() => {
+    getAppSettings().then(settings => {
+      setShippingFee(settings.shippingFee);
+    }).catch(error => {
+      console.error('Error loading shipping fee setting:', error);
+    });
+  }, []);
 
   // Debug shipping calculation
   console.log('Shipping Calculation Debug:', {
@@ -726,7 +737,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="text-xs text-gray-500 pt-2">
                       <p>* Shoes are provided at no cost</p>
-                      <p>* Standard shipping: $5.00 flat rate</p>
+                      <p>* Standard shipping: ${shippingFee.toFixed(2)} flat rate</p>
                       <p>* Free pickup in Bay Area</p>
                     </div>
                   </div>
@@ -823,7 +834,7 @@ export default function CheckoutPage() {
                           <span className="font-medium">Standard Shipping</span>
                         </Label>
                         <p className="text-sm text-gray-500 mt-1">
-                          Flat rate shipping of $5.00
+                          Flat rate shipping of ${shippingFee.toFixed(2)}
                         </p>
                       </div>
                     </div>

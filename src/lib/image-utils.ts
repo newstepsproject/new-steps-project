@@ -2,6 +2,21 @@ import { v4 as uuid } from 'uuid';
 import { UPLOAD_LIMITS } from '@/constants/config';
 
 /**
+ * Mobile-optimized compression settings
+ * These settings are optimized for mobile uploads where admins take photos
+ */
+export const MOBILE_COMPRESSION_SETTINGS = {
+  // Smaller max width for mobile uploads (reduces file size significantly)
+  maxWidth: 1200,
+  // Higher compression for mobile (smaller files)
+  quality: 0.7,
+  // Maximum file size after compression (2MB for mobile)
+  maxFileSize: 2 * 1024 * 1024,
+  // Force compression for files larger than 500KB
+  forceCompressionThreshold: 500 * 1024,
+};
+
+/**
  * Validates an image file based on size and type
  * @param file The file to validate
  * @returns An object containing validation result and error message if any
@@ -57,7 +72,7 @@ export function createPlaceholderImage(text: string = 'Test Image', color: strin
  * @returns The file extension (e.g., "jpg", "png")
  */
 export function getFileExtension(fileName: string): string {
-  return fileName.split('.').pop()?.toLowerCase() || '';
+  return fileName.split('.').pop()?.toLowerCase() || 'jpg';
 }
 
 /**
@@ -166,5 +181,88 @@ export async function compressImage(
     // Fall back to the original file if compression fails
     return file;
   }
+}
+
+/**
+ * Mobile-optimized image compression for admin uploads
+ * Uses aggressive compression settings suitable for mobile phone uploads
+ * @param file The image file to compress
+ * @returns A promise that resolves with the compressed file
+ */
+export async function compressImageForMobile(file: File): Promise<File> {
+  // Always compress for mobile uploads if file is larger than threshold
+  if (!file.type.startsWith('image/') || file.size < MOBILE_COMPRESSION_SETTINGS.forceCompressionThreshold) {
+    return file;
+  }
+
+  return compressImage(
+    file,
+    MOBILE_COMPRESSION_SETTINGS.maxWidth,
+    MOBILE_COMPRESSION_SETTINGS.quality
+  );
+}
+
+/**
+ * Processes an image file for upload with mobile optimization
+ * Validates, compresses, and prepares the file for upload
+ * @param file The image file to process
+ * @param isMobileUpload Whether this is a mobile upload (uses aggressive compression)
+ * @returns A promise that resolves with the processed file and validation result
+ */
+export async function processImageForUpload(
+  file: File,
+  isMobileUpload: boolean = false
+): Promise<{ file: File; valid: boolean; error?: string; originalSize: number; compressedSize: number }> {
+  const originalSize = file.size;
+  
+  // Validate the file first
+  const validation = validateImageFile(file);
+  if (!validation.valid) {
+    return {
+      file,
+      valid: false,
+      error: validation.error,
+      originalSize,
+      compressedSize: originalSize
+    };
+  }
+
+  try {
+    // Compress the image
+    const compressedFile = isMobileUpload 
+      ? await compressImageForMobile(file)
+      : await compressImage(file);
+
+    return {
+      file: compressedFile,
+      valid: true,
+      originalSize,
+      compressedSize: compressedFile.size
+    };
+  } catch (error) {
+    console.error('Error processing image:', error);
+    return {
+      file,
+      valid: false,
+      error: 'Failed to process image',
+      originalSize,
+      compressedSize: originalSize
+    };
+  }
+}
+
+/**
+ * Creates a data URL from a file with compression
+ * Useful for preview purposes while maintaining smaller file sizes
+ * @param file The image file
+ * @param isMobileUpload Whether to use mobile compression
+ * @returns A promise that resolves with the data URL
+ */
+export async function createCompressedDataURL(
+  file: File,
+  isMobileUpload: boolean = false
+): Promise<string> {
+  const processed = await processImageForUpload(file, isMobileUpload);
+  return readFileAsDataURL(processed.file);
 } 
 

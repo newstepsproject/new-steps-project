@@ -7,6 +7,7 @@ import ShoeRequest, { ShoeRequestStatus } from '@/models/shoeRequest';
 import Shoe from '@/models/shoe';
 import { generateRequestId } from '@/lib/utils';
 import { sendEmail } from '@/lib/email';
+import { getAppSettings } from '@/lib/settings';
 
 export async function POST(req: NextRequest) {
   try {
@@ -137,7 +138,8 @@ export async function POST(req: NextRequest) {
     const requestId = generateRequestId();
 
     // Calculate shipping fee
-    const shippingFee = deliveryMethod === 'pickup' ? 0 : 5; // $5 for shipping
+    const settings = await getAppSettings();
+    const shippingFee = deliveryMethod === 'pickup' ? 0 : settings.shippingFee;
     const totalCost = shippingFee;
 
     // Create the shoe request

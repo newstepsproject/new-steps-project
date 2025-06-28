@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+import { getAppSettings } from '@/lib/settings';
 
 // Define email templates
 export enum EmailTemplate {
@@ -85,33 +86,36 @@ const templates = {
       <p>The New Steps Project Team</p>
     `,
   }),
-  [EmailTemplate.MONEY_DONATION_CONFIRMATION]: (data: any) => ({
-    subject: 'Thank You for Your Financial Contribution to New Steps Project',
-    html: `
-      <h1>Thank You for Your Donation!</h1>
-      <p>Dear ${data.name},</p>
-      <p>Thank you for your generous financial contribution to the New Steps Project. Your support helps us continue our mission of providing sports shoes to those in need.</p>
-      <p><strong>Donation ID:</strong> ${data.donationId}</p>
-      <p><strong>Donation Amount:</strong> $${data.amount}</p>
-      <h2>Next Steps</h2>
-      <ol>
-        <li>Please make your check payable to <strong>"New Steps Project"</strong></li>
-        <li>Write your donation ID (${data.donationId}) in the memo line of your check</li>
-        <li>Mail your check to our address:
-          <div style="margin: 10px 0; padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 4px;">
-            <p style="margin: 0;">New Steps Project</p>
-            <p style="margin: 0;">Attn: Donations</p>
-            <p style="margin: 0;">348 Cardona Cir</p>
-            <p style="margin: 0;">San Ramon, CA 94583</p>
-          </div>
-        </li>
-      </ol>
-      <p>Once we receive your check, we'll send you a tax receipt for your records.</p>
-      <p>If you have any questions, please feel free to contact us at ${getEmailConfig().from}.</p>
-      <p>Thanks for your support!</p>
-      <p>The New Steps Project Team</p>
-    `,
-  }),
+  [EmailTemplate.MONEY_DONATION_CONFIRMATION]: async (data: any) => {
+    const settings = await getAppSettings();
+    return {
+      subject: 'Thank You for Your Financial Contribution to New Steps Project',
+      html: `
+        <h1>Thank You for Your Donation!</h1>
+        <p>Dear ${data.name},</p>
+        <p>Thank you for your generous financial contribution to the New Steps Project. Your support helps us continue our mission of providing sports shoes to those in need.</p>
+        <p><strong>Donation ID:</strong> ${data.donationId}</p>
+        <p><strong>Donation Amount:</strong> $${data.amount}</p>
+        <h2>Next Steps</h2>
+        <ol>
+          <li>Please make your check payable to <strong>"New Steps Project"</strong></li>
+          <li>Write your donation ID (${data.donationId}) in the memo line of your check</li>
+          <li>Mail your check to our address:
+            <div style="margin: 10px 0; padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 4px;">
+              <p style="margin: 0;">New Steps Project</p>
+              <p style="margin: 0;">Attn: Donations</p>
+              <p style="margin: 0;">${settings.officeAddress.street}</p>
+              <p style="margin: 0;">${settings.officeAddress.city}, ${settings.officeAddress.state} ${settings.officeAddress.zipCode}</p>
+            </div>
+          </li>
+        </ol>
+        <p>Once we receive your check, we'll send you a tax receipt for your records.</p>
+        <p>If you have any questions, please feel free to contact us at ${settings.donationsEmail}.</p>
+        <p>Thanks for your support!</p>
+        <p>The New Steps Project Team</p>
+      `,
+    };
+  },
   [EmailTemplate.VOLUNTEER_CONFIRMATION]: (data: any) => ({
     subject: 'Thank You for Your Interest in Volunteering - New Steps Project',
     html: `
@@ -256,7 +260,12 @@ export async function sendEmail(
   console.log(`Sending ${template} email to ${to}`);
   
   try {
-    const { subject, html } = templates[template](data);
+    const templateFunction = templates[template];
+    const templateResult = typeof templateFunction === 'function' 
+      ? await templateFunction(data) 
+      : templateFunction;
+    
+    const { subject, html } = templateResult;
     const emailTransporter = await getTransporter();
 
     const info = await emailTransporter.sendMail({

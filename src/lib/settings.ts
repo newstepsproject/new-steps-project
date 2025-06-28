@@ -34,6 +34,9 @@ export interface AppSettings {
   maxShoesPerRequest: number;
   projectEmail: string;
   projectPhone: string;
+  contactEmail: string;
+  supportEmail: string;
+  donationsEmail: string;
   paypalClientId: string;
   paypalSandboxMode: boolean;
 }
@@ -102,6 +105,9 @@ const defaultSettings: AppSettings = {
   maxShoesPerRequest: 2,
   projectEmail: 'newsteps.project@gmail.com',
   projectPhone: '(916) 582-7090',
+  contactEmail: 'newsteps.project@gmail.com',
+  supportEmail: 'newsteps.project@gmail.com',
+  donationsEmail: 'newsteps.project@gmail.com',
   paypalClientId: '',
   paypalSandboxMode: true,
 };
@@ -198,6 +204,43 @@ export async function getPayPalConfig(): Promise<{ clientId: string; sandboxMode
     clientId: settings.paypalClientId,
     sandboxMode: settings.paypalSandboxMode,
   };
+}
+
+/**
+ * Get email addresses from settings
+ */
+export async function getEmailAddresses(): Promise<{
+  projectEmail: string;
+  contactEmail: string;
+  supportEmail: string;
+  donationsEmail: string;
+}> {
+  const settings = await getAppSettings();
+  return {
+    projectEmail: settings.projectEmail,
+    contactEmail: settings.contactEmail,
+    supportEmail: settings.supportEmail,
+    donationsEmail: settings.donationsEmail,
+  };
+}
+
+/**
+ * Get specific email address by type
+ */
+export async function getEmailAddress(type: 'project' | 'contact' | 'support' | 'donations'): Promise<string> {
+  const settings = await getAppSettings();
+  switch (type) {
+    case 'project':
+      return settings.projectEmail;
+    case 'contact':
+      return settings.contactEmail;
+    case 'support':
+      return settings.supportEmail;
+    case 'donations':
+      return settings.donationsEmail;
+    default:
+      return settings.projectEmail;
+  }
 }
 
 /**

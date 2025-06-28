@@ -15,6 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SHOE_BRANDS, SHOE_GENDERS, SHOE_SPORTS, SHOE_CONDITIONS, SHOE_STATUSES } from '@/constants/shoes';
+import { createCompressedDataURL, formatFileSize } from '@/lib/image-utils';
 
 // Donor information schema
 const donorInfoSchema = z.object({
@@ -76,6 +77,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
   // Image state
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
   
   // Sort sports and brands alphabetically
   const sortedSports = [...SHOE_SPORTS].sort((a, b) => a.localeCompare(b));
@@ -108,20 +110,55 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
     },
   });
 
-  // Handle image file selection
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle image file selection with mobile compression
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      setImageFiles([...imageFiles, ...files]);
-      
-      // Create preview URLs
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImageUrls([...imageUrls, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
+    if (files.length === 0) return;
+
+    setUploadingImages(true);
+
+    try {
+      const newFiles: File[] = [];
+      const newUrls: string[] = [];
+      let totalOriginalSize = 0;
+      let totalCompressedSize = 0;
+
+      for (const file of files) {
+        totalOriginalSize += file.size;
+        
+        // Use mobile compression for admin uploads
+        const compressedDataURL = await createCompressedDataURL(file, true);
+        newUrls.push(compressedDataURL);
+        
+        // Convert compressed data URL back to File for upload
+        const response = await fetch(compressedDataURL);
+        const blob = await response.blob();
+        const compressedFile = new File([blob], file.name, { type: file.type });
+        newFiles.push(compressedFile);
+        
+        totalCompressedSize += compressedFile.size;
+      }
+
+      setImageFiles([...imageFiles, ...newFiles]);
+      setImageUrls([...imageUrls, ...newUrls]);
+
+      // Show compression feedback
+      if (files.length > 0) {
+        const compressionRatio = Math.round((1 - totalCompressedSize / totalOriginalSize) * 100);
+        toast({
+          title: "Images processed successfully",
+          description: `${files.length} image(s) processed. Compressed by ~${compressionRatio}% (${formatFileSize(totalOriginalSize)} → ${formatFileSize(totalCompressedSize)})`,
+        });
+      }
+    } catch (error) {
+      console.error('Error processing images:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload failed",
+        description: "Failed to process images. Please try again.",
       });
+    } finally {
+      setUploadingImages(false);
     }
   };
 
@@ -577,15 +614,22 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                         >
                           <div className="flex flex-col items-center">
                             <Upload className="h-6 w-6 text-gray-400 mb-1" />
-                            <span className="text-sm text-gray-500">Upload Images</span>
+                            <span className="text-sm text-gray-500">
+                              {uploadingImages ? 'Processing...' : 'Upload Images'}
+                            </span>
+                            {uploadingImages && (
+                              <div className="mt-1">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                              </div>
+                            )}
                           </div>
-                          <Input
+                          <input
                             id="picture"
                             type="file"
                             accept="image/*"
-                            className="hidden"
-                            onChange={handleImageSelect}
                             multiple
+                            onChange={handleImageSelect}
+                            className="hidden"
                           />
                         </Label>
                       </div>
@@ -596,15 +640,22 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                         >
                           <div className="flex flex-col items-center">
                             <Camera className="h-6 w-6 text-gray-400 mb-1" />
-                            <span className="text-sm text-gray-500">Take Photo</span>
+                            <span className="text-sm text-gray-500">
+                              {uploadingImages ? 'Processing...' : 'Take Photo'}
+                            </span>
+                            {uploadingImages && (
+                              <div className="mt-1">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                              </div>
+                            )}
                           </div>
-                          <Input
+                          <input
                             id="camera"
                             type="file"
                             accept="image/*"
                             capture="environment"
-                            className="hidden"
                             onChange={handleImageSelect}
+                            className="hidden"
                           />
                         </Label>
                       </div>

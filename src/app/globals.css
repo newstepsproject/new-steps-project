@@ -87,33 +87,36 @@
   * {
     @apply border-border;
   }
+  html {
+    overflow-y: scroll; /* Force scrollbar to always be visible */
+  }
   body {
-    @apply bg-offwhite text-foreground font-sans;
+    @apply bg-gpt-bg text-gpt-text font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   h1 {
-    @apply text-4xl font-bold tracking-tight font-display text-brand;
+    @apply text-4xl font-bold tracking-tight font-display text-gpt-text;
   }
 
   h2 {
-    @apply text-3xl font-semibold tracking-tight font-display text-brand;
+    @apply text-3xl font-semibold tracking-tight font-display text-gpt-text;
   }
 
   h3 {
-    @apply text-2xl font-semibold tracking-tight font-display text-brand;
+    @apply text-2xl font-semibold tracking-tight font-display text-gpt-text;
   }
 
   h4 {
-    @apply text-xl font-semibold tracking-tight font-display text-brand;
+    @apply text-xl font-semibold tracking-tight font-display text-gpt-text;
   }
 
   h5 {
-    @apply text-lg font-semibold tracking-tight font-display text-brand;
+    @apply text-lg font-semibold tracking-tight font-display text-gpt-text;
   }
 
   h6 {
-    @apply text-base font-semibold tracking-tight font-display text-brand;
+    @apply text-base font-semibold tracking-tight font-display text-gpt-text;
   }
 }
 
@@ -136,35 +139,35 @@
 
 @layer components {
   .hero {
-    @apply relative py-20 md:py-24 lg:py-32 bg-gradient-to-br from-offwhite-300 to-white overflow-hidden;
+    @apply relative py-20 md:py-24 lg:py-32 bg-gpt-bg overflow-hidden;
   }
 
   .content-section {
-    @apply py-12 md:py-16 lg:py-20;
+    @apply py-12 md:py-16 lg:py-20 bg-gpt-bg;
   }
 
   .card-highlight {
-    @apply transition-all duration-300 hover:shadow-card hover:-translate-y-1;
+    @apply transition-all duration-300 hover:shadow-card hover:-translate-y-1 bg-white;
   }
 
   .btn-primary {
-    @apply bg-brand hover:bg-brand-600 text-white font-medium py-2 px-4 rounded-md transition duration-200;
+    @apply bg-gpt-primary hover:bg-gpt-primary/90 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
   }
 
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium py-2 px-4 rounded-md transition duration-200;
+    @apply bg-gpt-secondary hover:bg-gpt-secondary/90 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
   }
 
   .btn-outline {
-    @apply border border-brand text-brand hover:bg-brand-50 font-medium py-2 px-4 rounded-md transition duration-200;
+    @apply border-2 border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
   }
 
   .btn-success {
-    @apply bg-success hover:bg-success-600 text-white font-medium py-2 px-4 rounded-md transition duration-200;
+    @apply bg-success hover:bg-success-600 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
   }
   
   .btn-energy {
-    @apply bg-energy hover:bg-energy-600 text-white font-medium py-2 px-4 rounded-md transition duration-200;
+    @apply bg-gpt-primary hover:bg-gpt-primary/90 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
   }
   
   .animate-fade-in {

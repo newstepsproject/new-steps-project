@@ -32,22 +32,14 @@ export default function OrdersPage() {
   });
 
   // Pagination setup for orders
-  const {
-    currentPage,
-    setCurrentPage,
-    itemsPerPage,
-    setItemsPerPage,
-    resetToFirstPage,
-    paginatedData: paginatedOrders,
-    totalPages,
-    startIndex,
-    endIndex,
-    totalItems
-  } = usePagination({
-    data: orders,
-    initialItemsPerPage: 20,
-    itemsPerPageOptions: [10, 20, 50, 100]
+  // Pagination logic
+  const pagination = usePagination({
+    totalItems: orders.length,
+    defaultItemsPerPage: 20,
   });
+
+  // Get current page data
+  const paginatedOrders = pagination.getPageData(orders);
 
   // Table columns configuration
   const columns: TableColumn<Order>[] = [
@@ -170,7 +162,7 @@ export default function OrdersPage() {
   // Handle filter changes
   const handleFilterChange = (newFilters: FilterParams) => {
     setFilters(newFilters);
-    resetToFirstPage(); // Reset pagination when filters change
+    pagination.resetToFirstPage(); // Reset pagination when filters change
   };
 
   // Handle sort changes
@@ -274,16 +266,12 @@ export default function OrdersPage() {
             <MobileFilters
               filters={filters}
               onFilterChange={handleFilterChange}
-              statusOptions={Object.values(ORDER_STATUSES)}
-              statusLabel="Status"
             />
             <MobileCardView
               data={paginatedOrders}
-              loading={loading}
-              error={error}
               renderCard={(order) => (
                 <OrderCard
-                  key={order.orderId}
+                  key={order._id}
                   order={order}
                   onUpdateStatus={handleUpdateStatus}
                   getNextStatus={getNextStatus}
@@ -292,17 +280,15 @@ export default function OrdersPage() {
             />
             
             {/* Mobile Pagination */}
-            {totalPages > 1 && (
+            {pagination.totalPages > 1 && (
               <div className="mt-6">
                 <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                  itemsPerPage={itemsPerPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                  totalItems={totalItems}
-                  startIndex={startIndex}
-                  endIndex={endIndex}
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  onPageChange={pagination.setCurrentPage}
+                  itemsPerPage={pagination.itemsPerPage}
+                  onItemsPerPageChange={pagination.setItemsPerPage}
+                  totalItems={orders.length}
                   itemsPerPageOptions={[10, 20, 50, 100]}
                   className="justify-center"
                 />
@@ -320,21 +306,18 @@ export default function OrdersPage() {
               filters={filters}
               onFilterChange={handleFilterChange}
               onSort={handleSort}
-              statusOptions={Object.values(ORDER_STATUSES)}
             />
             
             {/* Desktop Pagination */}
-            {totalPages > 1 && (
+            {pagination.totalPages > 1 && (
               <div className="mt-4 px-4 py-3 border-t border-gray-200">
                 <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                  itemsPerPage={itemsPerPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                  totalItems={totalItems}
-                  startIndex={startIndex}
-                  endIndex={endIndex}
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  onPageChange={pagination.setCurrentPage}
+                  itemsPerPage={pagination.itemsPerPage}
+                  onItemsPerPageChange={pagination.setItemsPerPage}
+                  totalItems={orders.length}
                   itemsPerPageOptions={[10, 20, 50, 100]}
                 />
               </div>

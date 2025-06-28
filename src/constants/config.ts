@@ -3,11 +3,12 @@
 export const APP_NAME = "New Steps Project";
 export const APP_DESCRIPTION = 'Platform for donating and redistributing used sports shoes to those in need';
 
+// Legacy contact info - use getAppSettings() for dynamic values
 export const CONTACT_INFO = {
-  address: "348 Cardona Cir, San Ramon, CA 94583, USA",
-  managerName: "Walter Zhang",
-  email: "walterzhang10@gmail.com",
-  phone: "(916) 582-7090",
+  address: "Dynamic from settings",
+  managerName: "Dynamic from settings", 
+  email: "Dynamic from settings",
+  phone: "Dynamic from settings",
 };
 
 export const DEFAULT_SHIPPING_FEE = 5; // in dollars
@@ -214,9 +215,9 @@ export const SITE_CONFIG = {
   description: 'Connecting donated sports shoes with athletes in need',
   url: 'https://newsteps.fit',
   adminUrl: 'https://admin.newsteps.fit',
-  contactEmail: 'contact@newsteps.fit',
-  supportEmail: 'support@newsteps.fit',
-  donationsEmail: 'donations@newsteps.fit'
+  contactEmail: 'newsteps.project@gmail.com',
+  supportEmail: 'newsteps.project@gmail.com',
+  donationsEmail: 'newsteps.project@gmail.com'
 };
 
 // Shoe status options

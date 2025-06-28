@@ -5,6 +5,7 @@ import { CartProvider } from '@/components/cart/CartProvider';
 import { useEffect } from 'react';
 import { errorHandler } from '@/lib/error-handler';
 import { ClientLayout } from '@/components/layout/ClientLayout';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -17,6 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <CartProvider>
         <ClientLayout>
           {children}
+          <MobileBottomNav />
         </ClientLayout>
       </CartProvider>
     </SessionProvider>

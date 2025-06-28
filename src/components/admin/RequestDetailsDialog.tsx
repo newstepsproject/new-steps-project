@@ -37,6 +37,7 @@ import {
 import { ShoeRequest, RequestStatus, REQUEST_STATUSES } from '@/types/common';
 import { RequestStatusBadge } from './common';
 import { formatDate } from '@/lib/utils';
+import { getAppSettings, AppSettings } from '@/lib/settings';
 
 interface RequestDetailsDialogProps {
   request: ShoeRequest | null;
@@ -48,8 +49,7 @@ interface RequestDetailsDialogProps {
 // Shipping label component
 function ShippingLabelPreview({ request, hasMissingInfo }: { request: ShoeRequest; hasMissingInfo: boolean }) {
   const [showPreview, setShowPreview] = useState(false);
-  
-  const projectInfo = {
+  const [projectInfo, setProjectInfo] = useState({
     name: "Walter Zhang",
     company: "New Steps Project",
     address: "348 Cardona Cir",
@@ -57,7 +57,24 @@ function ShippingLabelPreview({ request, hasMissingInfo }: { request: ShoeReques
     state: "CA",
     zipCode: "94583",
     phone: "(916) 582-7090"
-  };
+  });
+
+  useEffect(() => {
+    getAppSettings().then(settings => {
+      const founder = settings.projectOfficers.find(officer => !officer.canRemove);
+      setProjectInfo({
+        name: founder?.name || "Walter Zhang",
+        company: "New Steps Project",
+        address: settings.officeAddress.street,
+        city: settings.officeAddress.city,
+        state: settings.officeAddress.state,
+        zipCode: settings.officeAddress.zipCode,
+        phone: settings.projectPhone
+      });
+    }).catch(error => {
+      console.error('Error loading project info for shipping label:', error);
+    });
+  }, []);
 
   const handlePrint = () => {
     if (hasMissingInfo) return; // Prevent printing if info is missing

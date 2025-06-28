@@ -364,7 +364,7 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Shipping Information</h3>
                   <p className="text-gray-700 mb-4">
-                    We ship throughout the United States. There is a flat shipping fee of $5 per order. 
+                    We ship throughout the United States. There is a flat shipping fee per order. 
                     If you're in the San Francisco Bay Area, you may qualify for free pickup from
                     our San Ramon location.
                   </p>

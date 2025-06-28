@@ -84,6 +84,9 @@ export async function GET(request: NextRequest) {
       maxShoesPerRequest: 2,
       projectEmail: 'newsteps.project@gmail.com',
       projectPhone: '(916) 582-7090',
+      contactEmail: 'newsteps.project@gmail.com',
+      supportEmail: 'newsteps.project@gmail.com',
+      donationsEmail: 'newsteps.project@gmail.com',
     };
 
     // Merge with defaults (only non-null values from DB will override defaults)

@@ -50,6 +50,13 @@ module.exports = {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
+  			gpt: {
+  				primary: '#F97C5D',
+  				secondary: '#4EA8DE', 
+  				highlight: '#4ECDC4',
+  				text: '#0D1B2A',
+  				bg: '#FCF8F5'
+  			},
   			brand: {
   				'50': '#e6f0fa',
   				'100': '#cce0f5',
@@ -116,6 +123,8 @@ module.exports = {
   		},
   		fontFamily: {
   			sans: [
+  				'var(--font-poppins)',
+  				'Poppins',
   				'Montserrat',
   				'Inter',
   				'system-ui',
@@ -124,6 +133,8 @@ module.exports = {
   				'sans-serif'
   			],
   			display: [
+  				'var(--font-poppins)',
+  				'Poppins',
   				'Montserrat',
   				'system-ui',
   				'-apple-system',
@@ -131,6 +142,8 @@ module.exports = {
   				'sans-serif'
   			],
   			body: [
+  				'var(--font-poppins)',
+  				'Poppins',
   				'Inter',
   				'system-ui',
   				'-apple-system',

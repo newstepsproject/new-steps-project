@@ -6,7 +6,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <footer className="bg-gpt-text text-white">
       <div className="container mx-auto py-16 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* About Section */}
@@ -21,7 +21,7 @@ const Footer = () => {
                 href="https://twitter.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-brand text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
+                className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
                 aria-label="Twitter"
               >
                 <Twitter size={18} />
@@ -30,7 +30,7 @@ const Footer = () => {
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-brand text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
+                className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
                 aria-label="Facebook"
               >
                 <Facebook size={18} />
@@ -39,7 +39,7 @@ const Footer = () => {
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-brand text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
+                className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
                 aria-label="Instagram"
               >
                 <Instagram size={18} />
@@ -65,15 +65,15 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4 font-display text-white">Contact Us</h3>
             <div className="space-y-4">
               <div className="flex items-start group">
-                <MapPin className="w-5 h-5 mr-3 text-brand mt-0.5 flex-shrink-0" />
+                <MapPin className="w-5 h-5 mr-3 text-gpt-primary mt-0.5 flex-shrink-0" />
                 <span className="text-gray-300 group-hover:text-white transition-colors">{CONTACT_INFO.address}</span>
               </div>
               <div className="flex items-center group">
-                <Phone className="w-5 h-5 mr-3 text-brand flex-shrink-0" />
+                <Phone className="w-5 h-5 mr-3 text-gpt-primary flex-shrink-0" />
                 <a href={`tel:${CONTACT_INFO.phone}`} className="text-gray-300 group-hover:text-white transition-colors">{CONTACT_INFO.phone}</a>
               </div>
               <div className="flex items-center group">
-                <Mail className="w-5 h-5 mr-3 text-brand flex-shrink-0" />
+                <Mail className="w-5 h-5 mr-3 text-gpt-primary flex-shrink-0" />
                 <a href={`mailto:${CONTACT_INFO.email}`} className="text-gray-300 group-hover:text-white transition-colors">{CONTACT_INFO.email}</a>
               </div>
             </div>
@@ -89,7 +89,7 @@ const Footer = () => {
           <p className="text-gray-400 text-sm">&copy; {currentYear} {SITE_CONFIG.name}. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex items-center">
             <p className="text-gray-400 text-sm flex items-center">
-              Made with <Heart className="h-3 w-3 text-energy mx-1 fill-energy" /> in San Ramon, CA
+                              Made with <Heart className="h-3 w-3 text-gpt-primary mx-1 fill-gpt-primary" /> by young athletes
             </p>
           </div>
         </div>

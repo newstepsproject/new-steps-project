@@ -49,11 +49,11 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-soft border-b border-gray-100 sticky top-0 z-30">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-4 py-0">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Logo width={120} height={32} className="h-8" />
+            <Logo width={360} height={100} className="" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -64,12 +64,12 @@ const Header = () => {
                 href={link.href}
                 className={`font-medium text-sm transition-colors duration-200 relative group ${
                   isActive(link.activeOn) 
-                    ? 'text-brand' 
-                    : 'text-gray-700 hover:text-brand'
+                    ? 'text-gpt-primary' 
+                    : 'text-gpt-text hover:text-gpt-primary'
                 }`}
               >
                 {link.label}
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-brand transition-all duration-200 
+                <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gpt-primary transition-all duration-200 
                   ${isActive(link.activeOn) ? 'w-full' : 'group-hover:w-full'}`}>
                 </span>
               </Link>
@@ -83,7 +83,7 @@ const Header = () => {
             {session ? (
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="text-gray-700 hover:text-brand transition-colors" aria-label="User profile">
+                  <button className="text-gpt-text hover:text-gpt-primary transition-colors" aria-label="User profile">
                     <User className="h-5 w-5" />
                   </button>
                 </PopoverTrigger>
@@ -123,7 +123,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden text-gray-700 hover:text-brand transition-colors p-1 rounded-md"
+            className="md:hidden text-gpt-text hover:text-gpt-primary transition-colors p-1 rounded-md"
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
@@ -145,8 +145,8 @@ const Header = () => {
                   href={link.href}
                   className={`px-3 py-2 font-medium transition-all duration-200 rounded-md ${
                     isActive(link.activeOn) 
-                      ? 'text-brand bg-brand-50 shadow-soft' 
-                      : 'text-gray-700 hover:text-brand hover:bg-gray-50'
+                      ? 'text-gpt-primary bg-gpt-primary/10 shadow-soft' 
+                      : 'text-gpt-text hover:text-gpt-primary hover:bg-gray-50'
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -155,7 +155,7 @@ const Header = () => {
               ))}
               <div className="pt-3 mt-2 border-t border-gray-100 grid grid-cols-2 gap-3">
                 <div
-                  className="flex items-center text-gray-700 hover:text-brand hover:bg-gray-50 p-2 rounded-md transition-colors"
+                  className="flex items-center text-gpt-text hover:text-gpt-primary hover:bg-gray-50 p-2 rounded-md transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <CartIcon />
