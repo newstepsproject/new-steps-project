@@ -190,10 +190,10 @@ export default function ShoesPage() {
       {/* Hero Section */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-brand-50 to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Request Free Sports Shoes</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Find Shoes Ready to Return to Action</h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-6">
-            Browse our collection of quality donated athletic footwear and request what you need.
-            From basketball to running shoes - completely free for young athletes.
+            Browse quality sports shoes from fellow athletes who want their beloved kicks to continue playing.
+            From basketball to running shoes - find your perfect pair and make them yours completely free.
           </p>
           <div className="relative max-w-md mx-auto">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -421,20 +421,20 @@ export default function ShoesPage() {
       {/* Call to Action for Donations */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Help Others Take Their Next Steps</h2>
+          <h2 className="text-3xl font-bold mb-4">Keep the Cycle Going - Send Your Shoes Back to Fields</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-            Our inventory depends on generous donors like you. Consider donating your gently used
-            sports shoes or supporting our mission financially.
+            When you're ready, your lovely shoes can return to action too! Help other young athletes
+            by sending your cherished kicks back to the fields, courts, and tracks where they belong.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild variant="default" className="shadow-sm">
               <Link href="/donate/shoes">
-                Donate Shoes <Footprints className="ml-2 h-4 w-4" />
+                Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" className="border-energy text-energy hover:bg-energy hover:text-white">
                               <Link href="/get-involved#money-donation">
-                  Donate Money <CreditCard className="ml-2 h-4 w-4" />
+                  Support Our Mission <CreditCard className="ml-2 h-4 w-4" />
                 </Link>
             </Button>
           </div>

@@ -18,14 +18,14 @@ export default function DonateShoesPage() {
       {/* Hero Section */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-offwhite to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Give Your Shoes a Second Life</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Make Your Lovely Shoes Back to Fields Again!</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Transform unused sports shoes into opportunities for young athletes. 
-            Your donation can help someone take their next steps toward their athletic dreams.
+            Your cherished sports shoes can return to where they belong - on the fields, courts, and tracks with young athletes. 
+            Give your beloved kicks the chance to continue their athletic journey and make new memories.
           </p>
           <Button size="lg" className="btn-brand shadow-lg" asChild>
             <Link href="/donate/shoes">
-              Start Donating <Footprints className="ml-2 h-5 w-5" />
+              Send Shoes Back to Action <Footprints className="ml-2 h-5 w-5" />
             </Link>
           </Button>
         </div>
@@ -41,10 +41,10 @@ export default function DonateShoesPage() {
               <div className="bg-brand-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-8 w-8 text-brand" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Help Young Athletes</h3>
+              <h3 className="text-xl font-semibold mb-3">Return Shoes to Young Athletes</h3>
               <p className="text-gray-600">
-                Give growing athletes access to proper sports footwear they might not otherwise afford, 
-                helping them participate safely in sports and activities.
+                Your lovely sports shoes can return to the fields, courts, and tracks where they belong! 
+                Give young athletes the chance to continue the journey your shoes started, creating new athletic memories.
               </p>
             </div>
             

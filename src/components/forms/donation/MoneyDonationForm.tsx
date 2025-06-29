@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CONTACT_INFO } from '@/constants/config';
+import { getAppSettings } from '@/lib/settings';
 
 // Form Schema
 const moneyDonationFormSchema = z.object({
@@ -34,8 +34,22 @@ export default function MoneyDonationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [donationId, setDonationId] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [settings, setSettings] = useState<any>(null);
   const router = useRouter();
   const { toast } = useToast();
+
+  // Load settings on component mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const appSettings = await getAppSettings();
+        setSettings(appSettings);
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+      }
+    };
+    loadSettings();
+  }, []);
 
   // Form setup with validation schema
   const methods = useForm<MoneyDonationFormData>({
@@ -121,9 +135,34 @@ export default function MoneyDonationForm() {
               <p className="text-sm font-medium mb-1">Donation Reference Number:</p>
               <p className="text-lg font-mono bg-white p-2 rounded border">{donationId}</p>
             </div>
-            <p className="mt-6 text-sm text-gray-500">
-              Please make your check payable to "New Steps Project" and mail it to the address below.
-            </p>
+            
+            <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg w-full max-w-md">
+              <h4 className="text-blue-800 font-medium text-center mb-3">📮 Mailing Instructions</h4>
+              <p className="text-sm text-blue-700 mb-3 text-center">
+                Please make your check payable to <strong>"New Steps Project"</strong> and mail it to:
+              </p>
+              <div className="bg-white p-4 rounded border border-blue-100 text-left">
+                <p className="font-medium text-gray-900">{settings?.founderName || 'Walter Zhang'}</p>
+                <p className="text-gray-800">New Steps Project</p>
+                {settings?.officeAddress ? (
+                  <>
+                    <p className="text-gray-800">{settings.officeAddress.street}</p>
+                    <p className="text-gray-800">{settings.officeAddress.city}, {settings.officeAddress.state} {settings.officeAddress.zipCode}</p>
+                    {settings.officeAddress.country !== 'USA' && (
+                      <p className="text-gray-800">{settings.officeAddress.country}</p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-800">348 Cardona Cir</p>
+                    <p className="text-gray-800">San Ramon, CA 94583</p>
+                  </>
+                )}
+              </div>
+              <p className="text-xs text-blue-600 mt-3 text-center">
+                You'll also receive this information via email confirmation.
+              </p>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
@@ -232,21 +271,6 @@ export default function MoneyDonationForm() {
                     className="h-24"
                   />
                 </div>
-              </div>
-              
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mt-6">
-                <h4 className="text-blue-800 font-medium">Mailing Information</h4>
-                <p className="text-sm text-blue-700 mt-1">
-                  Please make your check payable to "New Steps Project" and mail it to:
-                </p>
-                <div className="mt-2 bg-white p-3 rounded border border-blue-100">
-                  <p className="font-medium">{CONTACT_INFO.managerName}</p>
-                  <p>New Steps Project</p>
-                  <p>{CONTACT_INFO.address}</p>
-                </div>
-                <p className="text-xs text-blue-600 mt-2">
-                  After submitting this form, you'll receive a confirmation email with these instructions.
-                </p>
               </div>
               
               <div className="pt-4">

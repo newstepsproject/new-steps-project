@@ -106,18 +106,18 @@ export default async function Home() {
                 to Old Kicks
               </h1>
               <p className="text-base md:text-lg text-gpt-text/80 mb-6 max-w-lg mx-auto lg:mx-0 font-body">
-                Donate your gently used sports shoes to athletes in need, or request shoes
-                to take your next steps forward. Together, we can make sports accessible for everyone.
+                Your cherished sports shoes can continue their journey 
+                with young athletes who need them, returning to the courts, fields, and tracks where they belong.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <Button asChild size="lg" className="bg-gpt-primary hover:bg-gpt-primary/90 text-white rounded-full px-6 py-3 font-semibold transition-all duration-300 transform hover:scale-105">
                   <Link href="/donate/shoes">
-                    Donate Shoes <Footprints className="ml-2 h-4 w-4" />
+                    Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white rounded-full px-6 py-3 font-semibold transition-all duration-300">
                   <Link href="/shoes">
-                    Request Shoes <ShoppingBag className="ml-2 h-4 w-4" />
+                    Find Your Perfect Pair <ShoppingBag className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
@@ -144,8 +144,8 @@ export default async function Home() {
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gpt-text font-display">How It Works</h2>
             <p className="text-gpt-text/70 max-w-2xl mx-auto font-body">
-              Our mission is simple: connect donated sports shoes with young athletes who need them.
-              Every pair of shoes has the potential to change a life. Here's how you can make a difference.
+              Your beloved sports shoes deserve to keep playing! Connect your cherished kicks with young athletes
+              who will give them new life on the fields, courts, and tracks. Every pair has more games to play.
             </p>
           </div>
 
@@ -155,13 +155,13 @@ export default async function Home() {
               <div className="w-16 h-16 rounded-full bg-gpt-primary/10 text-gpt-primary flex items-center justify-center mx-auto mb-4">
                 <Footprints className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Donate Your Shoes</h3>
+              <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Send Shoes Back to Action</h3>
               <p className="text-gpt-text/70 font-body">
-                Give your gently used sports shoes a second life. Our simple donation process makes it easy 
-                to help young athletes get the equipment they need to pursue their dreams.
+                Your lovely sports shoes can return to the fields where they belong! Let your cherished kicks
+                continue their athletic journey with young athletes who need quality footwear to pursue their dreams.
               </p>
               <Link href="/donate/shoes" className="text-gpt-primary font-semibold inline-flex items-center mt-4 hover:text-gpt-primary/80 transition-colors">
-                Donate shoes <ArrowRight className="ml-1 h-4 w-4" />
+                Send shoes back to action <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
 

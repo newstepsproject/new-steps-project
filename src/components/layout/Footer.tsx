@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone, Instagram, Twitter, Facebook, Heart, Youtube, Linkedin, Globe } from 'lucide-react';
-import { SITE_CONFIG, CONTACT_INFO } from '@/constants/config';
-import { getActiveSocialPlatforms } from '@/lib/settings';
+import { SITE_CONFIG } from '@/constants/config';
+import { getActiveSocialPlatforms, getAppSettings } from '@/lib/settings';
 
 const Footer = async () => {
   const currentYear = new Date().getFullYear();
   const activeSocialPlatforms = await getActiveSocialPlatforms();
+  const settings = await getAppSettings();
   
   // Helper function to get the appropriate icon for each platform
   const getSocialIcon = (platform: string) => {
@@ -101,20 +102,23 @@ const Footer = async () => {
             <div className="space-y-4">
               <div className="flex items-start group">
                 <MapPin className="w-5 h-5 mr-3 text-gpt-primary mt-0.5 flex-shrink-0" />
-                <span className="text-gray-300 group-hover:text-white transition-colors">{CONTACT_INFO.address}</span>
+                <span className="text-gray-300 group-hover:text-white transition-colors">
+                  {settings.officeAddress.street}<br />
+                  {settings.officeAddress.city}, {settings.officeAddress.state} {settings.officeAddress.zipCode}
+                </span>
               </div>
               <div className="flex items-center group">
                 <Phone className="w-5 h-5 mr-3 text-gpt-primary flex-shrink-0" />
-                <a href={`tel:${CONTACT_INFO.phone}`} className="text-gray-300 group-hover:text-white transition-colors">{CONTACT_INFO.phone}</a>
+                <a href={`tel:${settings.projectPhone}`} className="text-gray-300 group-hover:text-white transition-colors">{settings.projectPhone}</a>
               </div>
               <div className="flex items-center group">
                 <Mail className="w-5 h-5 mr-3 text-gpt-primary flex-shrink-0" />
-                <a href={`mailto:${CONTACT_INFO.email}`} className="text-gray-300 group-hover:text-white transition-colors">{CONTACT_INFO.email}</a>
+                <a href={`mailto:${settings.projectEmail}`} className="text-gray-300 group-hover:text-white transition-colors">{settings.projectEmail}</a>
               </div>
             </div>
             <div className="mt-6 p-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700">
-              <p className="text-white font-medium">Manager</p>
-              <p className="text-gray-400">{CONTACT_INFO.managerName}</p>
+              <p className="text-white font-medium">Founder & Director</p>
+              <p className="text-gray-400">{settings.founderName}</p>
             </div>
           </div>
         </div>
