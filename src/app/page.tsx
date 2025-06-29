@@ -1,9 +1,11 @@
 import Image from 'next/image';
+import { ResponsiveImage } from '@/components/ui/responsive-image';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag, CreditCard, Footprints } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { APP_NAME } from '@/constants/config';
-import { getAppSettings } from '@/lib/settings';
+import { getAppSettings, getActiveSocialPlatforms } from '@/lib/settings';
+import { Instagram, Twitter, Facebook, Youtube, Linkedin, Globe } from 'lucide-react';
 
 export const metadata = {
   title: 'Give New Life to Old Kicks | Donate & Request Sports Shoes',
@@ -18,6 +20,47 @@ export const metadata = {
 
 export default async function Home() {
   const settings = await getAppSettings();
+  const activeSocialPlatforms = await getActiveSocialPlatforms();
+  
+  // Helper function to get the appropriate icon for each platform
+  const getSocialIcon = (platform: string) => {
+    switch (platform) {
+      case 'instagram':
+        return Instagram;
+      case 'twitter':
+        return Twitter;
+      case 'facebook':
+        return Facebook;
+      case 'youtube':
+        return Youtube;
+      case 'linkedin':
+        return Linkedin;
+      case 'tiktok':
+        return Globe; // TikTok icon not available in Lucide, using Globe
+      default:
+        return Globe;
+    }
+  };
+  
+  // Helper function to get platform display name
+  const getPlatformName = (platform: string) => {
+    switch (platform) {
+      case 'instagram':
+        return 'Instagram';
+      case 'twitter':
+        return 'X (Twitter)';
+      case 'facebook':
+        return 'Facebook';
+      case 'youtube':
+        return 'YouTube';
+      case 'linkedin':
+        return 'LinkedIn';
+      case 'tiktok':
+        return 'TikTok';
+      default:
+        return platform.charAt(0).toUpperCase() + platform.slice(1);
+    }
+  };
   
   return (
     <>
@@ -46,10 +89,7 @@ export default async function Home() {
               "postalCode": settings.officeAddress.zipCode,
               "addressCountry": settings.officeAddress.country === 'USA' ? 'US' : settings.officeAddress.country
             },
-            "sameAs": [
-              "https://instagram.com/newstepsproject",
-              "https://twitter.com/newstepsproject"
-            ],
+            "sameAs": activeSocialPlatforms.map(({ url }) => url),
             "foundingDate": "2023",
             "mission": "Making sports accessible for everyone by connecting donated sports shoes with athletes in need"
           })
@@ -84,7 +124,7 @@ export default async function Home() {
             </div>
             <div className="lg:w-1/2 relative animate-fade-in animate-delay-200 flex justify-center">
               <div className="relative h-[300px] md:h-[350px] lg:h-[400px] w-[70%] md:w-[65%] lg:w-[80%]">
-                <Image 
+                <ResponsiveImage 
                   src="/images/home_photo.png" 
                   alt="Athletes with sports shoes ready to step into their possibilities" 
                   fill
@@ -157,6 +197,42 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Social Media Section - only show if there are active platforms */}
+      {activeSocialPlatforms.length > 0 && (
+        <section className="py-20 bg-gradient-to-r from-brand-600 to-brand-500 text-white">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white font-display">Follow Our Journey</h2>
+            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8 font-body">
+              Stay connected with us on social media to see the impact of your donations and 
+              follow the stories of young athletes getting back in the game.
+            </p>
+            <div className="flex justify-center space-x-6 mb-8">
+              {activeSocialPlatforms.map(({ platform, url }) => {
+                const IconComponent = getSocialIcon(platform);
+                const platformName = getPlatformName(platform);
+                
+                return (
+                  <a 
+                    key={platform}
+                    href={url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-white/20 hover:bg-white/30 text-white p-4 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                    aria-label={platformName}
+                    title={platformName}
+                  >
+                    <IconComponent size={24} />
+                  </a>
+                );
+              })}
+            </div>
+            <p className="text-white/80 text-sm">
+              Join thousands of supporters making sports accessible for everyone
+            </p>
+          </div>
+        </section>
+      )}
     </main>
     </>
   );

@@ -376,7 +376,7 @@ export default function InventoryPage() {
 
               {/* Desktop Table View */}
               <div className="hidden md:block">
-                <div className="overflow-x-auto rounded-md border">
+                <div className="table-container rounded-md border">
                   <Table className="table-fixed w-full">
                     <TableHeader>
                       <TableRow>

@@ -131,72 +131,72 @@ export default function DonateShoesPage() {
           
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                <h3 className="text-xl font-semibold text-green-800 mb-4">✅ We Accept</h3>
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">✅ We Accept</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start">
-                    <span className="text-green-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Running and jogging shoes</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Basketball and tennis shoes</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Soccer cleats and football cleats</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Baseball and softball cleats</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Cross-training and gym shoes</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Track and field spikes</span>
                   </li>
                 </ul>
               </div>
               
-              <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                <h3 className="text-xl font-semibold text-red-800 mb-4">❌ We Don't Accept</h3>
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">❌ We Don't Accept</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start">
-                    <span className="text-red-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Dress shoes or formal footwear</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-red-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>High heels or fashion shoes</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-red-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Sandals, flip-flops, or slides</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-red-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Boots (work, hiking, or casual)</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-red-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Severely damaged or worn shoes</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-red-600 mr-2">•</span>
+                    <span className="text-gray-600 mr-2">•</span>
                     <span>Shoes with missing soles or holes</span>
                   </li>
                 </ul>
               </div>
             </div>
             
-            <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">Condition Guidelines</h3>
-              <p className="text-blue-700">
-                We accept shoes in "Good" to "Like New" condition. Shoes should be clean, 
-                have functional soles, and show minimal wear. If you're unsure about your 
+            <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Condition Guidelines</h3>
+              <p className="text-gray-700">
+                We accept shoes in "Fair" to "Like New" condition. Shoes that are useful are good enough - they should be clean, 
+                have functional soles, and show reasonable wear. If you're unsure about your 
                 shoes' condition, feel free to submit the donation form and we'll help assess.
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function DonateShoesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-brand text-white">
+      <section className="py-20 bg-gradient-to-r from-brand-600 to-brand-500 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -216,7 +216,7 @@ export default function DonateShoesPage() {
             <Button size="lg" variant="outline" className="bg-white hover:bg-gray-100 text-brand border-white" asChild>
               <Link href="/donate/shoes">Donate Shoes Now</Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-brand-700" asChild>
+            <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-brand transition-colors" asChild>
               <Link href="/get-involved">Other Ways to Help</Link>
             </Button>
           </div>

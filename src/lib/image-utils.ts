@@ -8,12 +8,29 @@ import { UPLOAD_LIMITS } from '@/constants/config';
 export const MOBILE_COMPRESSION_SETTINGS = {
   // Smaller max width for mobile uploads (reduces file size significantly)
   maxWidth: 1200,
-  // Higher compression for mobile (smaller files)
+  // More aggressive compression for mobile (smaller files)
   quality: 0.7,
   // Maximum file size after compression (2MB for mobile)
   maxFileSize: 2 * 1024 * 1024,
   // Force compression for files larger than 500KB
   forceCompressionThreshold: 500 * 1024,
+  // Additional mobile optimizations
+  progressive: true, // Enable progressive JPEG for faster loading
+  removeMetadata: true, // Strip EXIF data to reduce file size
+  targetFormat: 'image/jpeg', // Convert to JPEG for better compression
+};
+
+/**
+ * Desktop compression settings for comparison
+ */
+export const DESKTOP_COMPRESSION_SETTINGS = {
+  maxWidth: 1920,
+  quality: 0.8,
+  maxFileSize: 5 * 1024 * 1024,
+  forceCompressionThreshold: 1024 * 1024, // 1MB threshold
+  progressive: false,
+  removeMetadata: false,
+  targetFormat: null, // Keep original format
 };
 
 /**
@@ -104,16 +121,22 @@ export function readFileAsDataURL(file: File): Promise<string> {
 }
 
 /**
- * Compresses an image file to reduce size
+ * Compresses an image file to reduce size with advanced mobile optimizations
  * @param file The image file to compress
  * @param maxWidth Maximum width for the compressed image
  * @param quality JPEG quality (0-1)
+ * @param options Additional compression options
  * @returns A promise that resolves with the compressed file
  */
 export async function compressImage(
   file: File,
   maxWidth: number = UPLOAD_LIMITS.maxWidth,
-  quality: number = UPLOAD_LIMITS.compressionQuality
+  quality: number = UPLOAD_LIMITS.compressionQuality,
+  options: {
+    progressive?: boolean;
+    removeMetadata?: boolean;
+    targetFormat?: string | null;
+  } = {}
 ): Promise<File> {
   // Skip compression for non-supported image types or if compression is not needed
   if (!file.type.startsWith('image/') || file.size < UPLOAD_LIMITS.maxFileSize / 2) {
@@ -148,15 +171,23 @@ export async function compressImage(
     canvas.width = width;
     canvas.height = height;
     
-    // Draw the image on the canvas
+    // Draw the image on the canvas with better quality settings
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       throw new Error('Failed to get canvas context');
     }
     
+    // Enable better image smoothing for mobile
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    
     ctx.drawImage(img, 0, 0, width, height);
     
-    // Convert the canvas to a blob
+    // Determine output format (convert to JPEG for mobile optimization)
+    const outputFormat = options.targetFormat || file.type;
+    const useJPEG = outputFormat === 'image/jpeg' || options.targetFormat === 'image/jpeg';
+    
+    // Convert the canvas to a blob with optimized settings
     const blob = await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
         (blob) => {
@@ -166,16 +197,20 @@ export async function compressImage(
             reject(new Error('Failed to create blob from canvas'));
           }
         },
-        file.type,
+        useJPEG ? 'image/jpeg' : file.type,
         quality
       );
     });
     
     // Create a new file from the blob
-    return new File([blob], file.name, {
-      type: file.type,
+    const compressedFile = new File([blob], file.name, {
+      type: useJPEG ? 'image/jpeg' : file.type,
       lastModified: file.lastModified
     });
+    
+    console.log(`Image compressed: ${formatFileSize(file.size)} → ${formatFileSize(compressedFile.size)} (${Math.round((1 - compressedFile.size / file.size) * 100)}% reduction)`);
+    
+    return compressedFile;
   } catch (error) {
     console.error('Image compression failed:', error);
     // Fall back to the original file if compression fails
@@ -198,7 +233,12 @@ export async function compressImageForMobile(file: File): Promise<File> {
   return compressImage(
     file,
     MOBILE_COMPRESSION_SETTINGS.maxWidth,
-    MOBILE_COMPRESSION_SETTINGS.quality
+    MOBILE_COMPRESSION_SETTINGS.quality,
+    {
+      progressive: MOBILE_COMPRESSION_SETTINGS.progressive,
+      removeMetadata: MOBILE_COMPRESSION_SETTINGS.removeMetadata,
+      targetFormat: MOBILE_COMPRESSION_SETTINGS.targetFormat,
+    }
   );
 }
 
@@ -264,5 +304,132 @@ export async function createCompressedDataURL(
 ): Promise<string> {
   const processed = await processImageForUpload(file, isMobileUpload);
   return readFileAsDataURL(processed.file);
+}
+
+/**
+ * Generates responsive image srcSet for different screen sizes
+ * @param baseUrl The base image URL
+ * @param sizes Array of widths to generate
+ * @returns srcSet string for responsive images
+ */
+export function generateResponsiveSrcSet(baseUrl: string, sizes: number[] = [400, 800, 1200, 1600]): string {
+  return sizes.map(size => `${baseUrl}?w=${size} ${size}w`).join(', ');
+}
+
+/**
+ * Gets optimal image dimensions for mobile devices
+ * @param originalWidth Original image width
+ * @param originalHeight Original image height
+ * @param maxWidth Maximum width for mobile
+ * @returns Optimized dimensions
+ */
+export function getMobileOptimizedDimensions(
+  originalWidth: number, 
+  originalHeight: number, 
+  maxWidth: number = 800
+): { width: number; height: number } {
+  if (originalWidth <= maxWidth) {
+    return { width: originalWidth, height: originalHeight };
+  }
+  
+  const aspectRatio = originalHeight / originalWidth;
+  return {
+    width: maxWidth,
+    height: Math.round(maxWidth * aspectRatio)
+  };
+}
+
+/**
+ * Detects if the user is on a mobile device
+ * @returns boolean indicating if the device is mobile
+ */
+export function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+         window.innerWidth <= 768;
+}
+
+/**
+ * Gets optimal image quality based on device and connection
+ * @returns Quality value between 0.4 and 0.9
+ */
+export function getOptimalImageQuality(): number {
+  if (typeof window === 'undefined') return 0.8;
+  
+  const isMobile = isMobileDevice();
+  
+  // Check for slow connection
+  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+  const isSlowConnection = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
+  
+  if (isSlowConnection) {
+    return 0.4; // Very aggressive compression for slow connections
+  } else if (isMobile) {
+    return 0.6; // Aggressive compression for mobile
+  } else {
+    return 0.8; // Standard compression for desktop
+  }
+}
+
+/**
+ * Batch processes multiple images for upload with progress tracking
+ * @param files Array of files to process
+ * @param isMobileUpload Whether to use mobile compression
+ * @param onProgress Callback for progress updates
+ * @returns Promise resolving to array of processed files with metadata
+ */
+export async function batchProcessImages(
+  files: File[],
+  isMobileUpload: boolean = false,
+  onProgress?: (progress: number, currentFile: string) => void
+): Promise<Array<{
+  file: File;
+  originalSize: number;
+  compressedSize: number;
+  compressionRatio: number;
+  valid: boolean;
+  error?: string;
+}>> {
+  const results = [];
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    
+    // Update progress
+    if (onProgress) {
+      onProgress((i / files.length) * 100, file.name);
+    }
+    
+    try {
+      const processed = await processImageForUpload(file, isMobileUpload);
+      const compressionRatio = Math.round((1 - processed.compressedSize / processed.originalSize) * 100);
+      
+      results.push({
+        file: processed.file,
+        originalSize: processed.originalSize,
+        compressedSize: processed.compressedSize,
+        compressionRatio,
+        valid: processed.valid,
+        error: processed.error
+      });
+    } catch (error) {
+      results.push({
+        file,
+        originalSize: file.size,
+        compressedSize: file.size,
+        compressionRatio: 0,
+        valid: false,
+        error: error instanceof Error ? error.message : 'Processing failed'
+      });
+    }
+  }
+  
+  // Final progress update
+  if (onProgress) {
+    onProgress(100, 'Complete');
+  }
+  
+  return results;
 } 
 

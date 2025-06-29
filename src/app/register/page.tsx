@@ -196,6 +196,17 @@ export default function RegisterPage() {
                 'Create Account'
               )}
             </Button>
+            
+            <p className="text-xs text-gray-500 mt-3 text-center">
+              By creating an account, you agree to our{' '}
+              <Link href="/privacy" className="text-brand hover:underline">
+                Privacy Policy
+              </Link>{' '}
+              and{' '}
+              <Link href="/terms" className="text-brand hover:underline">
+                Terms of Service
+              </Link>.
+            </p>
           </form>
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">

@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { SITE_CONFIG } from '@/constants/config';
 import GetInvolvedContent from '@/components/get-involved/GetInvolvedContent';
 
@@ -80,6 +82,25 @@ export default function GetInvolvedPage() {
                 <div className="text-gray-600">Partner Organizations</div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Join Us CTA */}
+      <section className="py-20 bg-gradient-to-r from-brand-600 to-brand-500 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 font-display">Ready to Get Involved?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Every contribution makes a difference. Choose how you'd like to support young athletes 
+            in your community and help make sports accessible for everyone.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-white hover:bg-gray-100 text-brand hover:text-brand-600 border-white shadow-soft">
+              <Link href="/donate">Donate Shoes</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border-white hover:bg-white/10 shadow-soft">
+              <Link href="/volunteer">Volunteer With Us</Link>
+            </Button>
           </div>
         </div>
       </section>

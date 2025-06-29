@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -249,6 +250,14 @@ export default function PartnershipForm() {
                   'Submit Partnership Inquiry'
                 )}
               </Button>
+              
+              <p className="text-xs text-gray-500 mt-3 text-center">
+                By submitting this inquiry, you agree to our{' '}
+                <Link href="/privacy" className="text-brand hover:underline">
+                  Privacy Policy
+                </Link>{' '}
+                and understand how we handle your organization's information.
+              </p>
             </form>
           </Form>
         </CardContent>

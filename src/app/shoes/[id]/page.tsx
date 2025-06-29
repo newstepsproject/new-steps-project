@@ -327,58 +327,60 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
         
         {/* Additional Tabs Section */}
         <div className="mt-16">
-          <Tabs defaultValue="sizing">
-            <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
-              <TabsTrigger value="sizing">Sizing Information</TabsTrigger>
-              <TabsTrigger value="shipping">Shipping Details</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="sizing" className="p-6 bg-white rounded-lg shadow-sm mt-4">
-              <div className="flex items-start gap-4">
-                <Ruler className="h-8 w-8 text-brand flex-shrink-0" />
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Sizing Guide</h3>
-                  <p className="text-gray-700 mb-4">
-                    This {shoe.modelName || 'shoe'} is a US {shoe.size || 'unknown'} {getGenderDisplay(shoe.gender)?.toLowerCase() || 'unisex'}'s size. 
-                    {shoe.gender === 'men' ? 
-                      " Men's shoes typically run about 1.5 sizes larger than women's shoes." : 
-                      shoe.gender === 'women' ?
-                      " Women's shoes typically run about 1.5 sizes smaller than men's shoes." :
-                      ""}
-                  </p>
-                  
-                  <h4 className="font-medium mb-2">How to Measure Your Foot:</h4>
-                  <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                    <li>Place your foot on a piece of paper against a wall.</li>
-                    <li>Mark the longest part of your foot.</li>
-                    <li>Measure the distance from the wall to the mark.</li>
-                    <li>Use this measurement to find your size in the chart below.</li>
-                  </ol>
+          <div className="w-full max-w-none overflow-hidden">
+            <Tabs defaultValue="sizing" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex sticky top-0 z-10 bg-white border shadow-sm">
+                <TabsTrigger value="sizing">Sizing Information</TabsTrigger>
+                <TabsTrigger value="shipping">Shipping Details</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="sizing" className="p-6 bg-white rounded-lg shadow-sm mt-4 min-h-[300px] w-full max-w-none">
+                <div className="flex items-start gap-4">
+                  <Ruler className="h-8 w-8 text-brand flex-shrink-0" />
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Sizing Guide</h3>
+                    <p className="text-gray-700 mb-4">
+                      This {shoe.modelName || 'shoe'} is a US {shoe.size || 'unknown'} {getGenderDisplay(shoe.gender)?.toLowerCase() || 'unisex'}'s size. 
+                      {shoe.gender === 'men' ? 
+                        " Men's shoes typically run about 1.5 sizes larger than women's shoes." : 
+                        shoe.gender === 'women' ?
+                        " Women's shoes typically run about 1.5 sizes smaller than men's shoes." :
+                        ""}
+                    </p>
+                    
+                    <h4 className="font-medium mb-2">How to Measure Your Foot:</h4>
+                    <ol className="list-decimal list-inside space-y-2 text-gray-700">
+                      <li>Place your foot on a piece of paper against a wall.</li>
+                      <li>Mark the longest part of your foot.</li>
+                      <li>Measure the distance from the wall to the mark.</li>
+                      <li>Use this measurement to find your size in the chart below.</li>
+                    </ol>
+                  </div>
                 </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="shipping" className="p-6 bg-white rounded-lg shadow-sm mt-4">
-              <div className="flex items-start gap-4">
-                <ImageIcon className="h-8 w-8 text-brand flex-shrink-0" />
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Shipping Information</h3>
-                  <p className="text-gray-700 mb-4">
-                    We ship throughout the United States. There is a flat shipping fee per order. 
-                    If you're in the San Francisco Bay Area, you may qualify for free pickup from
-                    our San Ramon location.
-                  </p>
-                  
-                  <h4 className="font-medium mb-2">Shipping Timeline:</h4>
-                  <ul className="space-y-2 text-gray-700">
-                    <li>Order processing: 1-2 business days</li>
-                    <li>Standard shipping: 3-5 business days</li>
-                    <li>Bay Area pickup: Available within 24 hours of confirmation</li>
-                  </ul>
+              </TabsContent>
+              
+              <TabsContent value="shipping" className="p-6 bg-white rounded-lg shadow-sm mt-4 min-h-[300px] w-full max-w-none">
+                <div className="flex items-start gap-4">
+                  <ImageIcon className="h-8 w-8 text-brand flex-shrink-0" />
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Shipping Information</h3>
+                    <p className="text-gray-700 mb-4">
+                      We ship throughout the United States. There is a flat shipping fee per order. 
+                      If you're in the San Francisco Bay Area, you may qualify for free pickup from
+                      our San Ramon location.
+                    </p>
+                    
+                    <h4 className="font-medium mb-2">Shipping Timeline:</h4>
+                    <ul className="space-y-2 text-gray-700">
+                      <li>Order processing: 1-2 business days</li>
+                      <li>Standard shipping: 3-5 business days</li>
+                      <li>Bay Area pickup: Available within 24 hours of confirmation</li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
         
         {/* Related Shoes Section */}

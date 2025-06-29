@@ -88,7 +88,9 @@
     @apply border-border;
   }
   html {
-    overflow-y: scroll; /* Force scrollbar to always be visible */
+    overflow-y: scroll; /* Force scrollbar always visible */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-gpt-bg text-gpt-text font-sans;
@@ -202,4 +204,128 @@
       padding-bottom: 4rem; /* Height of bottom nav */
     }
   }
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for better performance */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Optimize fonts for mobile */
+  body {
+    font-display: swap;
+    text-rendering: optimizeSpeed;
+  }
+  
+  /* Optimize images for mobile */
+  img {
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
+  }
+  
+  /* Reduce motion for better mobile performance */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Mobile-specific optimizations */
+  .mobile-optimized {
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  /* Lazy loading optimizations */
+  .lazy-component {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .lazy-component.loaded {
+    opacity: 1;
+  }
+  
+  /* Low bandwidth mode */
+  .low-bandwidth {
+    /* Reduce visual effects */
+  }
+  
+  .low-bandwidth * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  .low-bandwidth img {
+    filter: contrast(1.1) brightness(1.1);
+  }
+  
+  /* Touch optimizations */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+  
+  /* Improve scrolling performance */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+}
+
+/* Prevent layout shifts in admin and other dynamic content areas */
+.admin-container,
+.tab-container,
+.dynamic-content {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: none;
+}
+
+/* Ensure tabs content has consistent dimensions */
+[data-radix-tabs-content] {
+  width: 100%;
+  max-width: none;
+  overflow-x: hidden;
+}
+
+/* Prevent horizontal scrolling in table containers */
+.table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Ensure consistent width for tab lists */
+[data-radix-tabs-list] {
+  width: 100%;
+  max-width: none;
+}
+
+/* Additional layout stability for admin pages */
+.admin-page-container {
+  width: 100%;
+  max-width: none;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Prevent content jumping during tab switches */
+.tab-content-wrapper {
+  overflow: hidden;
+  width: 100%;
+  max-width: none;
+}
+
+/* Ensure consistent container behavior */
+.container-stable {
+  width: 100%;
+  max-width: none;
+  overflow-x: hidden;
 } 

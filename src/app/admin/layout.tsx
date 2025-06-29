@@ -130,9 +130,9 @@ export default function AdminLayout({
 
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        <main className="flex-1 relative overflow-y-auto focus:outline-none">
+        <main className="flex-1 relative overflow-y-scroll overflow-x-hidden focus:outline-none">
           <div className="py-6 pb-20 md:pb-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 admin-container">
               <AdminErrorBoundary>
                 {children}
               </AdminErrorBoundary>

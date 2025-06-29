@@ -1,9 +1,51 @@
 import Link from 'next/link';
-import { Mail, MapPin, Phone, Instagram, Twitter, Facebook, Heart } from 'lucide-react';
+import { Mail, MapPin, Phone, Instagram, Twitter, Facebook, Heart, Youtube, Linkedin, Globe } from 'lucide-react';
 import { SITE_CONFIG, CONTACT_INFO } from '@/constants/config';
+import { getActiveSocialPlatforms } from '@/lib/settings';
 
-const Footer = () => {
+const Footer = async () => {
   const currentYear = new Date().getFullYear();
+  const activeSocialPlatforms = await getActiveSocialPlatforms();
+  
+  // Helper function to get the appropriate icon for each platform
+  const getSocialIcon = (platform: string) => {
+    switch (platform) {
+      case 'instagram':
+        return Instagram;
+      case 'twitter':
+        return Twitter;
+      case 'facebook':
+        return Facebook;
+      case 'youtube':
+        return Youtube;
+      case 'linkedin':
+        return Linkedin;
+      case 'tiktok':
+        return Globe; // TikTok icon not available in Lucide, using Globe
+      default:
+        return Globe;
+    }
+  };
+  
+  // Helper function to get platform display name
+  const getPlatformName = (platform: string) => {
+    switch (platform) {
+      case 'instagram':
+        return 'Instagram';
+      case 'twitter':
+        return 'X (Twitter)';
+      case 'facebook':
+        return 'Facebook';
+      case 'youtube':
+        return 'YouTube';
+      case 'linkedin':
+        return 'LinkedIn';
+      case 'tiktok':
+        return 'TikTok';
+      default:
+        return platform.charAt(0).toUpperCase() + platform.slice(1);
+    }
+  };
   
   return (
     <footer className="bg-gpt-text text-white">
@@ -16,35 +58,28 @@ const Footer = () => {
               {SITE_CONFIG.description}. We connect donated sports shoes with athletes in need, 
               helping everyone step forward into their best future.
             </p>
-            <div className="flex space-x-5 mt-6">
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
-                aria-label="Twitter"
-              >
-                <Twitter size={18} />
-              </a>
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
-                aria-label="Facebook"
-              >
-                <Facebook size={18} />
-              </a>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
-                aria-label="Instagram"
-              >
-                <Instagram size={18} />
-              </a>
-            </div>
+            {activeSocialPlatforms.length > 0 && (
+              <div className="flex space-x-5 mt-6">
+                {activeSocialPlatforms.map(({ platform, url }) => {
+                  const IconComponent = getSocialIcon(platform);
+                  const platformName = getPlatformName(platform);
+                  
+                  return (
+                    <a 
+                      key={platform}
+                      href={url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
+                      aria-label={platformName}
+                      title={platformName}
+                    >
+                      <IconComponent size={18} />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Quick Links */}

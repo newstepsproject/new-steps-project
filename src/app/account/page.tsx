@@ -174,58 +174,60 @@ export default function AccountPage() {
         
         {/* Activity Tabs */}
         <div className="lg:w-2/3">
-          <Tabs defaultValue="orders" className="w-full">
-            <TabsList className="grid grid-cols-2 mb-6 h-12">
-              <TabsTrigger value="orders" className="flex items-center gap-2 text-sm sm:text-base touch-manipulation">
-                <Package size={16} />
-                <span className="hidden sm:inline">My Orders</span>
-                <span className="sm:hidden">Orders</span>
-              </TabsTrigger>
-              <TabsTrigger value="donations" className="flex items-center gap-2 text-sm sm:text-base touch-manipulation">
-                <Gift size={16} />
-                <span className="hidden sm:inline">My Donations</span>
-                <span className="sm:hidden">Donations</span>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="orders">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My Orders</CardTitle>
-                  <CardDescription>Track and manage your shoe orders</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <Package className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No Orders Yet</h3>
-                    <p className="text-gray-600 mb-6 px-4">You haven't requested any shoes yet.</p>
-                    <Button asChild size="lg" className="h-12 touch-manipulation">
-                      <Link href="/shoes">Browse Shoes</Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="donations">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My Donations</CardTitle>
-                  <CardDescription>Track and manage your shoe donations</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <Gift className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No Donations Yet</h3>
-                    <p className="text-gray-600 mb-6 px-4">You haven't donated any shoes yet.</p>
-                    <Button asChild size="lg" className="h-12 touch-manipulation">
-                      <Link href="/donate/shoes">Donate Shoes</Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          <div className="w-full max-w-none overflow-hidden">
+            <Tabs defaultValue="orders" className="w-full">
+              <TabsList className="grid grid-cols-2 mb-6 h-12 sticky top-0 z-10 bg-white border shadow-sm">
+                <TabsTrigger value="orders" className="flex items-center gap-2 text-sm sm:text-base touch-manipulation">
+                  <Package size={16} />
+                  <span className="hidden sm:inline">My Orders</span>
+                  <span className="sm:hidden">Orders</span>
+                </TabsTrigger>
+                <TabsTrigger value="donations" className="flex items-center gap-2 text-sm sm:text-base touch-manipulation">
+                  <Gift size={16} />
+                  <span className="hidden sm:inline">My Donations</span>
+                  <span className="sm:hidden">Donations</span>
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="orders" className="min-h-[400px] w-full max-w-none">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>My Orders</CardTitle>
+                    <CardDescription>Track and manage your shoe orders</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                      <Package className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium mb-2">No Orders Yet</h3>
+                      <p className="text-gray-600 mb-6 px-4">You haven't requested any shoes yet.</p>
+                      <Button asChild size="lg" className="h-12 touch-manipulation">
+                        <Link href="/shoes">Browse Shoes</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="donations" className="min-h-[400px] w-full max-w-none">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>My Donations</CardTitle>
+                    <CardDescription>Track and manage your shoe donations</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                      <Gift className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium mb-2">No Donations Yet</h3>
+                      <p className="text-gray-600 mb-6 px-4">You haven't donated any shoes yet.</p>
+                      <Button asChild size="lg" className="h-12 touch-manipulation">
+                        <Link href="/donate/shoes">Donate Shoes</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
     </div>

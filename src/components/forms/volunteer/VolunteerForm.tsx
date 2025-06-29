@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -323,13 +324,23 @@ export default function VolunteerForm() {
               />
             </div>
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full mt-4"
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Application'}
-            </Button>
+            <div className="flex justify-end">
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full md:w-auto px-8"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Application'}
+              </Button>
+            </div>
+            
+            <p className="text-xs text-gray-500 mt-3 text-center">
+              By submitting this application, you agree to our{' '}
+              <Link href="/privacy" className="text-brand hover:underline">
+                Privacy Policy
+              </Link>{' '}
+              and understand how we handle your personal information.
+            </p>
           </div>
         </form>
       </CardContent>

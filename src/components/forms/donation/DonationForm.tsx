@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -12,7 +13,6 @@ import { BAY_AREA_ZIP_CODES } from '@/constants/config';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ErrorBoundary } from 'react-error-boundary';
 
 // Form Schema
 const donationFormSchema = z.object({
@@ -431,6 +431,15 @@ function DonationFormContent() {
                     'Submit Donation'
                   )}
                 </Button>
+                
+                <p className="text-xs text-gray-500 mt-3 text-center">
+                  By submitting this donation, you agree to our{' '}
+                  <Link href="/privacy" className="text-brand hover:underline">
+                    Privacy Policy
+                  </Link>{' '}
+                  and understand how we handle your personal information.
+                </p>
+                
                 {Object.keys(errors).length > 0 && (
                   <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                     <h4 className="text-red-800 font-medium mb-2">Please fix the following errors:</h4>
@@ -471,8 +480,6 @@ function DonationFormContent() {
 // Wrap the component with error boundary
 export default function DonationForm() {
   return (
-    <ErrorBoundary fallback={<div>Something went wrong. Please try again.</div>}>
-      <DonationFormContent />
-    </ErrorBoundary>
+    <DonationFormContent />
   );
 } 

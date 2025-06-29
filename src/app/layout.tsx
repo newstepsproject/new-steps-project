@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
+import { MobilePerformanceOptimizer } from "@/components/performance/MobilePerformanceOptimizer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
@@ -103,6 +104,34 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Mobile Performance Optimizations */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Critical CSS inlined for mobile */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            /* Critical CSS for mobile loading */
+            body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+            .loading-spinner { 
+              display: inline-block; 
+              width: 20px; 
+              height: 20px; 
+              border: 2px solid #f3f3f3; 
+              border-top: 2px solid #3498db; 
+              border-radius: 50%; 
+              animation: spin 1s linear infinite; 
+            }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            /* Low bandwidth optimizations */
+            .low-bandwidth img { filter: contrast(1.1) brightness(1.1); }
+            .low-bandwidth video { display: none; }
+          `
+        }} />
+      </head>
       <body 
         className={cn(
           inter.variable,
@@ -112,9 +141,11 @@ export default function RootLayout({
         )}
         suppressHydrationWarning
       >
-        <Providers>
-          {children}
-        </Providers>
+        <MobilePerformanceOptimizer>
+          <Providers>
+            {children}
+          </Providers>
+        </MobilePerformanceOptimizer>
         <Toaster />
       </body>
     </html>

@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Save, Settings, User, MapPin, DollarSign, CreditCard, Plus, X, BookOpen, Globe, Package, Camera, Upload } from 'lucide-react';
+import { Loader2, Save, Settings, User, MapPin, DollarSign, CreditCard, Plus, X, BookOpen, Globe, Package, Camera, Upload, Instagram, Twitter, Facebook, Youtube, Linkedin } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -62,6 +62,16 @@ const settingsSchema = z.object({
   // Third-party services
   paypalClientId: z.string().optional(),
   paypalSandboxMode: z.boolean().default(true),
+  
+  // Social platforms
+  socialPlatforms: z.object({
+    instagram: z.string().optional(),
+    twitter: z.string().optional(),
+    facebook: z.string().optional(),
+    tiktok: z.string().optional(),
+    youtube: z.string().optional(),
+    linkedin: z.string().optional(),
+  }),
 });
 
 type SettingsFormData = z.infer<typeof settingsSchema>;
@@ -190,17 +200,18 @@ export default function SettingsPage() {
     const systemData = {
       shippingFee: Number(form.getValues('shippingFee')),
       maxShoesPerRequest: Number(form.getValues('maxShoesPerRequest')),
+      paypalClientId: form.getValues('paypalClientId'),
+      paypalSandboxMode: form.getValues('paypalSandboxMode'),
     };
     console.log('System data being saved:', systemData);
     saveSection('System Settings', systemData);
   };
 
-  const saveThirdPartyServices = () => {
-    const servicesData = {
-      paypalClientId: form.getValues('paypalClientId'),
-      paypalSandboxMode: form.getValues('paypalSandboxMode'),
+  const saveSocialPlatforms = () => {
+    const socialData = {
+      socialPlatforms: form.getValues('socialPlatforms'),
     };
-    saveSection('Third-Party Services', servicesData);
+    saveSection('Social Platforms', socialData);
   };
 
   const form = useForm<SettingsFormData>({
@@ -430,7 +441,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full overflow-x-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Project Settings</h1>
@@ -441,32 +452,33 @@ export default function SettingsPage() {
       </div>
 
       <Form {...form}>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="general" className="flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              <span className="hidden sm:inline">General</span>
-            </TabsTrigger>
-            <TabsTrigger value="team" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Team</span>
-            </TabsTrigger>
-            <TabsTrigger value="story" className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              <span className="hidden sm:inline">Story</span>
-            </TabsTrigger>
-            <TabsTrigger value="system" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">System</span>
-            </TabsTrigger>
-            <TabsTrigger value="services" className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4" />
-              <span className="hidden sm:inline">Services</span>
-            </TabsTrigger>
-          </TabsList>
+        <div className="w-full max-w-none overflow-hidden">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 w-full">
+            <TabsList className="grid w-full grid-cols-5 sticky top-0 z-10 bg-white border shadow-sm max-w-full">
+              <TabsTrigger value="general" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">General</span>
+              </TabsTrigger>
+              <TabsTrigger value="team" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">Team</span>
+              </TabsTrigger>
+              <TabsTrigger value="story" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                <span className="hidden sm:inline">Story</span>
+              </TabsTrigger>
+              <TabsTrigger value="social" className="flex items-center gap-2">
+                <Instagram className="h-4 w-4" />
+                <span className="hidden sm:inline">Social</span>
+              </TabsTrigger>
+              <TabsTrigger value="system" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline">System</span>
+              </TabsTrigger>
+            </TabsList>
 
           {/* General Settings Tab */}
-          <TabsContent value="general" className="space-y-6">
+          <TabsContent value="general" className="space-y-6 min-h-[600px] w-full max-w-none">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -653,7 +665,7 @@ export default function SettingsPage() {
           </TabsContent>
 
           {/* Team Settings Tab */}
-          <TabsContent value="team" className="space-y-6">
+          <TabsContent value="team" className="space-y-6 min-h-[600px] w-full max-w-none">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -844,7 +856,7 @@ export default function SettingsPage() {
           </TabsContent>
 
           {/* Our Story Tab */}
-          <TabsContent value="story" className="space-y-6">
+          <TabsContent value="story" className="space-y-6 min-h-[600px] w-full max-w-none">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -943,7 +955,7 @@ export default function SettingsPage() {
           </TabsContent>
 
           {/* System Settings Tab */}
-          <TabsContent value="system" className="space-y-6">
+          <TabsContent value="system" className="space-y-6 min-h-[600px] w-full max-w-none">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -996,6 +1008,50 @@ export default function SettingsPage() {
                   />
                 </div>
                 
+                <div className="space-y-4 pt-6 border-t">
+                  <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                    <CreditCard className="h-5 w-5" />
+                    Payment Settings
+                  </h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="paypalClientId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>PayPal Client ID</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter PayPal client ID" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="paypalSandboxMode"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            PayPal Sandbox Mode
+                          </FormLabel>
+                          <p className="text-sm text-muted-foreground">
+                            Enable for testing, disable for production
+                          </p>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
                 <div className="flex justify-end pt-6 border-t">
                   <Button
                     type="button"
@@ -1020,64 +1076,131 @@ export default function SettingsPage() {
             </Card>
           </TabsContent>
 
-          {/* Services Tab */}
-          <TabsContent value="services" className="space-y-6">
+          {/* Social Platforms Tab */}
+          <TabsContent value="social" className="space-y-6 min-h-[600px] w-full max-w-none">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Third-Party Services
+                  <Instagram className="h-5 w-5" />
+                  Social Media Platforms
                 </CardTitle>
                 <CardDescription>
-                  Configure payment and external service integrations.
+                  Configure social media links for the homepage and footer. Popular platforms for young generations.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="paypalClientId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>PayPal Client ID</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Enter PayPal client ID" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="paypalSandboxMode"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          PayPal Sandbox Mode
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="socialPlatforms.instagram"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Instagram className="h-4 w-4" />
+                          Instagram URL
                         </FormLabel>
-                        <p className="text-sm text-muted-foreground">
-                          Enable for testing, disable for production
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
+                        <FormControl>
+                          <Input {...field} placeholder="https://instagram.com/newstepsproject" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="socialPlatforms.tiktok"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          TikTok URL
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="https://tiktok.com/@newstepsproject" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="socialPlatforms.twitter"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Twitter className="h-4 w-4" />
+                          X (Twitter) URL
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="https://x.com/newstepsproject" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="socialPlatforms.youtube"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Youtube className="h-4 w-4" />
+                          YouTube URL
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="https://youtube.com/@newstepsproject" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="socialPlatforms.facebook"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Facebook className="h-4 w-4" />
+                          Facebook URL
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="https://facebook.com/newstepsproject" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="socialPlatforms.linkedin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Linkedin className="h-4 w-4" />
+                          LinkedIn URL
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="https://linkedin.com/company/newstepsproject" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 
                 <div className="flex justify-end pt-6 border-t">
                   <Button
                     type="button"
-                    onClick={saveThirdPartyServices}
-                    disabled={savingSection === 'Third-Party Services'}
+                    onClick={saveSocialPlatforms}
+                    disabled={savingSection === 'Social Platforms'}
                     className="w-full sm:w-auto"
                   >
-                    {savingSection === 'Third-Party Services' ? (
+                    {savingSection === 'Social Platforms' ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Saving...
@@ -1085,7 +1208,7 @@ export default function SettingsPage() {
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        Save Third-Party Services
+                        Save Social Platforms
                       </>
                     )}
                   </Button>
@@ -1093,7 +1216,8 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        </div>
       </Form>
     </div>
   );

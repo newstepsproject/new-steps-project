@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { getAppSettings, getActiveProjectOfficers, getOurStoryTimeline } from '@/lib/settings';
+import { ResponsiveImage } from '@/components/ui/responsive-image';
 
 export const metadata = {
   title: 'About Us | Our Mission to Connect Athletes with Sports Shoes',
@@ -39,11 +40,13 @@ export default async function AboutPage() {
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2 animate-fade-in">
               <div className="relative h-[350px] md:h-[450px] w-full rounded-xl overflow-hidden shadow-card">
-                <Image 
+                <ResponsiveImage 
                   src="/images/aboutus.png" 
                   alt="About New Steps Project - Our mission to connect athletes with quality sports shoes" 
                   fill
-                  className="object-cover hover:scale-105 transition-transform duration-700"
+                  className="object-cover hover:scale-[1.02] transition-transform duration-500 ease-out"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
             </div>

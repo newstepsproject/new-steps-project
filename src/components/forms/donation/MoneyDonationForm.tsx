@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -256,6 +257,14 @@ export default function MoneyDonationForm() {
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit Donation'}
                 </Button>
+                
+                <p className="text-xs text-gray-500 mt-3 text-center">
+                  By submitting this donation, you agree to our{' '}
+                  <Link href="/privacy" className="text-brand hover:underline">
+                    Privacy Policy
+                  </Link>{' '}
+                  and understand how we handle your personal information.
+                </p>
               </div>
             </div>
           </form>

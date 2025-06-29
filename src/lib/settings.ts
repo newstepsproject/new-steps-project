@@ -18,6 +18,15 @@ export interface TimelineItem {
   order: number;
 }
 
+export interface SocialPlatforms {
+  instagram: string;
+  twitter: string;
+  facebook: string;
+  tiktok: string;
+  youtube: string;
+  linkedin: string;
+}
+
 export interface AppSettings {
   founderName: string;
   founderBio: string;
@@ -39,6 +48,7 @@ export interface AppSettings {
   donationsEmail: string;
   paypalClientId: string;
   paypalSandboxMode: boolean;
+  socialPlatforms: SocialPlatforms;
 }
 
 // Default settings fallback
@@ -110,6 +120,14 @@ const defaultSettings: AppSettings = {
   donationsEmail: 'newsteps.project@gmail.com',
   paypalClientId: '',
   paypalSandboxMode: true,
+  socialPlatforms: {
+    instagram: '',
+    twitter: '',
+    facebook: '',
+    tiktok: '',
+    youtube: '',
+    linkedin: '',
+  },
 };
 
 // Cache settings for 5 minutes to avoid repeated database calls
@@ -249,4 +267,22 @@ export async function getEmailAddress(type: 'project' | 'contact' | 'support' | 
 export async function getOurStoryTimeline(): Promise<TimelineItem[]> {
   const settings = await getAppSettings();
   return settings.ourStory.sort((a, b) => a.order - b.order);
-} 
+}
+
+/**
+ * Get social platform URLs
+ */
+export async function getSocialPlatforms(): Promise<SocialPlatforms> {
+  const settings = await getAppSettings();
+  return settings.socialPlatforms;
+}
+
+/**
+ * Get active social platforms (only those with URLs)
+ */
+export async function getActiveSocialPlatforms(): Promise<Array<{platform: keyof SocialPlatforms, url: string}>> {
+  const socialPlatforms = await getSocialPlatforms();
+  return Object.entries(socialPlatforms)
+    .filter(([, url]) => url.trim() !== '')
+    .map(([platform, url]) => ({ platform: platform as keyof SocialPlatforms, url }));
+}

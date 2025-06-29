@@ -210,7 +210,7 @@ export default function AdminVolunteersPage() {
 
           {/* Desktop view */}
           <div className="hidden md:block border border-gray-200 rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="table-container">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>

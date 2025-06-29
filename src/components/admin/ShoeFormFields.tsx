@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2, Camera, X, Upload } from 'lucide-react';
 import { SHOE_BRANDS, SHOE_CONDITIONS, SHOE_SPORTS, SHOE_GENDERS, SHOE_STATUSES } from '@/constants/config';
-import { createCompressedDataURL, formatFileSize } from '@/lib/image-utils';
+import { createCompressedDataURL, formatFileSize, batchProcessImages } from '@/lib/image-utils';
 import { useToast } from '@/hooks/use-toast';
 
 export interface ShoeFormItem {
@@ -43,6 +43,7 @@ export function ShoeFormFields({
 }: ShoeFormFieldsProps) {
   const { toast } = useToast();
   const [uploadingImages, setUploadingImages] = useState<{ [key: string]: boolean }>({});
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: { progress: number; currentFile: string } }>({});
   
   // Sort brands and sports alphabetically
   const sortedBrands = [...SHOE_BRANDS].sort((a, b) => a.localeCompare(b));
@@ -79,29 +80,35 @@ export function ShoeFormFields({
     setItems(newItems);
   };
 
-  // Handle image upload for a specific item with mobile compression
+  // Handle image upload for a specific item with mobile compression and batch processing
   const handleImageSelect = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
     const uploadKey = `${index}-${Date.now()}`;
     setUploadingImages(prev => ({ ...prev, [uploadKey]: true }));
+    setUploadProgress(prev => ({ ...prev, [uploadKey]: { progress: 0, currentFile: '' } }));
 
     try {
-      // Process each file with mobile compression
-      const processedImages: string[] = [];
-      let totalOriginalSize = 0;
-      let totalCompressedSize = 0;
+      // Use batch processing for better mobile experience
+      const results = await batchProcessImages(
+        files,
+        true, // Use mobile compression
+        (progress, currentFile) => {
+          setUploadProgress(prev => ({
+            ...prev,
+            [uploadKey]: { progress, currentFile }
+          }));
+        }
+      );
 
-      for (const file of files) {
-        totalOriginalSize += file.size;
-        
-        // Use mobile compression for admin uploads
-        const compressedDataURL = await createCompressedDataURL(file, true);
-        processedImages.push(compressedDataURL);
-        
-        // Estimate compressed size (rough calculation)
-        totalCompressedSize += Math.round(compressedDataURL.length * 0.75);
+      // Filter successful results and convert to data URLs
+      const successfulResults = results.filter(result => result.valid);
+      const processedImages: string[] = [];
+      
+      for (const result of successfulResults) {
+        const dataURL = await createCompressedDataURL(result.file, true);
+        processedImages.push(dataURL);
       }
 
       // Update the items with compressed images
@@ -109,12 +116,26 @@ export function ShoeFormFields({
       newItems[index].images = [...newItems[index].images, ...processedImages];
       setItems(newItems);
 
-      // Show compression feedback
-      if (files.length > 0) {
-        const compressionRatio = Math.round((1 - totalCompressedSize / totalOriginalSize) * 100);
+      // Calculate total compression statistics
+      const totalOriginalSize = results.reduce((sum, r) => sum + r.originalSize, 0);
+      const totalCompressedSize = results.reduce((sum, r) => sum + r.compressedSize, 0);
+      const averageCompression = Math.round((1 - totalCompressedSize / totalOriginalSize) * 100);
+
+      // Show detailed feedback
+      if (successfulResults.length > 0) {
         toast({
-          title: "Images uploaded successfully",
-          description: `${files.length} image(s) uploaded. Compressed by ~${compressionRatio}% (${formatFileSize(totalOriginalSize)} → ${formatFileSize(totalCompressedSize)})`,
+          title: "Images processed successfully",
+          description: `${successfulResults.length} image(s) processed. Compressed by ~${averageCompression}% (${formatFileSize(totalOriginalSize)} → ${formatFileSize(totalCompressedSize)})`,
+        });
+      }
+
+      // Show errors for failed uploads
+      const failedResults = results.filter(result => !result.valid);
+      if (failedResults.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "Some uploads failed",
+          description: `${failedResults.length} image(s) failed to process. Please try again.`,
         });
       }
     } catch (error) {
@@ -126,6 +147,11 @@ export function ShoeFormFields({
       });
     } finally {
       setUploadingImages(prev => {
+        const newState = { ...prev };
+        delete newState[uploadKey];
+        return newState;
+      });
+      setUploadProgress(prev => {
         const newState = { ...prev };
         delete newState[uploadKey];
         return newState;
@@ -209,7 +235,22 @@ export function ShoeFormFields({
               {Object.keys(uploadingImages).length > 0 && (
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400 mx-auto"></div>
-                  <p className="text-xs text-gray-500 mt-2">Compressing for web...</p>
+                  {Object.entries(uploadProgress).map(([key, progress]) => (
+                    <div key={key} className="mt-2">
+                      <p className="text-xs text-gray-500">
+                        Processing: {progress.currentFile || 'Starting...'}
+                      </p>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                          style={{ width: `${progress.progress}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {Math.round(progress.progress)}% complete
+                      </p>
+                    </div>
+                  ))}
                 </div>
               )}
 

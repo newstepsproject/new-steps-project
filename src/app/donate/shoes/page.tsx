@@ -41,8 +41,8 @@ export default function DonateShoeePage() {
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="text-xl font-semibold mb-2">What condition should the shoes be in?</h3>
               <p className="text-gray-600">
-                We accept shoes in good, very good, or like new condition. The shoes should be clean and free from major 
-                damage. Some signs of use are acceptable, but they should still be functional and have good support.
+                We accept shoes in fair to like new condition. Shoes that are useful are good enough - they should be clean and free from major 
+                damage. Some signs of use are acceptable, but they should still be functional and have reasonable support.
               </p>
             </div>
             
