@@ -1,20 +1,23 @@
 'use client';
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getAppSettings } from '@/lib/settings';
 
 // Define the type for a cart item
 export interface CartItem {
   id: string;
-  shoeId: string; // Sequential ID from inventory (001, 002, etc.)
+  inventoryId: string;
+  shoeId: number; // Sequential ID from inventory (101, 102, etc.)
   name: string;
   brand: string;
-  sport: string;
-  gender: string;
+  modelName: string;
   size: string;
   color: string;
+  sport: string;
   condition: string;
+  gender: 'men' | 'women' | 'unisex' | 'boys' | 'girls';
   image: string;
+  quantity: number;
+  notes?: string;
 }
 
 // Define the type for the cart context
@@ -58,20 +61,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     
-    // Load max items from settings
-    getAppSettings().then(settings => {
-      setMaxItems(settings.maxShoesPerRequest);
-    }).catch(error => {
-      console.error('Error loading max items setting:', error);
-      setMaxItems(DEFAULT_MAX_ITEMS_PER_REQUEST);
-    });
+    // Load max items from settings via API
+    fetch('/api/settings')
+      .then(response => response.json())
+      .then(settings => {
+        setMaxItems(settings.maxShoesPerRequest);
+      })
+      .catch(error => {
+        console.error('Error loading max items setting:', error);
+        setMaxItems(DEFAULT_MAX_ITEMS_PER_REQUEST);
+      });
     
     const storedCart = localStorage.getItem('shoeCart');
     if (storedCart) {
       try {
         const parsedCart = JSON.parse(storedCart);
         // Ensure we don't load more than the maximum allowed items
-        setItems(parsedCart.slice(0, maxItems));
+        setItems(parsedCart.slice(0, DEFAULT_MAX_ITEMS_PER_REQUEST));
       } catch (error) {
         console.error('Error parsing cart from localStorage:', error);
         localStorage.removeItem('shoeCart');

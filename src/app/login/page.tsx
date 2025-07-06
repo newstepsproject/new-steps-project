@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,10 +14,20 @@ import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [callbackUrl, setCallbackUrl] = useState('/account');
+
+  // Get callback URL from query parameters
+  useEffect(() => {
+    const callback = searchParams.get('callbackUrl');
+    if (callback) {
+      setCallbackUrl(decodeURIComponent(callback));
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,12 +47,9 @@ export default function LoginPage() {
         return;
       }
 
-      // Redirect to admin dashboard if user is admin
+      // Redirect to callback URL or default location
       if (result?.ok) {
-        router.push('/admin');
-        router.refresh();
-      } else {
-        router.push('/account');
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (error) {
@@ -55,7 +62,7 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn('google', { callbackUrl: '/account' });
+      await signIn('google', { callbackUrl });
     } catch (error) {
       setError('An error occurred with Google sign in. Please try again.');
       console.error('Google login error:', error);
@@ -80,7 +87,7 @@ export default function LoginPage() {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
               <Input
                 id="email"
                 type="email"
@@ -91,7 +98,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
               <Input
                 id="password"
                 type="password"
@@ -145,7 +152,7 @@ export default function LoginPage() {
           </div>
           <div className="text-sm text-center">
             Don't have an account?{' '}
-            <Link href="/register" className="text-brand hover:text-brand/80">
+            <Link href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-brand hover:text-brand/80">
               Sign up
             </Link>
           </div>

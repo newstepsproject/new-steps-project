@@ -15,15 +15,28 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 
 const volunteerFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name is required' }),
+  firstName: z.string().min(1, { message: 'First name is required' }),
+  lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Valid email is required' }),
-  phone: z.string().min(10, { message: 'Valid phone number is required' }),
+  phone: z.string().optional(),
   city: z.string().min(2, { message: 'City is required' }),
   state: z.string().min(1, { message: 'State is required' }),
   availability: z.string().min(1, { message: 'Please select availability' }),
   interests: z.array(z.string()).min(1, { message: 'Select at least one area of interest' }),
   skills: z.string().optional(),
   message: z.string().optional(),
+}).refine((data) => {
+  // Additional validation for phone number only if provided
+  if (data.phone && data.phone.trim().length > 0) {
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
+      return false;
+    }
+  }
+  return true;
+}, {
+  message: 'Please enter a valid phone number',
+  path: ['phone']
 });
 
 type VolunteerFormData = z.infer<typeof volunteerFormSchema>;
@@ -58,7 +71,8 @@ export default function VolunteerForm() {
   } = useForm<VolunteerFormData>({
     resolver: zodResolver(volunteerFormSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: '',
       city: '',
@@ -173,16 +187,30 @@ export default function VolunteerForm() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">
-                  Full Name <span className="text-red-500">*</span>
+                <Label htmlFor="firstName">
+                  First Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="name"
-                  {...register('name')}
-                  placeholder="Enter your full name"
+                  id="firstName"
+                  {...register('firstName')}
+                  placeholder="Enter your first name"
                 />
-                {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name.message}</p>
+                {errors.firstName && (
+                  <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">
+                  Last Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="lastName"
+                  {...register('lastName')}
+                  placeholder="Enter your last name"
+                />
+                {errors.lastName && (
+                  <p className="text-sm text-red-500">{errors.lastName.message}</p>
                 )}
               </div>
 
@@ -195,7 +223,7 @@ export default function VolunteerForm() {
                     id="email"
                     type="email"
                     {...register('email')}
-                    placeholder="Enter your email"
+                    placeholder="Enter your email address"
                   />
                   {errors.email && (
                     <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -204,7 +232,7 @@ export default function VolunteerForm() {
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">
-                    Phone Number <span className="text-red-500">*</span>
+                    Phone Number
                   </Label>
                   <Input
                     id="phone"
@@ -302,7 +330,7 @@ export default function VolunteerForm() {
 
             <div className="space-y-2">
               <Label htmlFor="skills">
-                Skills & Experience (Optional)
+                Skills & Experience
               </Label>
               <Textarea
                 id="skills"
@@ -314,7 +342,7 @@ export default function VolunteerForm() {
 
             <div className="space-y-2">
               <Label htmlFor="message">
-                Additional Information (Optional)
+                Additional Information
               </Label>
               <Textarea
                 id="message"

@@ -2,13 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useSafePathname } from '@/hooks/useSafeRouter';
 import { Home, Footprints, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCart } from '@/components/cart/CartProvider';
 
+// Using centralized safe pathname hook from @/hooks/useSafeRouter
+
 export function MobileBottomNav() {
-  const pathname = usePathname();
+  const pathname = useSafePathname();
   const { data: session } = useSession();
   const { itemCount } = useCart();
 

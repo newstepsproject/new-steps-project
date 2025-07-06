@@ -7,18 +7,19 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { useSafeRouter } from '@/hooks/useSafeRouter';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getAppSettings } from '@/lib/settings';
+// Removed direct settings import - using API instead
 
 // Form Schema
 const moneyDonationFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name is required' }),
+  firstName: z.string().min(1, { message: 'First name is required' }),
+  lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Valid email is required' }),
-  phone: z.string().min(10, { message: 'Valid phone number is required' }),
+  phone: z.string().optional(),
   amount: z
     .string()
     .min(1, { message: 'Donation amount is required' })
@@ -26,26 +27,51 @@ const moneyDonationFormSchema = z.object({
       message: 'Donation amount must be a positive number',
     }),
   notes: z.string().optional(),
+}).refine((data) => {
+  // Additional validation for phone number only if provided
+  if (data.phone && data.phone.trim().length > 0) {
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
+      return false;
+    }
+  }
+  return true;
+}, {
+  message: 'Please enter a valid phone number',
+  path: ['phone']
 });
 
 export type MoneyDonationFormData = z.infer<typeof moneyDonationFormSchema>;
+
+// Using centralized safe router hook from @/hooks/useSafeRouter
 
 export default function MoneyDonationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [donationId, setDonationId] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [settings, setSettings] = useState<any>(null);
-  const router = useRouter();
+  const router = useSafeRouter();
   const { toast } = useToast();
 
   // Load settings on component mount
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const appSettings = await getAppSettings();
+        const response = await fetch('/api/settings');
+        if (!response.ok) {
+          throw new Error('Failed to fetch settings');
+        }
+        const appSettings = await response.json();
         setSettings(appSettings);
       } catch (error) {
         console.error('Failed to load settings:', error);
+        // Use default settings if API fails
+        setSettings({
+          maxShoesPerRequest: 2,
+          shippingFee: 5,
+          projectEmail: 'newstepsfit@gmail.com',
+          projectPhone: '(916) 582-7090'
+        });
       }
     };
     loadSettings();
@@ -55,7 +81,8 @@ export default function MoneyDonationForm() {
   const methods = useForm<MoneyDonationFormData>({
     resolver: zodResolver(moneyDonationFormSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: '',
       amount: '',
@@ -196,29 +223,40 @@ export default function MoneyDonationForm() {
               
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">
-                    Full Name <span className="text-red-500">*</span>
-                  </Label>
+                  <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                   <Input
-                    id="name"
-                    {...register('name')}
-                    placeholder="Enter your full name"
+                    id="firstName"
+                    {...register('firstName')}
+                    placeholder="Enter your first name"
+                    className="h-12"
                   />
-                  {errors.name && (
-                    <p className="text-sm text-red-500">{errors.name.message}</p>
+                  {errors.firstName && (
+                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="lastName"
+                    {...register('lastName')}
+                    placeholder="Enter your last name"
+                    className="h-12"
+                  />
+                  {errors.lastName && (
+                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
                   )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">
-                      Email <span className="text-red-500">*</span>
-                    </Label>
+                    <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                     <Input
                       id="email"
                       type="email"
                       {...register('email')}
-                      placeholder="Enter your email"
+                      placeholder="Enter your email address"
+                      className="h-12"
                     />
                     {errors.email && (
                       <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -226,14 +264,13 @@ export default function MoneyDonationForm() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone">
-                      Phone Number <span className="text-red-500">*</span>
-                    </Label>
+                    <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
                       type="tel"
                       {...register('phone')}
-                      placeholder="Enter your phone number"
+                      placeholder="(555) 123-4567"
+                      className="h-12"
                     />
                     {errors.phone && (
                       <p className="text-sm text-red-500">{errors.phone.message}</p>
@@ -262,7 +299,7 @@ export default function MoneyDonationForm() {
                 
                 <div className="mt-4">
                   <Label htmlFor="notes">
-                    Additional Notes (Optional)
+                    Additional Notes
                   </Label>
                   <Textarea
                     id="notes"

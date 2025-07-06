@@ -6,7 +6,7 @@ import User from '@/models/user';
 import ShoeRequest, { ShoeRequestStatus } from '@/models/shoeRequest';
 import Shoe from '@/models/shoe';
 import { generateRequestId } from '@/lib/utils';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, EmailTemplate } from '@/lib/email';
 import { getAppSettings } from '@/lib/settings';
 
 export async function POST(req: NextRequest) {
@@ -192,41 +192,22 @@ export async function POST(req: NextRequest) {
 
     // Send confirmation email
     try {
-      const emailContent = `
-        Hi ${firstName},
-
-        Thank you for your shoe request! We've received your request and will process it soon.
-
-        Request Details:
-        - Request ID: ${requestId}
-        - Status: Submitted
-        - Items requested: ${processedItems.length}
-
-        Requested Shoes:
-        ${processedItems.map(item => `• ${item.brand} ${item.name} (ID: ${item.shoeId}) - Size ${item.size}`).join('\n')}
-
-        ${deliveryMethod === 'shipping' ? `
-        Shipping Address:
-        ${address}
-        ${city}, ${state} ${zipCode}
-        
-        Shipping Fee: $${shippingFee}
-        ` : 'Pickup selected - no shipping fee'}
-
-        We'll notify you when your request is approved and processed.
-
-        Thank you for choosing New Steps Project!
-
-        Best regards,
-        The New Steps Project Team
-      `;
-
-      await sendEmail({
-        to: email,
-        subject: `Shoe Request Confirmation - ${requestId}`,
-        text: emailContent,
-        html: emailContent.replace(/\n/g, '<br>')
-      });
+      await sendEmail(
+        email,
+        EmailTemplate.SHOE_REQUEST_CONFIRMATION,
+        {
+          firstName,
+          requestId,
+          itemCount: processedItems.length,
+          items: processedItems,
+          deliveryMethod,
+          address,
+          city,
+          state,
+          zipCode,
+          shippingFee
+        }
+      );
 
       console.log(`[EMAIL] Sent confirmation to ${email} for request ${requestId}`);
     } catch (emailError) {

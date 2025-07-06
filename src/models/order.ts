@@ -4,8 +4,10 @@ import { UserDocument } from '@/types/user';
 
 // Define interfaces for the Order model components
 export interface OrderItem {
-  shoeId: mongoose.Types.ObjectId;
+  shoeId: number;
   shoeName: string;
+  quantity: number;
+  price: number;
 }
 
 export interface ShippingAddress {
@@ -46,12 +48,19 @@ export interface OrderDocument extends Document {
 // Create schema for order components
 const OrderItemSchema = new Schema<OrderItem>({
   shoeId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Shoe',
+    type: Number,
     required: true
   },
   shoeName: {
     type: String,
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  },
+  price: {
+    type: Number,
     required: true
   }
 });

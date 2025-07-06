@@ -12,7 +12,7 @@ export interface ShoeReview {
 
 // Define the Shoe document interface
 export interface ShoeDocument extends Document {
-  shoeId: string; // Sequential ID (001, 002, etc.)
+  shoeId: number; // Sequential ID (101, 102, etc.)
   sku: string;
   brand: string;
   modelName: string;
@@ -26,7 +26,9 @@ export interface ShoeDocument extends Document {
   images: string[];
   status: string;
   donationId?: mongoose.Types.ObjectId;
-  donorName?: string; // Optional donor name for unlinked donations
+  donorFirstName?: string; // Optional donor first name for unlinked donations
+  donorLastName?: string; // Optional donor last name for unlinked donations
+  donorName?: string; // Keep for backward compatibility
   donorEmail?: string; // Optional donor email for unlinked donations
   order?: mongoose.Types.ObjectId;
   reviews: ShoeReview[];
@@ -35,7 +37,6 @@ export interface ShoeDocument extends Document {
   lastUpdated: Date;
   inventoryNotes?: string;
   inventoryCount: number;
-  featured: boolean;
   views: number;
   createdAt: Date;
   updatedAt: Date;
@@ -65,7 +66,7 @@ const ShoeReviewSchema = new Schema<ShoeReview>({
 const ShoeSchema = new Schema<ShoeDocument>(
   {
     shoeId: {
-      type: String,
+      type: Number,
       unique: true,
       index: true
     },
@@ -121,6 +122,8 @@ const ShoeSchema = new Schema<ShoeDocument>(
       type: Schema.Types.ObjectId,
       ref: 'Donation'
     },
+    donorFirstName: String,
+    donorLastName: String,
     donorName: String,
     donorEmail: String,
     order: {
@@ -148,10 +151,6 @@ const ShoeSchema = new Schema<ShoeDocument>(
       default: 1,
       min: 0
     },
-    featured: {
-      type: Boolean,
-      default: false
-    },
     views: {
       type: Number,
       default: 0
@@ -165,7 +164,6 @@ const ShoeSchema = new Schema<ShoeDocument>(
 // Create compound indexes for better performance on common queries
 ShoeSchema.index({ sport: 1, gender: 1, size: 1 });
 ShoeSchema.index({ brand: 1, modelName: 1 });
-ShoeSchema.index({ status: 1, featured: 1 });
 ShoeSchema.index({ status: 1, dateAdded: -1 });
 ShoeSchema.index({ status: 1, inventoryCount: 1 }); // New index for available shoes
 

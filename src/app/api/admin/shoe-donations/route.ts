@@ -10,6 +10,9 @@ import { sendEmail, sendDonationConfirmationEmail } from '@/lib/email';
 import { generateId } from '@/lib/utils';
 
 import { ensureDbConnected } from '@/lib/db-utils';
+import { Counter } from '@/models/counter';
+import { Shoe } from '@/models/shoe';
+
 // GET all donations (admin only)
 export async function GET(request: NextRequest) {
   try {
@@ -55,6 +58,8 @@ export async function GET(request: NextRequest) {
     if (search) {
       query.$or = [
         { 'donorInfo.name': { $regex: search, $options: 'i' } },
+        { 'donorInfo.firstName': { $regex: search, $options: 'i' } },
+        { 'donorInfo.lastName': { $regex: search, $options: 'i' } },
         { 'donorInfo.email': { $regex: search, $options: 'i' } },
         { donationId: { $regex: search, $options: 'i' } }
       ];
@@ -95,9 +100,11 @@ export async function GET(request: NextRequest) {
       }
 
       // Get donor info from all possible sources
-      const donorName = donation.donorInfo?.name || 
-                        (donation.userId && donation.userId.name) || 
-                        'Unknown';
+      const donorName = (donation.donorInfo?.firstName && donation.donorInfo?.lastName)
+                        ? `${donation.donorInfo.firstName} ${donation.donorInfo.lastName}`
+                        : donation.donorInfo?.name || 
+                          (donation.userId && donation.userId.name) || 
+                          'Unknown';
       
       const donorEmail = donation.donorInfo?.email || 
                          (donation.userId && donation.userId.email) || 
@@ -296,10 +303,17 @@ export async function PATCH(request: NextRequest) {
       // Update donor info if provided
       if (donorInfo) {
         updateFields.donorInfo = {
+          firstName: donorInfo.firstName || donationToUpdate.donorInfo?.firstName,
+          lastName: donorInfo.lastName || donationToUpdate.donorInfo?.lastName,
           name: donorInfo.name || donationToUpdate.donorInfo?.name,
           email: donorInfo.email || donationToUpdate.donorInfo?.email,
           phone: donorInfo.phone || donationToUpdate.donorInfo?.phone
         };
+        
+        // Ensure name consistency
+        if (donorInfo.firstName && donorInfo.lastName) {
+          updateFields.donorInfo.name = `${donorInfo.firstName} ${donorInfo.lastName}`;
+        }
       }
       
       // Update donor address if provided
@@ -423,7 +437,11 @@ export async function POST(request: NextRequest) {
     }
     
     // Validate required fields
-    if (!data.donorInfo?.name) {
+    const donorName = data.donorInfo?.firstName && data.donorInfo?.lastName 
+      ? `${data.donorInfo.firstName} ${data.donorInfo.lastName}`
+      : data.donorInfo?.name;
+      
+    if (!donorName) {
       console.log('[POST] Error: Donor name is missing');
       return NextResponse.json({ error: 'Donor name is required' }, { status: 400 });
     }
@@ -547,178 +565,82 @@ export async function POST(request: NextRequest) {
         quantity: shoe.quantity || 1
       })));
       
-      // Make sure donorInfo includes all required fields
-      const donorInfo = {
-        name: data.donorInfo.name,
-        email: data.donorInfo.email || '', // Optional for offline donations
-        phone: data.donorInfo.phone || '', // Optional for offline donations
-      };
-      
-      let savedDonation;
-      
-      if (existingDonation) {
-        // If using an existing donation, update it
-        existingDonation.donationDescription = shoesJson;
-        
-        // Track processed shoes
-        if (!existingDonation.processedShoes) {
-          existingDonation.processedShoes = 0;
-        }
-        
-        // If numberOfShoes wasn't set before, set it now
-        if (!existingDonation.numberOfShoes) {
-          // Count the shoes from the donation description
-          try {
-            const existingShoes = JSON.parse(existingDonation.donationDescription || '[]');
-            const totalExistingShoes = Array.isArray(existingShoes) 
-              ? existingShoes.reduce((sum, shoe) => sum + (shoe.quantity || 1), 0)
-              : 1;
-            
-            existingDonation.numberOfShoes = totalExistingShoes;
-          } catch (err) {
-            // If parsing fails, just set to 1 as fallback
-            existingDonation.numberOfShoes = 1;
-          }
-        }
-        
-        // Increment processed shoes count
-        existingDonation.processedShoes += totalShoesInSubmission;
-        
-        // Check if all shoes have been processed
-        if (existingDonation.processedShoes >= existingDonation.numberOfShoes) {
-          existingDonation.status = DONATION_STATUSES.PROCESSED;
-          
-          // Add status history entry for processed status
-          existingDonation.statusHistory.push({
+      // Create a new donation for offline donations using simplified model
+      const donationRecord = {
+        donationId,
+        donationType: 'shoes',
+        // For offline donations, use donorInfo instead of userId
+        donorInfo: {
+          firstName: data.donorInfo.firstName,
+          lastName: data.donorInfo.lastName,
+          name: donorName,
+          email: data.donorInfo.email || '', // Optional for offline donations
+          phone: data.donorInfo.phone || '', // Optional for offline donations
+          address: data.donorInfo.address // Include address if provided
+        },
+        // Store the full shoe data as JSON in the description field
+        donationDescription: shoesJson,
+        numberOfShoes: totalShoesInSubmission,
+        processedShoes: totalShoesInSubmission, // For offline donations, all shoes are processed immediately
+        status: DONATION_STATUSES.PROCESSED, // Offline donations are automatically processed
+        isOffline: true, // Always true for manually created donations
+        notes: data.notes,
+        createdBy: data.createdBy || session.user.email,
+        donationDate: new Date(),
+        statusHistory: [
+          {
+            status: DONATION_STATUSES.SUBMITTED,
+            timestamp: new Date(),
+            note: 'Donation submitted'
+          },
+          {
             status: DONATION_STATUSES.PROCESSED,
             timestamp: new Date(),
-            note: 'All shoes processed into inventory'
-          });
-        }
-        
-        // Save the updated donation
-        savedDonation = await existingDonation.save();
-        console.log('[POST] Updated existing donation, ID:', savedDonation._id);
-        console.log(`[POST] Processed shoes: ${savedDonation.processedShoes}/${savedDonation.numberOfShoes}`);
-      } else {
-        // Create a new donation for offline donations
-        const donationRecord = {
-          donationId,
-          donationType: 'shoes',
-          userId,
-          donorInfo,
-          // Store the full shoe data as JSON in the description field
-          donationDescription: shoesJson,
-          numberOfShoes: totalShoesInSubmission,
-          processedShoes: totalShoesInSubmission, // For offline donations, all shoes are processed immediately
-          status: DONATION_STATUSES.PROCESSED, // Offline donations are automatically processed
-          isOffline: true, // Always true for manually created donations
-          notes: data.notes,
-          createdBy: data.createdBy || session.user.email,
-          donationDate: new Date(),
-          statusHistory: [
-            {
-              status: DONATION_STATUSES.SUBMITTED,
-              timestamp: new Date(),
-              note: 'Donation submitted'
-            },
-            {
-              status: DONATION_STATUSES.PROCESSED,
-              timestamp: new Date(),
-              note: 'Donation processed into inventory'
-            }
-          ]
-        };
-        
-        console.log('[POST] Inserting donation into database using Mongoose model');
-        // Use Mongoose model instead of direct db collection access
-        const donation = new Donation(donationRecord);
-        savedDonation = await donation.save();
-        console.log('[POST] Donation inserted, ID:', savedDonation._id);
-      }
-      
-      // Find the last shoe ID to generate the next sequence number
-      let lastShoeIdNumber = 100;
-      try {
-        const Shoe = (await import('@/models/shoe')).default;
-        const lastShoe = await Shoe.findOne({}).sort({ createdAt: -1 });
-        if (lastShoe && lastShoe.shoeId) {
-          // Try to extract the numeric part
-          const match = lastShoe.shoeId.match(/(\d+)/);
-          if (match && match[1]) {
-            lastShoeIdNumber = parseInt(match[1], 10);
-            // Ensure it's at least 100
-            if (lastShoeIdNumber < 100) {
-              lastShoeIdNumber = 100;
-            }
+            note: 'Donation processed into inventory'
           }
-        }
-        console.log('[POST] Last shoe ID number:', lastShoeIdNumber);
-      } catch (err) {
-        console.error('[POST] Error finding last shoe ID:', err);
-        // Continue with default ID of 100
-      }
+        ]
+      };
       
-      // Add shoes to inventory
-      const addedShoes = [];
-      for (const item of data.shoes) {
-        try {
-          console.log('[POST] Processing shoe:', item.brand, item.size);
-          
-          // Increment shoe ID number for each new shoe
-          lastShoeIdNumber++;
-          
-          // Generate a proper SKU
-          const timestamp = Date.now().toString().slice(-6);
-          const brandCode = (item.brand || 'XX').substring(0, 2).toUpperCase();
-          const randomCode = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-          const sku = `${brandCode}${timestamp}${randomCode}`;
-          
-          // Format shoe ID as a simple natural number
-          const shoeId = lastShoeIdNumber.toString();
-          
-          // Create inventory record
-          const inventoryData = {
-            sku,
-            shoeId,
-            brand: item.brand,
-            modelName: item.modelName || item.brand,
-            gender: item.gender,
-            size: item.size,
-            color: item.color || 'Not specified',
-            sport: item.sport,
-            condition: item.condition,
-            description: item.notes,
-            status: item.status || 'available', // Use status from form or default to available
-            inventoryCount: item.quantity || 1,
-            images: item.images || [],
-            donationId: savedDonation._id,
-            donationReferenceNumber: donationId, // Store the reference number for easier lookup
-            // Always use the donor info from the form for consistency
-            donorName: donorInfo.name,
-            donorEmail: data.donorInfo.email || '',
-            createdBy: data.createdBy || session.user.email,
-            isOffline: data.isOffline !== false,
-            featured: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-          
-          console.log('[POST] Inserting shoe into inventory using Mongoose model');
-          // Use Mongoose model instead of direct db collection access
-          const Shoe = (await import('@/models/shoe')).default;
-          const shoe = new Shoe(inventoryData);
-          const savedShoe = await shoe.save();
-          console.log('[POST] Shoe inserted, ID:', savedShoe._id, 'ShoeID:', shoeId);
-          
-          addedShoes.push({
-            ...inventoryData,
-            _id: savedShoe._id
-          });
-        } catch (shoeError) {
-          console.error('[POST] Error adding shoe to inventory:', shoeError);
-          // Continue with next item if one fails
-        }
+      console.log('[POST] Inserting donation into database using Mongoose model');
+      // Use Mongoose model instead of direct db collection access
+      const donation = new Donation(donationRecord);
+      const savedDonation = await donation.save();
+      console.log('[POST] Donation inserted, ID:', savedDonation._id);
+      
+      // Generate sequential shoe IDs for each shoe
+      const shoes = [];
+      for (let i = 0; i < data.shoes.length; i++) {
+        const shoe = data.shoes[i];
+        
+        // Generate sequential ID using Counter
+        const shoeId = await Counter.getNextSequence('shoeId');
+        
+        // Create shoe object
+        const shoeData = {
+          shoeId,
+          sku: `${shoe.brand}-${shoe.modelName}-${shoe.size}-${Date.now()}-${i}`,
+          brand: shoe.brand,
+          modelName: shoe.modelName,
+          gender: shoe.gender,
+          size: shoe.size,
+          color: shoe.color,
+          sport: shoe.sport,
+          condition: shoe.condition,
+          description: shoe.notes,
+          features: shoe.features || [],
+          images: shoe.images || [],
+          status: DONATION_STATUSES.AVAILABLE,
+          donationId: savedDonation._id,
+          inventoryCount: shoe.quantity || 1,
+          inventoryNotes: shoe.inventoryNotes || '',
+          dateAdded: new Date(),
+          lastUpdated: new Date()
+        };
+
+        const savedShoe = await Shoe.create(shoeData);
+        shoes.push(savedShoe);
+        
+        console.log('[POST] Shoe inserted, ID:', savedShoe._id, 'ShoeID:', shoeId);
       }
       
       // Send confirmation email to donor if email provided and they are a registered user
@@ -727,7 +649,7 @@ export async function POST(request: NextRequest) {
           console.log('[POST] Sending confirmation email to donor:', data.donorInfo.email);
           await sendDonationConfirmationEmail({
             email: data.donorInfo.email,
-            name: donorInfo.name,
+            name: data.donorInfo.name,
             donationId,
             itemCount: data.shoes.length,
           });
@@ -742,7 +664,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ 
         success: true, 
         donation: savedDonation,
-        shoes: addedShoes
+        shoes: shoes
       }, { status: 201 });
     } catch (dbError) {
       console.error('[POST] Database error:', dbError);

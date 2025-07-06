@@ -157,7 +157,7 @@ export default function VolunteerPage() {
                 <h3 className="text-lg font-semibold">Personal Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name *</Label>
+                    <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                     <Input
                       id="firstName"
                       name="firstName"
@@ -168,7 +168,7 @@ export default function VolunteerPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
                     <Input
                       id="lastName"
                       name="lastName"
@@ -178,10 +178,8 @@ export default function VolunteerPage() {
                       className="h-12"
                     />
                   </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                     <Input
                       id="email"
                       name="email"
@@ -193,20 +191,19 @@ export default function VolunteerPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone *</Label>
+                    <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
                       name="phone"
                       type="tel"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      required
                       className="h-12"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location (City, State) *</Label>
+                  <Label htmlFor="location">Location (City, State) <span className="text-red-500">*</span></Label>
                   <Input
                     id="location"
                     name="location"
@@ -221,7 +218,7 @@ export default function VolunteerPage() {
 
               {/* Volunteer Interests */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Volunteer Interests *</h3>
+                <h3 className="text-lg font-semibold">Volunteer Interests <span className="text-red-500">*</span></h3>
                 <p className="text-sm text-gray-600">Select all activities you're interested in</p>
                 <div className="space-y-3">
                   {volunteerActivities.map((activity) => {
@@ -259,25 +256,21 @@ export default function VolunteerPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="experience">Relevant Experience (Optional)</Label>
+                  <Label htmlFor="experience">Relevant Experience</Label>
                   <Textarea
                     id="experience"
                     name="experience"
-                    value={formData.experience}
-                    onChange={handleInputChange}
                     placeholder="Tell us about any relevant volunteer or work experience..."
-                    className="min-h-[100px] resize-y"
+                    className="h-24"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="message">Why do you want to volunteer with us? (Optional)</Label>
+                  <Label htmlFor="message">Why do you want to volunteer with us?</Label>
                   <Textarea
                     id="message"
                     name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
                     placeholder="Share your motivation for joining our team..."
-                    className="min-h-[100px] resize-y"
+                    className="h-24"
                   />
                 </div>
               </div>

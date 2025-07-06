@@ -11,7 +11,6 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 // Status badge mapping
 const statusColors: Record<string, string> = {
   submitted: 'bg-yellow-100 text-yellow-800',
-  picked_up: 'bg-indigo-100 text-indigo-800',
   received: 'bg-cyan-100 text-cyan-800',
   processed: 'bg-green-100 text-green-800',
   cancelled: 'bg-gray-100 text-gray-800'
@@ -20,7 +19,6 @@ const statusColors: Record<string, string> = {
 // Status icon mapping
 const statusIcons: Record<string, JSX.Element> = {
   submitted: <TrendingUp className="h-4 w-4" />,
-  picked_up: <TrendingUp className="h-4 w-4" />,
   received: <Clock className="h-4 w-4" />,
   processed: <CheckCircle2 className="h-4 w-4" />,
   cancelled: <AlertTriangle className="h-4 w-4" />

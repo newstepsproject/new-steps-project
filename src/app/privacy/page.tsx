@@ -123,7 +123,7 @@ export default function PrivacyPage() {
                 <li>Request information about how we use your data</li>
               </ul>
               <p className="text-gray-700 mt-3">
-                To exercise these rights, please contact us at <a href="mailto:newsteps.project@gmail.com" className="text-brand hover:underline">newsteps.project@gmail.com</a>.
+                To exercise these rights, please contact us at <a href="mailto:newstepsfit@gmail.com" className="text-brand hover:underline">newstepsfit@gmail.com</a>.
               </p>
             </section>
 
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
               </p>
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="text-gray-700"><strong>New Steps Project</strong></p>
-                <p className="text-gray-700">Email: <a href="mailto:newsteps.project@gmail.com" className="text-brand hover:underline">newsteps.project@gmail.com</a></p>
+                <p className="text-gray-700">Email: <a href="mailto:newstepsfit@gmail.com" className="text-brand hover:underline">newstepsfit@gmail.com</a></p>
               </div>
             </section>
           </div>

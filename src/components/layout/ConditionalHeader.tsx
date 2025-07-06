@@ -1,10 +1,10 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useSafePathname } from '@/hooks/useSafeRouter';
 import Header from '@/components/layout/Header';
 
 export default function ConditionalHeader() {
-  const pathname = usePathname();
+  const pathname = useSafePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
 
   if (isAdminRoute) {

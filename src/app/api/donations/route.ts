@@ -45,34 +45,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create donor info from form data, falling back to user info if needed
-    const donorName = data.name || user.name;
-    const donorEmail = data.email || user.email;
-
     // Generate a unique donation ID using the proper format (DS-XXXX-YYYY)
-    const donationId = generateId('DON', donorName);
+    const donationId = generateId('DON', user.name);
 
     // Determine if donor is in Bay Area
     const isBayArea = data.isBayArea || false;
 
-    // Create a new donation record
+    // Create a new donation record using simplified model
     const newDonation = new Donation({
       donationId,
-      userId: user._id,
+      userId: user._id, // Online donation - use userId
+      // Do NOT set donorInfo for online donations - user data comes from User model
       donationType: 'shoes',
       donationDescription: data.donationDescription,
-      donorInfo: {
-        name: donorName,
-        email: donorEmail,
-        phone: data.phone || user.phone || ''
-      },
-      donorAddress: {
-        street: data.street,
-        city: data.city,
-        state: data.state,
-        zipCode: data.zipCode,
-        country: data.country
-      },
       status: DONATION_STATUSES.SUBMITTED,
       statusHistory: [
         {
@@ -84,6 +69,7 @@ export async function POST(request: NextRequest) {
       notes: isBayArea 
         ? 'Donor is in Bay Area - can arrange for pickup or drop-off'
         : 'Donor is outside Bay Area - will need shipping instructions',
+      isOffline: false, // This is an online donation
       isBayArea: isBayArea,
       numberOfShoes: data.numberOfShoes || 1,
       donationDate: new Date()
@@ -101,10 +87,10 @@ export async function POST(request: NextRequest) {
     // Send confirmation email
     try {
       await sendEmail(
-        donorEmail,
+        user.email,
         EmailTemplate.DONATION_CONFIRMATION,
         {
-          name: donorName,
+          name: user.name,
           donationId,
           donationDescription: data.donationDescription,
           isBayArea

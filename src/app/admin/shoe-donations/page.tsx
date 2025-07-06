@@ -228,7 +228,7 @@ export default function ShoeDonationsPage() {
         filters={filters}
         onFilterChange={handleFilterChange}
         filterOptions={{
-          statuses: ['submitted', 'picked_up', 'received', 'processed', 'cancelled'],
+          statuses: ['submitted', 'received', 'processed', 'cancelled'],
         }}
       />
 
@@ -275,7 +275,7 @@ export default function ShoeDonationsPage() {
               filters={filters}
               onFilterChange={handleFilterChange}
               onSort={handleSort}
-              statusOptions={['submitted', 'picked_up', 'received', 'processed', 'cancelled']}
+              statusOptions={['submitted', 'received', 'processed', 'cancelled']}
             />
           </div>
 

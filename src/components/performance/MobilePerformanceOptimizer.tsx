@@ -216,7 +216,7 @@ export function preloadCriticalResources() {
     // Preload critical images
     const criticalImages = [
       '/images/logo-optimized.jpg',
-      '/images/home_photo-400w.webp'
+      '/images/home_photo-optimized.jpg'
     ];
 
     criticalImages.forEach(src => {

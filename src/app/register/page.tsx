@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,8 +14,10 @@ import { signIn } from 'next-auth/react';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -24,6 +26,15 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [callbackUrl, setCallbackUrl] = useState('/account');
+
+  // Get callback URL from query parameters
+  useEffect(() => {
+    const callback = searchParams.get('callbackUrl');
+    if (callback) {
+      setCallbackUrl(decodeURIComponent(callback));
+    }
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,11 +43,11 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
     setSuccess('');
+    setIsLoading(true);
 
-    // Password validation
+    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
       setIsLoading(false);
@@ -48,7 +59,8 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
@@ -65,16 +77,17 @@ export default function RegisterPage() {
       
       // Clear form
       setFormData({
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         phone: '',
         password: '',
         confirmPassword: '',
       });
       
-      // Redirect to login after 2 seconds
+      // Redirect to login with callback URL after 2 seconds
       setTimeout(() => {
-        router.push('/login');
+        router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
       }, 2000);
     } catch (error) {
       if (error instanceof Error) {
@@ -91,7 +104,7 @@ export default function RegisterPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn('google', { callbackUrl: '/account' });
+      await signIn('google', { callbackUrl });
     } catch (error) {
       setError('An error occurred with Google sign in. Please try again.');
       console.error('Google login error:', error);
@@ -121,20 +134,33 @@ export default function RegisterPage() {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
               <Input
-                id="name"
-                name="name"
+                id="firstName"
+                name="firstName"
                 type="text"
-                placeholder="John Doe"
-                value={formData.name}
+                placeholder="John"
+                value={formData.firstName}
                 onChange={handleChange}
                 required
                 disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Doe"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
               <Input
                 id="email"
                 name="email"
@@ -147,7 +173,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Phone <span className="text-red-500">*</span></Label>
               <Input
                 id="phone"
                 name="phone"
@@ -160,7 +186,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
               <Input
                 id="password"
                 name="password"
@@ -174,7 +200,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">Confirm Password <span className="text-red-500">*</span></Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -229,7 +255,7 @@ export default function RegisterPage() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 hover:underline font-medium">
+            <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-blue-600 hover:underline font-medium">
               Sign In
             </Link>
           </p>

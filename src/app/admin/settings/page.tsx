@@ -32,7 +32,9 @@ const settingsSchema = z.object({
   projectOfficers: z.array(z.object({
     id: z.string().optional(),
     role: z.string().min(1, { message: 'Role is required' }),
-    name: z.string().min(1, { message: 'Name is required' }),
+    firstName: z.string().min(1, { message: 'First name is required' }),
+    lastName: z.string().min(1, { message: 'Last name is required' }),
+    name: z.string().optional(), // Keep for backward compatibility
     duty: z.string().min(1, { message: 'Brief duty is required' }),
     bio: z.string().min(1, { message: 'Bio is required' }),
     photo: z.string().optional(),
@@ -93,7 +95,9 @@ export default function SettingsPage() {
       {
         id: `officer-${Date.now()}`,
         role: '',
-        name: '',
+        firstName: '',
+        lastName: '',
+        name: '', // Keep for backward compatibility
         duty: '',
         bio: '',
         photo: '',
@@ -228,6 +232,8 @@ export default function SettingsPage() {
         {
           id: 'founder-director',
           role: 'Founder & Director',
+          firstName: 'Walter',
+          lastName: 'Zhang',
           name: 'Walter Zhang',
           duty: 'Providing visionary leadership, setting strategic direction, making key decisions, and ensuring the mission of connecting athletes with quality sports shoes remains at the heart of every initiative',
           bio: '9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.',
@@ -237,6 +243,8 @@ export default function SettingsPage() {
         {
           id: 'operation-manager',
           role: 'Operation Manager',
+          firstName: '',
+          lastName: '',
           name: '',
           duty: 'Overseeing daily operations, managing inventory systems, coordinating donation logistics, processing shoe requests, and ensuring efficient workflows from donation intake to delivery',
           bio: '',
@@ -246,6 +254,8 @@ export default function SettingsPage() {
         {
           id: 'volunteer-coordinator',
           role: 'Volunteer Coordinator',
+          firstName: '',
+          lastName: '',
           name: '',
           duty: 'Recruiting and training volunteers, organizing community events, building partnerships with schools and sports clubs, and coordinating volunteer activities to expand our reach',
           bio: '',
@@ -277,11 +287,11 @@ export default function SettingsPage() {
       paypalClientId: '',
       paypalSandboxMode: true,
       maxShoesPerRequest: 2,
-      projectEmail: 'newsteps.project@gmail.com',
+      projectEmail: 'newstepsfit@gmail.com',
       projectPhone: '(916) 582-7090',
-      contactEmail: 'newsteps.project@gmail.com',
-      supportEmail: 'newsteps.project@gmail.com',
-      donationsEmail: 'newsteps.project@gmail.com',
+      contactEmail: 'newstepsfit@gmail.com',
+      supportEmail: 'newstepsfit@gmail.com',
+      donationsEmail: 'newstepsfit@gmail.com',
     },
   });
 
@@ -710,15 +720,31 @@ export default function SettingsPage() {
                           </FormItem>
                         )}
                       />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name={`projectOfficers.${index}.firstName`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>First Name <span className="text-red-500">*</span></FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Enter first name" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       
                       <FormField
                         control={form.control}
-                        name={`projectOfficers.${index}.name`}
+                        name={`projectOfficers.${index}.lastName`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Name</FormLabel>
+                            <FormLabel>Last Name <span className="text-red-500">*</span></FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder="Enter person's name" />
+                              <Input {...field} placeholder="Enter last name" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

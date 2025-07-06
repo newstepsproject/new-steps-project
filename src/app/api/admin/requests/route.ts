@@ -6,7 +6,7 @@ import ShoeRequest, { ShoeRequestStatus } from '@/models/shoeRequest';
 import Shoe from '@/models/shoe';
 import { SessionUser } from '@/types/user';
 import User from '@/models/user';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, sendCustomEmail } from '@/lib/email';
 import { generateRequestId } from '@/lib/utils';
 import { ensureDbConnected } from '@/lib/db-utils';
 
@@ -60,14 +60,27 @@ export async function GET(request: NextRequest) {
 
     // Add search functionality
     if (search) {
-      query.$or = [
-        { requestId: { $regex: search, $options: 'i' } },
-        { 'requestorInfo.firstName': { $regex: search, $options: 'i' } },
-        { 'requestorInfo.lastName': { $regex: search, $options: 'i' } },
-        { 'requestorInfo.email': { $regex: search, $options: 'i' } },
-        { 'items.shoeId': { $regex: search, $options: 'i' } },
-        { notes: { $regex: search, $options: 'i' } }
-      ];
+      // For numeric search, try to match exact shoe ID
+      const numericSearch = parseInt(search, 10);
+      if (!isNaN(numericSearch)) {
+        query.$or = [
+          { requestId: { $regex: search, $options: 'i' } },
+          { 'requestorInfo.firstName': { $regex: search, $options: 'i' } },
+          { 'requestorInfo.lastName': { $regex: search, $options: 'i' } },
+          { 'requestorInfo.email': { $regex: search, $options: 'i' } },
+          { 'items.shoeId': numericSearch },
+          { 'items.brand': { $regex: search, $options: 'i' } }
+        ];
+      } else {
+        // For text search, search in string fields only
+        query.$or = [
+          { requestId: { $regex: search, $options: 'i' } },
+          { 'requestorInfo.firstName': { $regex: search, $options: 'i' } },
+          { 'requestorInfo.lastName': { $regex: search, $options: 'i' } },
+          { 'requestorInfo.email': { $regex: search, $options: 'i' } },
+          { 'items.brand': { $regex: search, $options: 'i' } }
+        ];
+      }
     }
 
     // Calculate pagination
@@ -132,19 +145,11 @@ export async function PATCH(request: NextRequest) {
 
     // Get request data
     const data = await request.json();
-    const { requestId, status, note } = data;
+    const { requestId, status, note, requestorInfo, shippingInfo, notes } = data;
 
-    if (!requestId || !status) {
+    if (!requestId) {
       return NextResponse.json(
-        { error: 'Request ID and status are required' },
-        { status: 400 }
-      );
-    }
-
-    // Validate status
-    if (!Object.values(REQUEST_STATUSES).includes(status)) {
-      return NextResponse.json(
-        { error: 'Invalid status value' },
+        { error: 'Request ID is required' },
         { status: 400 }
       );
     }
@@ -159,6 +164,53 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json(
         { error: 'Shoe request not found' },
         { status: 404 }
+      );
+    }
+
+    // Check if this is a detail update (requestorInfo, shippingInfo, notes)
+    if (requestorInfo || shippingInfo || notes !== undefined) {
+      // Update request details
+      const updateData: any = {};
+      
+      if (requestorInfo) {
+        updateData.requestorInfo = requestorInfo;
+      }
+      
+      if (shippingInfo) {
+        updateData.shippingInfo = shippingInfo;
+      }
+      
+      if (notes !== undefined) {
+        updateData.notes = notes;
+      }
+      
+      // Update the request
+      const updatedRequest = await ShoeRequest.findOneAndUpdate(
+        { requestId },
+        { $set: updateData },
+        { new: true }
+      );
+      
+      return NextResponse.json({
+        success: true,
+        message: 'Request details updated successfully',
+        request: updatedRequest
+      });
+    }
+
+    // If not a detail update, proceed with status update logic
+    if (!status) {
+      return NextResponse.json(
+        { error: 'Status is required for status updates' },
+        { status: 400 }
+      );
+    }
+
+    // Validate status
+    if (!Object.values(REQUEST_STATUSES).includes(status)) {
+      return NextResponse.json(
+        { error: 'Invalid status value' },
+        { status: 400 }
       );
     }
 
@@ -183,32 +235,27 @@ export async function PATCH(request: NextRequest) {
           await Shoe.findByIdAndUpdate(
             item.inventoryId,
             { 
-              $inc: { inventoryCount: 1 },
               $set: { status: 'available' }
             }
           );
-          console.log('[INVENTORY] Restored shoe:', item.shoeId || item.inventoryId);
+          console.log('[INVENTORY] Restored shoe:', item.shoeId || item.inventoryId, 'to available');
         }
       }
     }
 
-    // If changing from REJECTED (shouldn't happen but just in case), decrease inventory again
+    // If changing from REJECTED (shouldn't happen but just in case), set back to requested
     if (oldStatus === ShoeRequestStatus.REJECTED && newStatus !== ShoeRequestStatus.REJECTED) {
       console.log('[INVENTORY] Re-allocating inventory for un-rejected request:', requestId);
       
       for (const item of shoeRequest.items) {
         if (item.inventoryId) {
-          const shoe = await Shoe.findById(item.inventoryId);
-          if (shoe && shoe.inventoryCount > 0) {
-            await Shoe.findByIdAndUpdate(
-              item.inventoryId,
-              { 
-                $inc: { inventoryCount: -1 },
-                $set: { status: shoe.inventoryCount === 1 ? 'requested' : 'available' }
-              }
-            );
-            console.log('[INVENTORY] Re-allocated shoe:', item.shoeId || item.inventoryId);
-          }
+          await Shoe.findByIdAndUpdate(
+            item.inventoryId,
+            { 
+              $set: { status: 'requested' }
+            }
+          );
+          console.log('[INVENTORY] Re-allocated shoe:', item.shoeId || item.inventoryId, 'to requested');
         }
       }
     }
@@ -277,12 +324,7 @@ export async function PATCH(request: NextRequest) {
             .replace(/Requested Items:<br>([^<]*)<br>/g, `<br><strong>Requested Items:</strong><br><ul>${shoeDetailsHtml}</ul><br>`)
             .replace(/Shipped Items:<br>([^<]*)<br>/g, `<br><strong>Shipped Items:</strong><br><ul>${shoeDetailsHtml}</ul><br>`);
 
-          await sendEmail({
-            to: requestorEmail,
-            subject,
-            text: content,
-            html: htmlContent
-          });
+          await sendCustomEmail(requestorEmail, subject, htmlContent);
           console.log(`[EMAIL] Sent ${newStatus} notification to ${requestorEmail}`);
         }
       } catch (emailError) {
@@ -341,6 +383,52 @@ export async function POST(request: NextRequest) {
     // Check if requester is a registered user
     const existingUser = await User.findOne({ email: requestorInfo.email });
     
+    // Process items and update inventory
+    const processedItems = [];
+    for (const item of items) {
+      if (item.shoeId) {
+        // Find the shoe by shoeId
+        const shoe = await Shoe.findOne({ shoeId: item.shoeId });
+        if (!shoe) {
+          return NextResponse.json(
+            { error: `Shoe with ID ${item.shoeId} not found` },
+            { status: 404 }
+          );
+        }
+        
+        // Check if shoe is available
+        if (shoe.status !== 'available') {
+          return NextResponse.json(
+            { error: `Shoe with ID ${item.shoeId} is not available (current status: ${shoe.status})` },
+            { status: 400 }
+          );
+        }
+        
+        // Update shoe status to "requested"
+        await Shoe.findByIdAndUpdate(
+          shoe._id,
+          { 
+            $set: { status: 'requested' }
+          }
+        );
+        
+        console.log('[INVENTORY] Updated shoe', item.shoeId, 'status to "requested"');
+        
+        // Add inventoryId to the item
+        processedItems.push({
+          ...item,
+          inventoryId: shoe._id,
+          brand: shoe.brand,
+          name: shoe.modelName,
+          sport: shoe.sport,
+          condition: shoe.condition
+        });
+      } else {
+        // If no shoeId, keep the item as is
+        processedItems.push(item);
+      }
+    }
+    
     // Create initial status history
     const statusHistory = [{
       status: status || ShoeRequestStatus.SUBMITTED,
@@ -353,7 +441,7 @@ export async function POST(request: NextRequest) {
       requestId,
       requestorInfo,
       shippingInfo,
-      items,
+      items: processedItems,
       notes,
       statusHistory,
       currentStatus: status || ShoeRequestStatus.SUBMITTED,
@@ -367,12 +455,10 @@ export async function POST(request: NextRequest) {
     // Send confirmation email if user exists and has valid email
     if (requestorInfo.email && existingUser) {
       try {
-        await sendEmail({
-          to: requestorInfo.email,
-          subject: 'Shoe request confirmation',
-          text: `Hi ${requestorInfo.firstName},\n\nYour shoe request (${requestId}) has been recorded.\n\nThank you for using New Steps Project!`,
-          html: `Hi ${requestorInfo.firstName},<br><br>Your shoe request (${requestId}) has been recorded.<br><br>Thank you for using New Steps Project!`
-        });
+        const subject = 'Shoe request confirmation';
+        const htmlContent = `Hi ${requestorInfo.firstName},<br><br>Your shoe request (${requestId}) has been recorded.<br><br>Thank you for using New Steps Project!`;
+        
+        await sendCustomEmail(requestorInfo.email, subject, htmlContent);
         console.log('[EMAIL] Sent manual request confirmation to:', requestorInfo.email);
       } catch (emailError) {
         console.error('[EMAIL] Failed to send confirmation:', emailError);

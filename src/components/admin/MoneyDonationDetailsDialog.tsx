@@ -83,7 +83,12 @@ export default function MoneyDonationDetailsDialog({
   const [notes, setNotes] = useState<string>('');
   const [checkNumber, setCheckNumber] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [donorInfo, setDonorInfo] = useState({ name: '', email: '', phone: '' });
+  const [donorInfo, setDonorInfo] = useState({ 
+    firstName: '', 
+    lastName: '', 
+    email: '', 
+    phone: '' 
+  });
   const [amount, setAmount] = useState<number>(0);
 
   // Update local state when donation changes
@@ -92,8 +97,14 @@ export default function MoneyDonationDetailsDialog({
       setStatus(donation.status);
       setNotes(donation.notes || '');
       setCheckNumber(donation.checkNumber || '');
+      
+      // Split existing name into first and last if it exists
+      const existingName = donation.name || '';
+      const nameParts = existingName.split(' ');
+      
       setDonorInfo({
-        name: donation.name || '',
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
         email: donation.email || '',
         phone: donation.phone || '',
       });
@@ -128,7 +139,11 @@ export default function MoneyDonationDetailsDialog({
           status,
           notes,
           checkNumber,
-          donorInfo,
+          donorInfo: {
+            name: `${donorInfo.firstName} ${donorInfo.lastName}`.trim(),
+            email: donorInfo.email,
+            phone: donorInfo.phone
+          },
           amount
         }),
       });
@@ -227,12 +242,22 @@ export default function MoneyDonationDetailsDialog({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="donor-name" className="text-sm font-medium">Name</Label>
+                  <Label htmlFor="donor-firstName" className="text-sm font-medium">First Name</Label>
                   <Input
-                    id="donor-name"
-                    value={donorInfo.name}
-                    onChange={(e) => setDonorInfo({ ...donorInfo, name: e.target.value })}
-                    placeholder="Donor name"
+                    id="donor-firstName"
+                    value={donorInfo.firstName}
+                    onChange={(e) => setDonorInfo({ ...donorInfo, firstName: e.target.value })}
+                    placeholder="Donor first name"
+                    className="h-10"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="donor-lastName" className="text-sm font-medium">Last Name</Label>
+                  <Input
+                    id="donor-lastName"
+                    value={donorInfo.lastName}
+                    onChange={(e) => setDonorInfo({ ...donorInfo, lastName: e.target.value })}
+                    placeholder="Donor last name"
                     className="h-10"
                   />
                 </div>
@@ -243,19 +268,19 @@ export default function MoneyDonationDetailsDialog({
                     type="email"
                     value={donorInfo.email}
                     onChange={(e) => setDonorInfo({ ...donorInfo, email: e.target.value })}
-                    placeholder="donor@example.com"
-                    className="h-10"
+                    placeholder="Donor email"
+                    className="h-9 text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="donor-phone" className="text-sm font-medium">Phone</Label>
+                  <Label htmlFor="donor-phone" className="text-sm font-medium">Phone Number</Label>
                   <Input
                     id="donor-phone"
                     type="tel"
                     value={donorInfo.phone}
                     onChange={(e) => setDonorInfo({ ...donorInfo, phone: e.target.value })}
-                    placeholder="(123) 456-7890"
-                    className="h-10"
+                    placeholder="Donor phone"
+                    className="h-9 text-sm"
                   />
                 </div>
                 <div className="space-y-2">
@@ -337,26 +362,25 @@ export default function MoneyDonationDetailsDialog({
                   </p>
                 </div>
                 
-                <div>
-                  <Label htmlFor="checkNumber" className="text-sm font-medium">Check Number (Optional)</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="checkNumber" className="text-sm font-medium">Check Number</Label>
                   <Input
                     id="checkNumber"
                     value={checkNumber}
                     onChange={(e) => setCheckNumber(e.target.value)}
-                    placeholder="e.g., 1234"
-                    className="w-full mt-2 h-10"
+                    placeholder="Enter check number if applicable"
+                    className="h-12"
                   />
                 </div>
                 
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="notes" className="text-sm font-medium">Notes</Label>
                   <Textarea
                     id="notes"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Add any notes about this donation"
-                    rows={3}
-                    className="w-full mt-2 resize-none"
+                    placeholder="Add notes about this donation..."
+                    className="min-h-[100px] resize-none text-sm"
                   />
                 </div>
               </div>

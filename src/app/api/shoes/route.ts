@@ -41,12 +41,25 @@ export async function GET(request: NextRequest) {
     
     // Add search functionality
     if (search) {
-      query.$or = [
-        { modelName: { $regex: search, $options: 'i' } },
-        { brand: { $regex: search, $options: 'i' } },
-        { sport: { $regex: search, $options: 'i' } },
-        { shoeId: { $regex: search, $options: 'i' } }
-      ];
+      // For numeric search, try to match exact shoe ID
+      const numericSearch = parseInt(search, 10);
+      if (!isNaN(numericSearch)) {
+        query.$or = [
+          { shoeId: numericSearch },
+          { brand: { $regex: search, $options: 'i' } },
+          { modelName: { $regex: search, $options: 'i' } },
+          { sport: { $regex: search, $options: 'i' } },
+          { color: { $regex: search, $options: 'i' } }
+        ];
+      } else {
+        // For text search, search in string fields only
+        query.$or = [
+          { brand: { $regex: search, $options: 'i' } },
+          { modelName: { $regex: search, $options: 'i' } },
+          { sport: { $regex: search, $options: 'i' } },
+          { color: { $regex: search, $options: 'i' } }
+        ];
+      }
     }
     
     // Fetch shoes with sorting

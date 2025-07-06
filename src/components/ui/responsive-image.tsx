@@ -64,7 +64,7 @@ export function ResponsiveImage({
   const generateSrcSet = (originalSrc: string) => {
     const staticImages = [
       '/images/aboutus.png',
-      '/images/gpt-hero-image.png', 
+      '/images/gpt-hero-image.png',
       '/images/home_photo.png',
       '/images/logo.png',
       '/images/new_logo_no_bg.png'
@@ -120,7 +120,7 @@ export function ResponsiveImage({
   // For static images with responsive versions, use picture element for better control
   if (srcSet && webpSrcSet) {
     return (
-      <picture className={className} style={style}>
+      <picture className={fill ? 'absolute inset-0' : undefined}>
         {/* WebP sources for modern browsers */}
         <source
           srcSet={webpSrcSet}
@@ -139,12 +139,14 @@ export function ResponsiveImage({
           alt={alt}
           width={width}
           height={height}
+          className={className}
           priority={priority}
           quality={quality}
+          sizes={sizes}
           fill={fill}
           placeholder={placeholder}
           blurDataURL={blurDataURL}
-          style={fill ? undefined : style}
+          style={style}
           {...props}
         />
       </picture>

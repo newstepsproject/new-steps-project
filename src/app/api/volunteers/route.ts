@@ -10,7 +10,8 @@ import { sendVolunteerConfirmation } from '@/lib/email';
 
 // Define the volunteer form data type
 type VolunteerFormData = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   city: string;
@@ -36,8 +37,11 @@ export async function POST(request: NextRequest) {
     // Parse the request body
     const data: VolunteerFormData = await request.json();
     
+    // Combine firstName and lastName into full name
+    const fullName = `${data.firstName} ${data.lastName}`.trim();
+    
     // Validate required fields
-    if (!data.name || !data.email || !data.phone || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
+    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields' },
         { status: 400 }
@@ -63,7 +67,9 @@ export async function POST(request: NextRequest) {
     const newVolunteer = new Volunteer({
       volunteerId,
       userId: new mongoose.Types.ObjectId(userId),
-      name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      name: fullName,
       email: data.email,
       phone: data.phone,
       city: data.city,
@@ -126,8 +132,11 @@ export async function PUT(request: NextRequest) {
     // Parse the request body
     const data: VolunteerFormData = await request.json();
     
+    // Combine firstName and lastName into full name
+    const fullName = `${data.firstName} ${data.lastName}`.trim();
+    
     // Validate required fields
-    if (!data.name || !data.email || !data.phone || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
+    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields' },
         { status: 400 }
@@ -140,7 +149,9 @@ export async function PUT(request: NextRequest) {
     // Log the data (for testing without connecting to DB)
     console.log('Test volunteer form submitted:', {
       volunteerId,
-      name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      name: fullName,
       email: data.email,
       interests: data.interests,
     });

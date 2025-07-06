@@ -282,7 +282,7 @@ export function ShoeFormFields({
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label>Brand *</Label>
+              <Label>Brand <span className="text-red-500">*</span></Label>
               <Select
                 value={item.brand}
                 onValueChange={(value) => handleItemChange(index, 'brand', value)}
@@ -310,7 +310,7 @@ export function ShoeFormFields({
             </div>
             
             <div>
-              <Label>Gender *</Label>
+              <Label>Gender <span className="text-red-500">*</span></Label>
               <Select
                 value={item.gender}
                 onValueChange={(value) => handleItemChange(index, 'gender', value)}
@@ -330,7 +330,7 @@ export function ShoeFormFields({
             </div>
             
             <div>
-              <Label>Size *</Label>
+              <Label>Size <span className="text-red-500">*</span></Label>
               <Input
                 value={item.size}
                 onChange={(e) => handleItemChange(index, 'size', e.target.value)}
@@ -350,7 +350,7 @@ export function ShoeFormFields({
             </div>
             
             <div>
-              <Label>Sport *</Label>
+              <Label>Sport <span className="text-red-500">*</span></Label>
               <Select
                 value={item.sport}
                 onValueChange={(value) => handleItemChange(index, 'sport', value)}
@@ -368,7 +368,7 @@ export function ShoeFormFields({
             </div>
             
             <div>
-              <Label>Condition *</Label>
+              <Label>Condition <span className="text-red-500">*</span></Label>
               <Select
                 value={item.condition}
                 onValueChange={(value) => handleItemChange(index, 'condition', value)}
@@ -399,7 +399,7 @@ export function ShoeFormFields({
             </div>
             
             <div className="md:col-span-3">
-              <Label>Notes (Optional)</Label>
+              <Label>Notes</Label>
               <Textarea
                 value={item.notes || ''}
                 onChange={(e) => handleItemChange(index, 'notes', e.target.value)}

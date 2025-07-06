@@ -112,15 +112,13 @@ export default function OrdersPage() {
     const currentStatus = order.status;
     switch (currentStatus) {
       case 'pending':
-        return 'confirmed';
-      case 'confirmed':
-        return 'shipped';
+        return 'shipped';  // Pending orders can be shipped
+      case 'rejected':
+        return 'rejected'; // Rejected orders stay rejected
       case 'shipped':
-        return 'delivered';
-      case 'delivered':
-        return 'requested_return';
-      case 'requested_return':
-        return 'return_received';
+        return 'cancelled'; // Shipped orders can be cancelled (returns, issues)
+      case 'cancelled':
+        return 'cancelled'; // Cancelled orders stay cancelled
       default:
         return currentStatus;
     }

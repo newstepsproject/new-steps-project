@@ -42,7 +42,7 @@ export interface StatusHistoryEntry {
 
 export interface ShoeItem {
   // Link to actual inventory shoe
-  shoeId?: string; // Sequential shoe ID (001, 002, etc.)
+  shoeId?: number; // Sequential shoe ID (101, 102, etc.)
   inventoryId?: mongoose.Types.ObjectId; // MongoDB ObjectId of actual shoe
   // Original request fields for fallback
   brand?: string;
@@ -61,7 +61,7 @@ export interface ShoeRequestDocument extends Document {
   items: ShoeItem[];
   statusHistory: StatusHistoryEntry[];
   urgency: string;
-  shippingInfo: ShippingInfo;
+  shippingInfo?: ShippingInfo;
   notes?: string;
   adminNotes?: string;
   isOffline?: boolean;
@@ -86,7 +86,7 @@ const RequestorInfoSchema = new Schema<RequestorInfo>({
 });
 
 const ShoeItemSchema = new Schema<ShoeItem>({
-  shoeId: { type: String }, // Sequential ID for display (001, 002, etc.)
+  shoeId: { type: Number }, // Sequential ID for display (101, 102, etc.)
   inventoryId: { type: Schema.Types.ObjectId, ref: 'Shoe' }, // Reference to actual shoe
   brand: { type: String },
   name: { type: String },
@@ -98,11 +98,11 @@ const ShoeItemSchema = new Schema<ShoeItem>({
 });
 
 const ShippingInfoSchema = new Schema<ShippingInfo>({
-  street: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  zipCode: { type: String, required: true },
-  country: { type: String, required: true }
+  street: { type: String, required: false }, // Made optional for admin offline requests
+  city: { type: String, required: false }, // Made optional for admin offline requests
+  state: { type: String, required: false }, // Made optional for admin offline requests
+  zipCode: { type: String, required: false }, // Made optional for admin offline requests
+  country: { type: String, required: false } // Made optional for admin offline requests
 });
 
 const StatusHistoryEntrySchema = new Schema<StatusHistoryEntry>({
@@ -127,7 +127,7 @@ const ShoeRequestSchema = new Schema<ShoeRequestDocument>(
       enum: Object.values(UrgencyLevel), 
       default: UrgencyLevel.MEDIUM 
     },
-    shippingInfo: { type: ShippingInfoSchema, required: true },
+    shippingInfo: { type: ShippingInfoSchema, required: false },
     notes: { type: String },
     adminNotes: { type: String },
     isOffline: { 
@@ -191,6 +191,22 @@ ShoeRequestSchema.methods.addStatusChange = function(newStatus: ShoeRequestStatu
 ShoeRequestSchema.methods.canChangeStatus = function() {
   return this.currentStatus !== ShoeRequestStatus.REJECTED;
 };
+
+// Custom validation for shipping info based on request type
+ShoeRequestSchema.pre('validate', function(next) {
+  // For online requests (not offline), ensure shipping info is complete if provided
+  if (!this.isOffline && this.shippingInfo) {
+    const shipping = this.shippingInfo;
+    if (!shipping.street || !shipping.city || !shipping.state || !shipping.zipCode) {
+      return next(new Error('Complete shipping address is required for online requests'));
+    }
+  }
+  
+  // For offline requests, shipping info is completely optional
+  // Admin can create requests without any shipping information
+  
+  next();
+});
 
 // Create and export the model, checking if it already exists to avoid Next.js hot reload issues
 const ShoeRequest = (mongoose.models.ShoeRequest || mongoose.model<ShoeRequestDocument>('ShoeRequest', ShoeRequestSchema)) as Model<ShoeRequestDocument>;

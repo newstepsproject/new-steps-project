@@ -5,6 +5,7 @@ import connectToDatabase from '@/lib/db';
 import User from '@/models/user';
 import { SessionUser } from '@/types/user';
 import { z } from 'zod';
+import { ValidationPatterns } from '@/lib/validation';
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
@@ -79,7 +80,7 @@ export async function GET(request: NextRequest) {
 const updateProfileSchema = z.object({
   firstName: z.string().min(1, 'First name is required').optional(),
   lastName: z.string().min(1, 'Last name is required').optional(),
-  phone: z.string().min(10, 'Phone number is too short').optional(),
+  phone: ValidationPatterns.phoneOptional,
   address: z.object({
     street: z.string().min(1, 'Street is required'),
     city: z.string().min(1, 'City is required'),

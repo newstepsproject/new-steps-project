@@ -39,7 +39,7 @@ export default async function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2 animate-fade-in">
-              <div className="relative h-[350px] md:h-[450px] w-full rounded-xl overflow-hidden shadow-card">
+              <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden shadow-card" style={{ position: 'relative' }}>
                 <ResponsiveImage 
                   src="/images/aboutus.png" 
                   alt="About New Steps Project - Our mission to connect athletes with quality sports shoes" 
@@ -54,6 +54,15 @@ export default async function AboutPage() {
               <h2 className="text-3xl font-bold mb-6 font-display">Our Mission</h2>
               
               <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="mt-1 bg-brand-100 rounded-full p-1 mr-3 text-brand">
+                    <Check className="h-4 w-4" />
+                  </div>
+                  <p className="text-gray-700">
+                    <strong className="text-gray-900">Returning Dreams to Action:</strong> We want your beloved shoes to return to the fields and tracks where they can continue to fuel new dreams and aspirations, giving them purpose beyond their original journey.
+                  </p>
+                </div>
+                
                 <div className="flex items-start">
                   <div className="mt-1 bg-brand-100 rounded-full p-1 mr-3 text-brand">
                     <Check className="h-4 w-4" />

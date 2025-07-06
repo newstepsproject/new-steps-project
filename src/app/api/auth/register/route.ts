@@ -5,21 +5,17 @@ import UserModel, { UserDocument } from '@/models/user';
 import { z } from 'zod';
 import { sendVerificationEmail } from '@/lib/verification';
 import { Types } from 'mongoose';
+import { ValidationPatterns } from '@/lib/validation';
 
 // Validation schema for user registration
 const registerSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  email: z.string().email('Invalid email format'),
-  phone: z.string().min(10, 'Phone number must be at least 10 characters'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  address: z.object({
-    street: z.string(),
-    city: z.string(),
-    state: z.string(),
-    zipCode: z.string(),
-    country: z.string()
-  }).optional(),
+  firstName: ValidationPatterns.firstName,
+  lastName: ValidationPatterns.lastName,
+  email: ValidationPatterns.email,
+  phone: ValidationPatterns.phone,
+  password: ValidationPatterns.password,
+  name: z.string().optional(), // Optional for backward compatibility
+  address: ValidationPatterns.addressOptional,
   schoolName: z.string().optional(),
   grade: z.string().optional(),
   sports: z.array(z.string()).optional(),
@@ -39,7 +35,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const { firstName, lastName, email, phone, password, address, schoolName, grade, sports, sportClub } = validation.data;
+    const { firstName, lastName, email, phone, password, name, address, schoolName, grade, sports, sportClub } = validation.data;
+    
+    // Generate full name from firstName and lastName
+    const fullName = name || `${firstName} ${lastName}`.trim();
     
     // Connect to the database
     await connectToDatabase();
@@ -53,18 +52,14 @@ export async function POST(request: Request) {
       );
     }
     
-    // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    
-    // Build the user data
+    // Build the user data (password will be hashed by pre-save hook)
     const userData: any = {
       firstName,
       lastName,
-      name: `${firstName} ${lastName}`,
+      name: fullName,
       email: email.toLowerCase(),
       phone,
-      password: hashedPassword,
+      password: password, // Raw password - will be hashed by pre-save hook
       emailVerified: false,
       // Optional fields
       ...(address && { address }),

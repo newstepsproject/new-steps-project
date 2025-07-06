@@ -14,12 +14,15 @@ export async function POST(request: NextRequest) {
     // Parse the request data
     const data: MoneyDonationFormData = await request.json();
     
+    // Combine firstName and lastName into full name
+    const fullName = `${data.firstName} ${data.lastName}`.trim();
+    
     // Create a reference number in the format DM-XXXX-YYYY
-    let donationId = generateMoneyDonationReferenceNumber(data.name);
+    let donationId = generateMoneyDonationReferenceNumber(fullName);
     
     // Log the donation for testing
     console.log(`Test Money Donation [${donationId}]:`, {
-      name: data.name,
+      name: fullName,
       email: data.email,
       amount: data.amount,
     });
@@ -28,7 +31,7 @@ export async function POST(request: NextRequest) {
     const existingDonation = await MoneyDonation.findOne({ donationId });
     if (existingDonation) {
       // If it exists, generate a new one with a different random number
-      const newDonationId = generateMoneyDonationReferenceNumber(data.name);
+      const newDonationId = generateMoneyDonationReferenceNumber(fullName);
       console.log(`Reference number collision detected. New reference: ${newDonationId}`);
       donationId = newDonationId;
     }
@@ -36,12 +39,14 @@ export async function POST(request: NextRequest) {
     // Create a new money donation record (without requiring user authentication)
     const moneyDonation = await MoneyDonation.create({
       donationId,
-      name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      name: fullName, // For backward compatibility
       email: data.email,
       phone: data.phone,
       amount: parseFloat(data.amount),
       notes: data.notes || '',
-      status: 'submit', // Initial status is now "submit" (was "pending")
+      status: 'submitted', // Changed from 'submit' to 'submitted' to match enum
       createdAt: new Date(),
     });
     
@@ -49,7 +54,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendMoneyDonationConfirmation({
         to: data.email,
-        name: data.name,
+        name: fullName,
         donationId,
         amount: data.amount,
       });

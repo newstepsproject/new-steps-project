@@ -1,12 +1,15 @@
 'use client';
 
-import { Home, Package, Users, Plus, Menu } from 'lucide-react';
+import { Home, Package, Users, Plus, Menu, User, Settings, ExternalLink, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useSafePathname } from '@/hooks/useSafeRouter';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { useSession, signOut } from 'next-auth/react';
+
+// Using centralized safe pathname hook from @/hooks/useSafeRouter
 
 const mobileNavItems = [
   { name: 'Dashboard', href: '/admin', icon: Home },
@@ -17,16 +20,30 @@ const mobileNavItems = [
 
 const allNavItems = [
   { name: 'Dashboard', href: '/admin', icon: Home },
+  { name: 'Shoe Requests', href: '/admin/requests', icon: Users },
   { name: 'Shoe Donations', href: '/admin/shoe-donations', icon: Package },
   { name: 'Money Donations', href: '/admin/money-donations', icon: Package },
   { name: 'Shoe Inventory', href: '/admin/shoes', icon: Package },
-  { name: 'Shoe Requests', href: '/admin/requests', icon: Users },
   { name: 'Users', href: '/admin/users', icon: Users },
 ];
 
 export default function MobileNav() {
-  const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const { data: session } = useSession();
+  const [isClient, setIsClient] = useState(false);
+  
+  // Use safe pathname hook
+  const pathname = useSafePathname();
+
+  // Set client flag after hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Don't render until client-side hydration is complete
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <>
@@ -76,8 +93,61 @@ export default function MobileNav() {
                 <span className="text-xs mt-1 text-gray-500">More</span>
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-[50vh]">
+            <SheetContent side="bottom" className="h-[60vh]">
               <div className="py-4">
+                {/* Admin Profile Section */}
+                {session?.user && (
+                  <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center">
+                        <User className="h-5 w-5 text-brand" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{session.user.name || 'Admin'}</p>
+                        <p className="text-xs text-gray-500">{session.user.email}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href="/account"
+                        target="_blank"
+                        onClick={() => setSheetOpen(false)}
+                        className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Account
+                      </Link>
+                      <Link
+                        href="/admin/settings"
+                        onClick={() => setSheetOpen(false)}
+                        className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Settings
+                      </Link>
+                      <Link
+                        href="/"
+                        target="_blank"
+                        onClick={() => setSheetOpen(false)}
+                        className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Website
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setSheetOpen(false);
+                          signOut({ callbackUrl: '/' });
+                        }}
+                        className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign out
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
                 <h3 className="font-semibold mb-4">All Admin Pages</h3>
                 <nav className="space-y-2">
                   {allNavItems.map((item) => (

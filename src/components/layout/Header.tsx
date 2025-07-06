@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { User, Menu, X, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
+import { useSafePathname } from "@/hooks/useSafeRouter";
 import { SITE_CONFIG } from "@/constants/config";
 import Logo from "@/components/ui/logo";
 import { CartIcon } from "@/components/cart/CartIcon";
@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 const Header = () => {
   const { data: session } = useSession();
-  const pathname = usePathname();
+  const pathname = useSafePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { itemCount } = useCart();
 
@@ -198,12 +198,10 @@ const Header = () => {
               
               <Button
                 asChild
-                className="btn-energy mt-2 w-full justify-center"
+                className="btn-energy w-full mt-3"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <Link href="/donate/shoes">
-                  Donate Shoes
-                </Link>
+                <Link href="/donate/shoes">Donate Shoes</Link>
               </Button>
             </nav>
           </div>

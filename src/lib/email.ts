@@ -12,12 +12,13 @@ export enum EmailTemplate {
   CONTACT_FORM = 'contact_form',
   VOLUNTEER_CONFIRMATION = 'volunteer_confirmation',
   PARTNER_INQUIRY = 'partner_inquiry',
+  SHOE_REQUEST_CONFIRMATION = 'shoe_request_confirmation',
 }
 
 // Define email config (read dynamically to pick up environment changes)
 function getEmailConfig() {
   return {
-    from: process.env.EMAIL_FROM || 'newsteps.project@gmail.com',
+    from: process.env.EMAIL_FROM || 'newstepsfit@gmail.com',
     server: process.env.EMAIL_SERVER || 'smtp.ethereal.email',
     port: parseInt(process.env.EMAIL_PORT || '587', 10),
     username: process.env.EMAIL_USERNAME,
@@ -199,6 +200,42 @@ const templates = {
       ${data.trackingNumber ? `<p>Tracking Number: ${data.trackingNumber}</p>` : ''}
       <p>We hope you enjoy your shoes!</p>
       <p>The New Steps Project Team</p>
+    `,
+  }),
+  [EmailTemplate.SHOE_REQUEST_CONFIRMATION]: (data: any) => ({
+    subject: `Shoe Request Confirmation - ${data.requestId || 'REQ-UNKNOWN'}`,
+    html: `
+      <h1>Your Shoe Request Has Been Submitted!</h1>
+      <p>Dear ${data.firstName || 'Valued Customer'},</p>
+      <p>Thank you for your shoe request! We've received your request and will process it soon.</p>
+      
+      <h2>Request Details:</h2>
+      <p><strong>Request ID:</strong> ${data.requestId || 'REQ-UNKNOWN'}</p>
+      <p><strong>Status:</strong> Submitted</p>
+      <p><strong>Items requested:</strong> ${data.itemCount || (data.items ? data.items.length : 0)}</p>
+      
+      <h2>Requested Shoes:</h2>
+      <ul>
+        ${(data.items || []).map((item: any) => `<li>${item.brand || 'Unknown Brand'} ${item.name || item.modelName || 'Unknown Model'} (ID: ${item.shoeId || 'N/A'}) - Size ${item.size || 'Unknown'}</li>`).join('')}
+      </ul>
+      
+      ${data.deliveryMethod === 'shipping' ? `
+      <h2>Shipping Information:</h2>
+      <p><strong>Address:</strong><br>
+      ${data.address || ''}<br>
+      ${data.city || ''}, ${data.state || ''} ${data.zipCode || ''}</p>
+      <p><strong>Shipping Fee:</strong> $${(data.shippingFee || 0).toFixed(2)}</p>
+      ` : `
+      <h2>Pickup Selected</h2>
+      <p>No shipping fee - pickup arrangements will be made when your request is approved.</p>
+      `}
+      
+      <p>We'll notify you when your request is approved and processed.</p>
+      
+      <p>Thank you for choosing New Steps Project!</p>
+      
+      <p>Best regards,<br>
+      The New Steps Project Team</p>
     `,
   }),
   [EmailTemplate.EMAIL_VERIFICATION]: (data: any) => ({

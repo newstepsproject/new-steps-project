@@ -141,7 +141,7 @@ function ResetPasswordForm() {
             !success && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="password">New Password</Label>
+                  <Label htmlFor="password">New Password <span className="text-red-500">*</span></Label>
                   <Input
                     id="password"
                     type="password"
@@ -154,7 +154,7 @@ function ResetPasswordForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword">Confirm Password <span className="text-red-500">*</span></Label>
                   <Input
                     id="confirmPassword"
                     type="password"

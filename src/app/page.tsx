@@ -123,14 +123,14 @@ export default async function Home() {
               </div>
             </div>
             <div className="lg:w-1/2 relative animate-fade-in animate-delay-200 flex justify-center">
-              <div className="relative h-[300px] md:h-[350px] lg:h-[400px] w-[70%] md:w-[65%] lg:w-[80%]">
+              <div className="relative aspect-[3/4] h-[350px] md:h-[400px] lg:h-[450px] max-w-sm">
                 <ResponsiveImage 
                   src="/images/home_photo.png" 
                   alt="Athletes with sports shoes ready to step into their possibilities" 
                   fill
                   priority
                   sizes="(max-width: 768px) 70vw, 40vw"
-                  className="object-contain hover:scale-105 transition-transform duration-700"
+                  className="object-cover hover:scale-105 transition-transform duration-700 rounded-2xl"
                 />
               </div>
             </div>

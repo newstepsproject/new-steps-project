@@ -14,7 +14,10 @@
     "monitor": "node scripts/monitor-errors.js",
     "dev:monitor": "npm run dev 2>&1 | tee dev.log & sleep 5 && npm run monitor",
     "test:money-ref": "node --experimental-modules scripts/test-money-donation-reference.js",
-    "test:money-api": "node --experimental-modules scripts/test-money-donation-api.js"
+    "test:money-api": "node --experimental-modules scripts/test-money-donation-api.js",
+    "db:clean": "node src/scripts/cleanup-database.js",
+    "db:clean:all": "node src/scripts/cleanup-database.js all",
+    "db:clean:users": "node src/scripts/cleanup-database.js users"
   },
   "dependencies": {
     "@aws-sdk/client-cloudfront": "^3.806.0",
@@ -87,6 +90,7 @@
     "puppeteer": "^24.9.0",
     "sharp": "^0.34.2",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

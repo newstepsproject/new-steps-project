@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ShoppingCart, ChevronLeft, Package, TruckIcon, HomeIcon, CreditCard, Check, Loader2, Hash, DollarSign, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
-import { getAppSettings } from '@/lib/settings';
+// Removed direct settings import - using API instead
 
 // PayPal payment response type
 interface PayPalPaymentResult {
@@ -70,11 +70,21 @@ export default function CheckoutPage() {
 
   // Load shipping fee from settings
   useEffect(() => {
-    getAppSettings().then(settings => {
-      setShippingFee(settings.shippingFee);
-    }).catch(error => {
-      console.error('Error loading shipping fee setting:', error);
-    });
+    const loadShippingFee = async () => {
+      try {
+        const response = await fetch('/api/settings');
+        if (!response.ok) {
+          throw new Error('Failed to fetch settings');
+        }
+        const settings = await response.json();
+        setShippingFee(settings.shippingFee || 5);
+      } catch (error) {
+        console.error('Error loading shipping fee setting:', error);
+        setShippingFee(5); // Keep default value
+      }
+    };
+    
+    loadShippingFee();
   }, []);
 
   // Debug shipping calculation
@@ -90,9 +100,9 @@ export default function CheckoutPage() {
     if (needsPayment && !paypalLoaded) {
       // Check if we have a valid PayPal client ID
       const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-      if (!clientId || clientId === 'test' || clientId.length < 20) {
-        console.error('Invalid or missing PayPal client ID:', clientId);
-        setFormError('PayPal configuration error. Please contact support.');
+      if (!clientId || clientId === 'test' || clientId.length < 20 || clientId.includes('AZHWGKdx9_SHZr7rBP3IYlsKgmyv5aDl5LJ4J4SjKm5FGqvJ1_8Gm9qQZ0vLXnNZ_l6C8OKqJvXQQ9qD')) {
+        console.warn('Using placeholder PayPal client ID - skipping PayPal integration for testing');
+        setFormError('PayPal not configured. Please use "Pickup (Free)" option for testing.');
         return;
       }
       
@@ -604,7 +614,7 @@ export default function CheckoutPage() {
           <div className="mt-4">
             <p className="text-sm text-gray-500">
               Don't have an account?{' '}
-              <Link href="/register" className="text-brand hover:underline">
+              <Link href={`/register?callbackUrl=${encodeURIComponent('/checkout')}`} className="text-brand hover:underline">
                 Sign up here
               </Link>
             </p>
@@ -760,7 +770,7 @@ export default function CheckoutPage() {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="firstName">First Name*</Label>
+                    <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                     <Input
                       id="firstName"
                       name="firstName"
@@ -774,7 +784,7 @@ export default function CheckoutPage() {
                   </div>
                   
                   <div>
-                    <Label htmlFor="lastName">Last Name*</Label>
+                    <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
                     <Input
                       id="lastName"
                       name="lastName"
@@ -790,7 +800,7 @@ export default function CheckoutPage() {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="email">Email*</Label>
+                    <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                     <Input
                       id="email"
                       name="email"
@@ -805,7 +815,7 @@ export default function CheckoutPage() {
                   </div>
                   
                   <div>
-                    <Label htmlFor="phone">Phone*</Label>
+                    <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
                       name="phone"
@@ -859,7 +869,7 @@ export default function CheckoutPage() {
                     <h3 className="text-lg font-semibold mb-3">Shipping Address</h3>
                     
                     <div className="mb-4">
-                      <Label htmlFor="address">Street Address*</Label>
+                      <Label htmlFor="address">Street Address <span className="text-red-500">*</span></Label>
                       <Input
                         id="address"
                         name="address"
@@ -874,7 +884,7 @@ export default function CheckoutPage() {
                     
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
-                        <Label htmlFor="city">City*</Label>
+                        <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                         <Input
                           id="city"
                           name="city"
@@ -888,7 +898,7 @@ export default function CheckoutPage() {
                       </div>
                       
                       <div>
-                        <Label htmlFor="state">State*</Label>
+                        <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
                         <Input
                           id="state"
                           name="state"
@@ -904,7 +914,7 @@ export default function CheckoutPage() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="zipCode">ZIP Code*</Label>
+                        <Label htmlFor="zipCode">ZIP Code <span className="text-red-500">*</span></Label>
                         <Input
                           id="zipCode"
                           name="zipCode"
@@ -932,7 +942,7 @@ export default function CheckoutPage() {
                 )}
                 
                 <div className="mb-6">
-                  <Label htmlFor="notes">Additional Notes (optional)</Label>
+                  <Label htmlFor="notes">Additional Notes</Label>
                   <Textarea
                     id="notes"
                     name="notes"

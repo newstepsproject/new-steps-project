@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,19 +8,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Hash } from 'lucide-react';
 import Link from 'next/link';
-import { SHOE_BRANDS, SHOE_SPORTS, SHOE_GENDERS, US_MEN_SIZES, US_WOMEN_SIZES, US_YOUTH_SIZES } from '@/constants/config';
 
-interface RequestedShoe {
-  name: string;
+interface ShoeDetails {
+  _id: string;
+  shoeId: number;
   sport: string;
   brand: string;
+  modelName: string;
   size: string;
   gender: string;
-  notes?: string;
+  condition: string;
+  status: string;
+  images?: string[];
 }
 
 export default function AddRequestPage() {
@@ -28,6 +31,7 @@ export default function AddRequestPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [shoeLoading, setShoeLoading] = useState(false);
   
   // Form state
   const [requestorInfo, setRequestorInfo] = useState({
@@ -40,6 +44,7 @@ export default function AddRequestPage() {
     sportClub: ''
   });
   
+  const [needsShipping, setNeedsShipping] = useState(false);
   const [shippingAddress, setShippingAddress] = useState({
     street: '',
     city: '',
@@ -48,86 +53,98 @@ export default function AddRequestPage() {
     country: 'USA'
   });
   
-  const [items, setItems] = useState<RequestedShoe[]>([{
-    name: '',
-    sport: '',
-    brand: '',
-    size: '',
-    gender: '',
-    notes: ''
-  }]);
-  
+  const [shoeId, setShoeId] = useState('');
+  const [shoeDetails, setShoeDetails] = useState<ShoeDetails | null>(null);
+  const [shoeError, setShoeError] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Sort brands and sports alphabetically
-  const sortedBrands = [...SHOE_BRANDS].sort((a, b) => a.localeCompare(b));
-  const sortedSports = [...SHOE_SPORTS].sort((a, b) => a.localeCompare(b));
+  // Fetch shoe details when shoe ID changes
+  useEffect(() => {
+    const fetchShoeDetails = async () => {
+      if (!shoeId || shoeId.trim() === '') {
+        setShoeDetails(null);
+        setShoeError('');
+        return;
+      }
 
-  const handleAddItem = () => {
-    if (items.length >= 2) {
-      toast({
-        title: "Limit Reached",
-        description: "Maximum 2 shoes per request.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setItems([...items, {
-      name: '',
-      sport: '',
-      brand: '',
-      size: '',
-      gender: '',
-      notes: ''
-    }]);
-  };
+      const numericShoeId = parseInt(shoeId.trim());
+      if (isNaN(numericShoeId)) {
+        setShoeError('Please enter a valid shoe ID number');
+        setShoeDetails(null);
+        return;
+      }
 
-  const handleRemoveItem = (index: number) => {
-    setItems(items.filter((_, i) => i !== index));
-  };
+      setShoeLoading(true);
+      setShoeError('');
 
-  const handleItemChange = (index: number, field: keyof RequestedShoe, value: string) => {
-    const newItems = [...items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    setItems(newItems);
-  };
+      try {
+        const response = await fetch(`/api/admin/shoes?shoeId=${numericShoeId}`, {
+          credentials: 'include'
+        });
 
-  const getAvailableSizes = (gender: string) => {
-    if (gender === 'men') return US_MEN_SIZES;
-    if (gender === 'women') return US_WOMEN_SIZES;
-    if (gender === 'boys' || gender === 'girls') return US_YOUTH_SIZES;
-    return [...US_MEN_SIZES]; // Default
-  };
+        if (!response.ok) {
+          if (response.status === 404) {
+            setShoeError('Shoe not found. Please check the shoe ID.');
+          } else {
+            setShoeError('Failed to fetch shoe details');
+          }
+          setShoeDetails(null);
+          return;
+        }
+
+        const data = await response.json();
+        
+        if (data.status !== 'available') {
+          setShoeError(`This shoe is not available (Status: ${data.status})`);
+          setShoeDetails(null);
+          return;
+        }
+
+        setShoeDetails(data);
+        setShoeError('');
+      } catch (error) {
+        console.error('Error fetching shoe details:', error);
+        setShoeError('Failed to fetch shoe details');
+        setShoeDetails(null);
+      } finally {
+        setShoeLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchShoeDetails, 500); // Debounce API calls
+    return () => clearTimeout(timeoutId);
+  }, [shoeId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
-    if (!requestorInfo.firstName || !requestorInfo.lastName || !requestorInfo.email || !requestorInfo.phone) {
+    // Validate form - only firstName and lastName are required
+    if (!requestorInfo.firstName || !requestorInfo.lastName) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required requester information.",
+        description: "Please fill in first name and last name.",
         variant: "destructive",
       });
       return;
     }
     
-    if (!shippingAddress.street || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all shipping address fields.",
-        variant: "destructive",
-      });
-      return;
+    // Validate shipping address if needed
+    if (needsShipping) {
+      if (!shippingAddress.street || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all shipping address fields.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
     
-    // Validate items
-    const validItems = items.filter(item => item.sport && item.brand && item.size && item.gender);
-    if (validItems.length === 0) {
+    // Validate shoe selection
+    if (!shoeDetails) {
       toast({
         title: "Validation Error",
-        description: "Please add at least one valid shoe request.",
+        description: "Please select a valid available shoe.",
         variant: "destructive",
       });
       return;
@@ -136,25 +153,36 @@ export default function AddRequestPage() {
     setLoading(true);
     
     try {
+      const requestData = {
+        requestorInfo,
+        shippingInfo: needsShipping ? shippingAddress : null,
+        items: [{
+          shoeId: shoeDetails.shoeId,
+          sport: shoeDetails.sport,
+          brand: shoeDetails.brand,
+          modelName: shoeDetails.modelName,
+          size: shoeDetails.size,
+          gender: shoeDetails.gender,
+          condition: shoeDetails.condition
+        }],
+        notes,
+        isOffline: true, // Mark as offline/manual entry
+        status: 'submitted', // Set initial status
+        createdBy: session?.user?.email // Track who created this manual entry
+      };
+
       const response = await fetch('/api/admin/requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({
-          requestorInfo,
-          shippingInfo: shippingAddress,
-          items: validItems,
-          notes,
-          isOffline: true, // Mark as offline/manual entry
-          status: 'pending', // Set initial status
-          createdBy: session?.user?.email // Track who created this manual entry
-        }),
+        body: JSON.stringify(requestData),
       });
       
       if (!response.ok) {
-        throw new Error('Failed to create request');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create request');
       }
       
       const data = await response.json();
@@ -170,7 +198,7 @@ export default function AddRequestPage() {
       console.error('Error creating request:', error);
       toast({
         title: "Error",
-        description: "Failed to create request. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to create request. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -184,7 +212,7 @@ export default function AddRequestPage() {
         <Link href="/admin/requests">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+            Back to Requests
           </Button>
         </Link>
         <div>
@@ -207,250 +235,205 @@ export default function AddRequestPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstName">First Name *</Label>
+                <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                 <Input
                   id="firstName"
+                  type="text"
                   value={requestorInfo.firstName}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, firstName: e.target.value })}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="lastName">Last Name *</Label>
+                <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
                 <Input
                   id="lastName"
+                  type="text"
                   value={requestorInfo.lastName}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, lastName: e.target.value })}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={requestorInfo.email}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, email: e.target.value })}
-                  required
                 />
               </div>
               <div>
-                <Label htmlFor="phone">Phone *</Label>
+                <Label htmlFor="phone">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
                   value={requestorInfo.phone}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, phone: e.target.value })}
-                  required
                 />
               </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="schoolName">School Name (Optional)</Label>
+                <Label htmlFor="schoolName">School Name</Label>
                 <Input
                   id="schoolName"
                   value={requestorInfo.schoolName}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, schoolName: e.target.value })}
+                  placeholder="Enter school name"
                 />
               </div>
               <div>
-                <Label htmlFor="grade">Grade (Optional)</Label>
+                <Label htmlFor="grade">Grade</Label>
                 <Input
                   id="grade"
                   value={requestorInfo.grade}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, grade: e.target.value })}
+                  placeholder="Enter grade level"
                 />
               </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="sportClub">Sport Club (Optional)</Label>
+              <div>
+                <Label htmlFor="sportClub">Sport Club</Label>
                 <Input
                   id="sportClub"
                   value={requestorInfo.sportClub}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, sportClub: e.target.value })}
+                  placeholder="Enter sport club name"
                 />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Shipping Address */}
+        {/* Shipping Address - Optional */}
         <Card>
           <CardHeader>
-            <CardTitle>Shipping Address</CardTitle>
+            <CardTitle>Shipping Information</CardTitle>
             <CardDescription>
-              Where should the shoes be shipped?
+              This can be an offline transaction. If shipping is needed, please provide the address.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <Label htmlFor="street">Street Address *</Label>
-                <Input
-                  id="street"
-                  value={shippingAddress.street}
-                  onChange={(e) => setShippingAddress({ ...shippingAddress, street: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">City *</Label>
-                <Input
-                  id="city"
-                  value={shippingAddress.city}
-                  onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="state">State *</Label>
-                <Input
-                  id="state"
-                  value={shippingAddress.state}
-                  onChange={(e) => setShippingAddress({ ...shippingAddress, state: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="zipCode">ZIP Code *</Label>
-                <Input
-                  id="zipCode"
-                  value={shippingAddress.zipCode}
-                  onChange={(e) => setShippingAddress({ ...shippingAddress, zipCode: e.target.value })}
-                  required
-                />
-              </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="needsShipping"
+                checked={needsShipping}
+                onCheckedChange={(checked) => setNeedsShipping(checked as boolean)}
+              />
+              <Label htmlFor="needsShipping">This request requires shipping</Label>
             </div>
+            
+            {needsShipping && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 p-4 bg-gray-50 rounded-lg">
+                <div className="md:col-span-2">
+                  <Label htmlFor="street">Street Address <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="street"
+                    value={shippingAddress.street}
+                    onChange={(e) => setShippingAddress({ ...shippingAddress, street: e.target.value })}
+                    required={needsShipping}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="city"
+                    value={shippingAddress.city}
+                    onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
+                    required={needsShipping}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="state"
+                    value={shippingAddress.state}
+                    onChange={(e) => setShippingAddress({ ...shippingAddress, state: e.target.value })}
+                    required={needsShipping}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="zipCode">ZIP Code <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="zipCode"
+                    value={shippingAddress.zipCode}
+                    onChange={(e) => setShippingAddress({ ...shippingAddress, zipCode: e.target.value })}
+                    required={needsShipping}
+                  />
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Requested Shoes */}
+        {/* Requested Shoe */}
         <Card>
           <CardHeader>
-            <CardTitle>Requested Shoes</CardTitle>
+            <CardTitle>Requested Shoe</CardTitle>
             <CardDescription>
-              Add the shoes being requested (maximum 2 per request).
+              Enter the shoe ID to automatically retrieve shoe details from inventory.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {items.map((item, index) => (
-              <div key={index} className="p-4 border rounded-lg space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-medium">Shoe {index + 1}</h4>
-                  {items.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveItem(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
+            <div>
+              <Label htmlFor="shoeId">Shoe ID <span className="text-red-500">*</span></Label>
+              <div className="flex items-center space-x-2">
+                <Hash className="h-4 w-4 text-gray-400" />
+                <Input
+                  id="shoeId"
+                  type="text"
+                  value={shoeId}
+                  onChange={(e) => setShoeId(e.target.value)}
+                  placeholder="Enter shoe ID (e.g., 101)"
+                  className="flex-1"
+                />
+              </div>
+              {shoeLoading && (
+                <p className="text-sm text-blue-600 mt-1">Loading shoe details...</p>
+              )}
+              {shoeError && (
+                <div className="flex items-center space-x-2 mt-2 text-red-600">
+                  <XCircle className="h-4 w-4" />
+                  <p className="text-sm">{shoeError}</p>
+                </div>
+              )}
+            </div>
+
+            {shoeDetails && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-3">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <h4 className="font-medium text-green-800">Shoe Found & Available</h4>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Sport *</Label>
-                    <Select
-                      value={item.sport}
-                      onValueChange={(value) => handleItemChange(index, 'sport', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select sport" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sortedSports.map(sport => (
-                          <SelectItem key={sport} value={sport}>{sport}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <p className="text-sm text-gray-600">Shoe ID</p>
+                    <p className="font-medium">#{shoeDetails.shoeId}</p>
                   </div>
-                  
                   <div>
-                    <Label>Brand *</Label>
-                    <Select
-                      value={item.brand}
-                      onValueChange={(value) => handleItemChange(index, 'brand', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select brand" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sortedBrands.map(brand => (
-                          <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <p className="text-sm text-gray-600">Brand & Model</p>
+                    <p className="font-medium">{shoeDetails.brand} {shoeDetails.modelName}</p>
                   </div>
-                  
                   <div>
-                    <Label>Gender *</Label>
-                    <Select
-                      value={item.gender}
-                      onValueChange={(value) => handleItemChange(index, 'gender', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SHOE_GENDERS.map(gender => (
-                          <SelectItem key={gender} value={gender}>
-                            {gender.charAt(0).toUpperCase() + gender.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <p className="text-sm text-gray-600">Sport</p>
+                    <p className="font-medium">{shoeDetails.sport}</p>
                   </div>
-                  
                   <div>
-                    <Label>Size *</Label>
-                    <Select
-                      value={item.size}
-                      onValueChange={(value) => handleItemChange(index, 'size', value)}
-                      disabled={!item.gender}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={item.gender ? "Select size" : "Select gender first"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {item.gender && getAvailableSizes(item.gender).map(size => (
-                          <SelectItem key={size} value={size}>{size}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <p className="text-sm text-gray-600">Size & Gender</p>
+                    <p className="font-medium">{shoeDetails.size} ({shoeDetails.gender})</p>
                   </div>
-                  
-                  <div className="md:col-span-2">
-                    <Label>Name/Description (Optional)</Label>
-                    <Input
-                      value={item.name}
-                      onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-                      placeholder="e.g., Nike Air Max 90"
-                    />
+                  <div>
+                    <p className="text-sm text-gray-600">Condition</p>
+                    <p className="font-medium">{shoeDetails.condition}</p>
                   </div>
-                  
-                  <div className="md:col-span-2">
-                    <Label>Notes (Optional)</Label>
-                    <Textarea
-                      value={item.notes || ''}
-                      onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
-                      placeholder="Any specific requirements or preferences"
-                      rows={2}
-                    />
+                  <div>
+                    <p className="text-sm text-gray-600">Status</p>
+                    <p className="font-medium text-green-600">{shoeDetails.status}</p>
                   </div>
                 </div>
               </div>
-            ))}
-            
-            {items.length < 2 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleAddItem}
-                className="w-full"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Another Shoe
-              </Button>
             )}
           </CardContent>
         </Card>
@@ -462,20 +445,20 @@ export default function AddRequestPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="notes">Notes (Optional)</Label>
+              <Label htmlFor="notes">Notes</Label>
               <Textarea
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional information about this request"
-                rows={4}
+                className="h-24"
               />
             </div>
             
             <div className="bg-blue-50 p-4 rounded-lg">
               <p className="text-sm text-blue-800">
                 <strong>Note:</strong> This is a manual entry for an offline request. 
-                A confirmation email will be sent to the requester if they are a registered user.
+                The selected shoe will be marked as "requested" and removed from available inventory.
               </p>
             </div>
           </CardContent>
@@ -488,7 +471,7 @@ export default function AddRequestPage() {
               Cancel
             </Button>
           </Link>
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading || !shoeDetails}>
             {loading ? 'Creating...' : 'Create Request'}
           </Button>
         </div>

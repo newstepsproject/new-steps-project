@@ -29,10 +29,23 @@ import { CheckCircle } from 'lucide-react';
 const formSchema = z.object({
   organizationName: z.string().min(2, 'Organization name is required'),
   organizationType: z.string().min(1, 'Please select an organization type'),
-  contactName: z.string().min(2, 'Contact name is required'),
+  firstName: z.string().min(2, 'First name is required'),
+  lastName: z.string().min(2, 'Last name is required'),
   email: z.string().email('Please enter a valid email address'),
-  phone: z.string().min(10, 'Please enter a valid phone number'),
+  phone: z.string().optional(),
   message: z.string().min(20, 'Please provide more details about your partnership interest'),
+}).refine((data) => {
+  // Additional validation for phone number only if provided
+  if (data.phone && data.phone.trim().length > 0) {
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
+      return false;
+    }
+  }
+  return true;
+}, {
+  message: 'Please enter a valid phone number',
+  path: ['phone']
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,7 +59,8 @@ export default function PartnershipForm() {
     defaultValues: {
       organizationName: '',
       organizationType: '',
-      contactName: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: '',
       message: '',
@@ -60,7 +74,8 @@ export default function PartnershipForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          ...values, 
+          ...values,
+          name: `${values.firstName} ${values.lastName}`, // Combine for backward compatibility
           type: 'partnership',
           subject: `Partnership Inquiry from ${values.organizationName}`
         }),
@@ -119,7 +134,7 @@ export default function PartnershipForm() {
                   name="organizationName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Name *</FormLabel>
+                      <FormLabel>Organization Name <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="Enter your organization name" 
@@ -137,7 +152,7 @@ export default function PartnershipForm() {
                   name="organizationType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization Type *</FormLabel>
+                      <FormLabel>Organization Type <span className="text-red-500">*</span></FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="focus:ring-2 focus:ring-brand">
@@ -163,13 +178,13 @@ export default function PartnershipForm() {
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="contactName"
+                  name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contact Name *</FormLabel>
+                      <FormLabel>First Name <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Your full name" 
+                          placeholder="Your first name" 
                           {...field} 
                           className="focus:ring-2 focus:ring-brand"
                         />
@@ -181,10 +196,30 @@ export default function PartnershipForm() {
 
                 <FormField
                   control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name <span className="text-red-500">*</span></FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Your last name" 
+                          {...field} 
+                          className="focus:ring-2 focus:ring-brand"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address *</FormLabel>
+                      <FormLabel>Email Address <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
                         <Input 
                           type="email" 
@@ -197,26 +232,26 @@ export default function PartnershipForm() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number *</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="tel" 
-                        placeholder="(555) 123-4567" 
-                        {...field} 
-                        className="focus:ring-2 focus:ring-brand"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          placeholder="(555) 123-4567"
+                          {...field}
+                          className="focus:ring-2 focus:ring-brand"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}

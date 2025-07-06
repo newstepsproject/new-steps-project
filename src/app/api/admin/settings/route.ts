@@ -53,6 +53,8 @@ export async function GET(request: NextRequest) {
         {
           id: 'founder-director',
           role: 'Founder & Director',
+          firstName: 'Walter',
+          lastName: 'Zhang',
           name: 'Walter Zhang',
           duty: 'Providing visionary leadership, setting strategic direction, making key decisions, and ensuring the mission of connecting athletes with quality sports shoes remains at the heart of every initiative',
           bio: '9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.',
@@ -62,6 +64,8 @@ export async function GET(request: NextRequest) {
         {
           id: 'operation-manager',
           role: 'Operation Manager',
+          firstName: '',
+          lastName: '',
           name: '',
           duty: 'Overseeing daily operations, managing inventory systems, coordinating donation logistics, processing shoe requests, and ensuring efficient workflows from donation intake to delivery',
           bio: '',
@@ -71,6 +75,8 @@ export async function GET(request: NextRequest) {
         {
           id: 'volunteer-coordinator',
           role: 'Volunteer Coordinator',
+          firstName: '',
+          lastName: '',
           name: '',
           duty: 'Recruiting and training volunteers, organizing community events, building partnerships with schools and sports clubs, and coordinating volunteer activities to expand our reach',
           bio: '',
@@ -82,11 +88,11 @@ export async function GET(request: NextRequest) {
       paypalClientId: '',
       paypalSandboxMode: true,
       maxShoesPerRequest: 2,
-      projectEmail: 'newsteps.project@gmail.com',
+      projectEmail: 'newstepsfit@gmail.com',
       projectPhone: '(916) 582-7090',
-      contactEmail: 'newsteps.project@gmail.com',
-      supportEmail: 'newsteps.project@gmail.com',
-      donationsEmail: 'newsteps.project@gmail.com',
+      contactEmail: 'newstepsfit@gmail.com',
+      supportEmail: 'newstepsfit@gmail.com',
+      donationsEmail: 'newstepsfit@gmail.com',
     };
 
     // Merge with defaults (only non-null values from DB will override defaults)
@@ -159,11 +165,31 @@ export async function POST(request: NextRequest) {
 
       for (let i = 0; i < settingsData.projectOfficers.length; i++) {
         const officer = settingsData.projectOfficers[i];
-        if (!officer.role || !officer.name || !officer.duty || !officer.bio) {
+        
+        // Check for required fields - accept either name or firstName/lastName
+        const hasName = officer.name && officer.name.trim();
+        const hasFirstLastName = officer.firstName && officer.firstName.trim() && 
+                                officer.lastName && officer.lastName.trim();
+        
+        if (!officer.role || (!hasName && !hasFirstLastName) || !officer.duty || !officer.bio) {
           return NextResponse.json(
-            { error: `Project officer ${i + 1} must have role, name, duty, and bio` },
+            { error: `Project officer ${i + 1} must have role, name (or firstName/lastName), duty, and bio` },
             { status: 400 }
           );
+        }
+        
+        // Ensure name consistency
+        if (hasFirstLastName && !hasName) {
+          officer.name = `${officer.firstName} ${officer.lastName}`;
+        } else if (hasName && !hasFirstLastName) {
+          const nameParts = officer.name.trim().split(' ');
+          if (nameParts.length >= 2) {
+            officer.firstName = nameParts[0];
+            officer.lastName = nameParts.slice(1).join(' ');
+          } else {
+            officer.firstName = officer.name;
+            officer.lastName = '';
+          }
         }
       }
     }

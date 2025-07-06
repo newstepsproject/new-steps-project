@@ -37,7 +37,8 @@ import {
 import { ShoeRequest, RequestStatus, REQUEST_STATUSES } from '@/types/common';
 import { RequestStatusBadge } from './common';
 import { formatDate } from '@/lib/utils';
-import { getAppSettings, AppSettings } from '@/lib/settings';
+import { Input } from '@/components/ui/input';
+// Removed direct settings import - using API instead
 
 interface RequestDetailsDialogProps {
   request: ShoeRequest | null;
@@ -60,20 +61,30 @@ function ShippingLabelPreview({ request, hasMissingInfo }: { request: ShoeReques
   });
 
   useEffect(() => {
-    getAppSettings().then(settings => {
-      const founder = settings.projectOfficers.find(officer => !officer.canRemove);
-      setProjectInfo({
-        name: founder?.name || "Walter Zhang",
-        company: "New Steps Project",
-        address: settings.officeAddress.street,
-        city: settings.officeAddress.city,
-        state: settings.officeAddress.state,
-        zipCode: settings.officeAddress.zipCode,
-        phone: settings.projectPhone
-      });
-    }).catch(error => {
-      console.error('Error loading project info for shipping label:', error);
-    });
+    const loadProjectInfo = async () => {
+      try {
+        const response = await fetch('/api/settings');
+        if (!response.ok) {
+          throw new Error('Failed to fetch settings');
+        }
+        const settings = await response.json();
+        
+        setProjectInfo({
+          name: "Walter Zhang", // Default founder name
+          company: "New Steps Project",
+          address: "348 Cardona Cir", // Default address
+          city: "San Ramon",
+          state: "CA",
+          zipCode: "94583",
+          phone: settings.projectPhone || "(916) 582-7090"
+        });
+      } catch (error) {
+        console.error('Error loading project info for shipping label:', error);
+        // Keep default values if API fails
+      }
+    };
+    
+    loadProjectInfo();
   }, []);
 
   const handlePrint = () => {
@@ -255,10 +266,33 @@ export default function RequestDetailsDialog({
   onOpenChange,
   onStatusChange,
 }: RequestDetailsDialogProps) {
-  const [status, setStatus] = useState<RequestStatus>('submitted');
-  const [note, setNote] = useState<string>('');
+  const [status, setStatus] = useState<RequestStatus>(request?.currentStatus || REQUEST_STATUSES.SUBMITTED);
+  const [note, setNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showRejectionConfirm, setShowRejectionConfirm] = useState(false);
+  
+  // Add state for editable requestor information
+  const [requestorInfo, setRequestorInfo] = useState({
+    firstName: request?.requestorInfo.firstName || '',
+    lastName: request?.requestorInfo.lastName || '',
+    email: request?.requestorInfo.email || '',
+    phone: request?.requestorInfo.phone || '',
+    schoolName: request?.requestorInfo.schoolName || '',
+    grade: request?.requestorInfo.grade || '',
+    sportClub: request?.requestorInfo.sportClub || ''
+  });
+  
+  // Add state for editable shipping information
+  const [shippingInfo, setShippingInfo] = useState({
+    street: request?.shippingInfo?.street || '',
+    city: request?.shippingInfo?.city || '',
+    state: request?.shippingInfo?.state || '',
+    zipCode: request?.shippingInfo?.zipCode || '',
+    country: request?.shippingInfo?.country || 'USA'
+  });
+  
+  // Add state for request notes
+  const [requestNotes, setRequestNotes] = useState(request?.notes || '');
 
   // Update local state when request changes
   useEffect(() => {
@@ -298,6 +332,38 @@ export default function RequestDetailsDialog({
     try {
       await onStatusChange(request.requestId, status, note);
       onOpenChange(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSaveDetails = async () => {
+    if (!request) return;
+    
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch(`/api/admin/requests`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requestId: request.requestId,
+          requestorInfo,
+          shippingInfo,
+          notes: requestNotes,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update request details');
+      }
+      
+      // Refresh the request data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating request details:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -357,25 +423,73 @@ export default function RequestDetailsDialog({
               Requester Information
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-xs text-gray-500">Name</Label>
-                <p className={!request.requestorInfo.firstName || !request.requestorInfo.lastName ? 'text-red-600' : ''}>
-                  {request.requestorInfo.firstName} {request.requestorInfo.lastName}
-                </p>
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  value={requestorInfo.firstName}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, firstName: e.target.value })}
+                  placeholder="First name"
+                />
               </div>
-              <div>
-                <Label className="text-xs text-gray-500">Email</Label>
-                <p>{request.requestorInfo.email}</p>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  value={requestorInfo.lastName}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, lastName: e.target.value })}
+                  placeholder="Last name"
+                />
               </div>
-              <div>
-                <Label className="text-xs text-gray-500">Phone</Label>
-                <p className={!request.requestorInfo.phone ? 'text-red-600' : ''}>
-                  {request.requestorInfo.phone || 'Not provided'}
-                </p>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={requestorInfo.email}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, email: e.target.value })}
+                  placeholder="Email address"
+                />
               </div>
-              <div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={requestorInfo.phone}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, phone: e.target.value })}
+                  placeholder="Phone number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="schoolName">School Name</Label>
+                <Input
+                  id="schoolName"
+                  value={requestorInfo.schoolName}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, schoolName: e.target.value })}
+                  placeholder="School name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="grade">Grade</Label>
+                <Input
+                  id="grade"
+                  value={requestorInfo.grade}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, grade: e.target.value })}
+                  placeholder="Grade level"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="sportClub">Sport/Club</Label>
+                <Input
+                  id="sportClub"
+                  value={requestorInfo.sportClub}
+                  onChange={(e) => setRequestorInfo({ ...requestorInfo, sportClub: e.target.value })}
+                  placeholder="Sport or club"
+                />
+              </div>
+              <div className="space-y-2">
                 <Label className="text-xs text-gray-500">Date Submitted</Label>
-                <p>{formatDate(request.createdAt)}</p>
+                <p className="text-sm py-2">{formatDate(request.createdAt)}</p>
               </div>
             </div>
           </div>
@@ -445,14 +559,52 @@ export default function RequestDetailsDialog({
                   <MapPin className="h-4 w-4" />
                   Shipping Information
                 </h3>
-                <div className="text-sm space-y-1 p-3 bg-gray-50 rounded-md">
-                  <p className={!request.shippingInfo.street ? 'text-red-600' : ''}>
-                    {request.shippingInfo.street || 'Street address not provided'}
-                  </p>
-                  <p className={!request.shippingInfo.city || !request.shippingInfo.state || !request.shippingInfo.zipCode ? 'text-red-600' : ''}>
-                    {request.shippingInfo.city || 'City not provided'}, {request.shippingInfo.state || 'State not provided'} {request.shippingInfo.zipCode || 'ZIP not provided'}
-                  </p>
-                  <p>{request.shippingInfo.country}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="street">Street Address</Label>
+                    <Input
+                      id="street"
+                      value={shippingInfo.street}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, street: e.target.value })}
+                      placeholder="Street address"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={shippingInfo.city}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
+                      placeholder="City"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">State</Label>
+                    <Input
+                      id="state"
+                      value={shippingInfo.state}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })}
+                      placeholder="State"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="zipCode">ZIP Code</Label>
+                    <Input
+                      id="zipCode"
+                      value={shippingInfo.zipCode}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })}
+                      placeholder="ZIP code"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="country">Country</Label>
+                    <Input
+                      id="country"
+                      value={shippingInfo.country}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, country: e.target.value })}
+                      placeholder="Country"
+                    />
+                  </div>
                 </div>
               </div>
             </>
@@ -600,6 +752,21 @@ export default function RequestDetailsDialog({
             className="w-full sm:w-auto"
           >
             Close
+          </Button>
+          <Button 
+            variant="secondary"
+            onClick={handleSaveDetails}
+            disabled={isSubmitting}
+            className="w-full sm:w-auto"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save Details'
+            )}
           </Button>
           {!isRejected && (
             <Button 

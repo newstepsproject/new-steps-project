@@ -16,9 +16,10 @@ import { Label } from '@/components/ui/label';
 
 // Form Schema
 const donationFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name is required' }),
+  firstName: z.string().min(1, { message: 'First name is required' }),
+  lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Valid email is required' }),
-  phone: z.string().min(10, { message: 'Valid phone number is required' }),
+  phone: z.string().optional(),
   street: z.string().min(2, { message: 'Street address is required' }),
   city: z.string().min(2, { message: 'City is required' }),
   state: z.string().min(1, { message: 'State is required' }),
@@ -28,10 +29,12 @@ const donationFormSchema = z.object({
   donationDescription: z.string().min(10, { message: 'Please describe what you\'re donating (at least 10 characters)' }),
   isBayArea: z.boolean().optional(),
 }).refine((data) => {
-  // Additional validation to ensure phone number is in a valid format
-  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-  if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
-    return false;
+  // Additional validation for phone number only if provided
+  if (data.phone && data.phone.trim().length > 0) {
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
+      return false;
+    }
   }
   return true;
 }, {
@@ -78,7 +81,8 @@ function DonationFormContent() {
   const methods = useForm<DonationFormData>({
     resolver: zodResolver(donationFormSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: '',
       street: '',
@@ -227,54 +231,70 @@ function DonationFormContent() {
               
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">
-                    Full Name <span className="text-red-500">*</span>
+                  <Label htmlFor="firstName">
+                    First Name <span className="text-red-500">*</span>
                   </Label>
                   <Input
-                    id="name"
-                    {...register('name')}
-                    placeholder="Enter your full name"
+                    id="firstName"
+                    {...register('firstName')}
+                    placeholder="Enter your first name"
+                    className="h-12"
+                    autoComplete="given-name"
                   />
-                  {errors.name && (
-                    <p className="text-sm text-red-500">{errors.name.message}</p>
+                  {errors.firstName && (
+                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">
-                      Email <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...register('email')}
-                      placeholder="Enter your email"
-                      className="h-12"
-                      autoComplete="email"
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-red-500">{errors.email.message}</p>
-                    )}
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">
+                    Last Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="lastName"
+                    {...register('lastName')}
+                    placeholder="Enter your last name"
+                    className="h-12"
+                    autoComplete="family-name"
+                  />
+                  {errors.lastName && (
+                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
+                  )}
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">
-                      Phone Number <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...register('phone')}
-                      placeholder="(555) 123-4567"
-                      className="h-12"
-                      autoComplete="tel"
-                      inputMode="tel"
-                    />
-                    {errors.phone && (
-                      <p className="text-sm text-red-500">{errors.phone.message}</p>
-                    )}
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">
+                    Email <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register('email')}
+                    placeholder="Enter your email address"
+                    className="h-12"
+                    autoComplete="email"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-500">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    {...register('phone')}
+                    placeholder="(555) 123-4567"
+                    className="h-12"
+                    autoComplete="tel"
+                    inputMode="tel"
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-red-500">{errors.phone.message}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

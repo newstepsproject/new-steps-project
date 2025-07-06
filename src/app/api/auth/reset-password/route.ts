@@ -123,9 +123,9 @@ export async function PATCH(request: NextRequest) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     
-    // Update the user's password
-    user.password = hashedPassword;
-    await user.save();
+    // Update the user's password directly in database to bypass pre-save hook
+    // The pre-save hook would double-hash the password, breaking authentication
+    await User.findByIdAndUpdate(userId, { password: hashedPassword });
     
     return NextResponse.json(
       { message: 'Password has been reset successfully' },

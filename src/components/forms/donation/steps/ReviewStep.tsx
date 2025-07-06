@@ -12,7 +12,8 @@ import Image from 'next/image';
 // Define a more complete type that includes all required fields for the multi-step form
 interface DonationFormWithMethodData {
   donorInfo: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone: string;
     street: string;
@@ -91,7 +92,7 @@ export default function ReviewStep({ onSubmit, isSubmitting, onEditSection }: Re
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Name</p>
-                  <p className="text-sm text-gray-900">{donorInfo.name}</p>
+                  <p className="text-sm text-gray-900">{donorInfo.firstName} {donorInfo.lastName}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Email</p>
@@ -166,12 +167,13 @@ export default function ReviewStep({ onSubmit, isSubmitting, onEditSection }: Re
                         <p className="font-medium text-gray-500 mb-2">Images</p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                           {shoe.images.map((imageUrl, imgIndex) => (
-                            <div key={imgIndex} className="relative rounded-md overflow-hidden h-24 border">
+                            <div key={imgIndex} className="relative rounded-md overflow-hidden aspect-square border">
                               <Image 
                                 src={imageUrl} 
                                 alt={`Shoe ${index + 1} image ${imgIndex + 1}`}
                                 fill
-                                className="object-cover" 
+                                className="object-cover"
+                                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw" 
                               />
                             </div>
                           ))}

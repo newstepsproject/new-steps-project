@@ -106,7 +106,6 @@ export async function POST(request: NextRequest) {
       donationId: donation._id, // Link to the original donation
       inventoryCount: 1,
       inventoryNotes: `Created from donation ${donationId}`,
-      featured: false,
       dateAdded: new Date()
     });
     

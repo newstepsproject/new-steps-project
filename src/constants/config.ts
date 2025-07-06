@@ -15,29 +15,21 @@ export const DEFAULT_SHIPPING_FEE = 5; // in dollars
 
 export const ORDER_STATUSES = {
   PENDING: "pending",
-  CONFIRMED: "confirmed",
-  SHIPPED: "shipped",
-  DELIVERED: "delivered",
-  CANCELLED: "cancelled",
-  RETURN_REQUESTED: "requested_return",
-  RETURN_RECEIVED: "return_received",
+  REJECTED: "rejected",
+  SHIPPED: "shipped", 
+  CANCELLED: "cancelled"
 };
 
 export const DONATION_STATUSES = {
   SUBMITTED: "submitted",
-  PICKED_UP: "picked_up",
   RECEIVED: "received",
   PROCESSED: "processed",
   CANCELLED: "cancelled"
 };
 
-// Define allowed status transitions
+// Define allowed status transitions - Simplified workflow
 export const DONATION_STATUS_TRANSITIONS = {
   [DONATION_STATUSES.SUBMITTED]: [
-    DONATION_STATUSES.PICKED_UP, 
-    DONATION_STATUSES.CANCELLED
-  ],
-  [DONATION_STATUSES.PICKED_UP]: [
     DONATION_STATUSES.RECEIVED, 
     DONATION_STATUSES.CANCELLED
   ],
@@ -215,22 +207,17 @@ export const SITE_CONFIG = {
   description: 'Connecting donated sports shoes with athletes in need',
   url: 'https://newsteps.fit',
   adminUrl: 'https://admin.newsteps.fit',
-  contactEmail: 'newsteps.project@gmail.com',
-  supportEmail: 'newsteps.project@gmail.com',
-  donationsEmail: 'newsteps.project@gmail.com'
+  contactEmail: 'newstepsfit@gmail.com',
+  supportEmail: 'newstepsfit@gmail.com',
+  donationsEmail: 'newstepsfit@gmail.com'
 };
 
-// Shoe status options
+// Shoe status options - Simplified 4-status system
 export const SHOE_STATUSES = {
-  AVAILABLE: 'available',
-  REQUESTED: 'requested',
-  CONFIRMED: 'confirmed',
-  RESERVED: 'reserved',
-  ORDERED: 'ordered',
-  SHIPPED: 'shipped',
-  DELIVERED: 'delivered',
-  PENDING_INVENTORY: 'pending_inventory',
-  UNAVAILABLE: 'unavailable'
+  AVAILABLE: 'available',     // Ready to be requested
+  REQUESTED: 'requested',     // In process (admin handling request)
+  SHIPPED: 'shipped',         // Sent to user
+  UNAVAILABLE: 'unavailable'  // Not available (damaged, lost, etc.)
 };
 
 // User role options

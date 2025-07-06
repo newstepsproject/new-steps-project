@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       requestId,
       userId: 'test-user-id',
       items: items.map((item: any) => ({
-        shoeId: item.id,
+        shoeId: item.shoeId, // Use actual shoe ID, not generic id
         name: item.name,
         brand: item.brand,
         gender: item.gender,

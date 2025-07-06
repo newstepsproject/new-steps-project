@@ -19,20 +19,20 @@ const CounterSchema = new Schema<CounterDocument>({
 });
 
 // Static method to get next sequence value
-CounterSchema.statics.getNextSequence = async function(sequenceName: string): Promise<string> {
+CounterSchema.statics.getNextSequence = async function(sequenceName: string): Promise<number> {
   const counter = await this.findByIdAndUpdate(
     sequenceName,
     { $inc: { seq: 1 } },
     { new: true, upsert: true }
   );
   
-  // Return natural number as string (101, 102, ...)
-  return counter.seq.toString();
+  // Return natural number (101, 102, ...)
+  return counter.seq;
 };
 
 // Create and export the model
 const Counter = (mongoose.models.Counter || mongoose.model<CounterDocument>('Counter', CounterSchema)) as Model<CounterDocument> & {
-  getNextSequence: (sequenceName: string) => Promise<string>;
+  getNextSequence: (sequenceName: string) => Promise<number>;
 };
 
 export default Counter; 

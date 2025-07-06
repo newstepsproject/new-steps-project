@@ -146,9 +146,9 @@ async function handleSetPassword(userId: string, newPassword: string) {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(newPassword, salt);
   
-  // Update the user's password
-  user.password = hashedPassword;
-  await user.save();
+  // Update the user's password directly in database to bypass pre-save hook
+  // The pre-save hook would double-hash the password, breaking authentication
+  await User.findByIdAndUpdate(userId, { password: hashedPassword });
   
   return NextResponse.json(
     { message: 'Password reset successfully' },

@@ -168,7 +168,17 @@ export async function PATCH(request: NextRequest) {
 
     // Add donor info if provided
     if (donorInfo) {
-      if (donorInfo.name) updateData.name = donorInfo.name;
+      if (donorInfo.firstName && donorInfo.lastName) {
+        updateData.firstName = donorInfo.firstName;
+        updateData.lastName = donorInfo.lastName;
+        updateData.name = `${donorInfo.firstName} ${donorInfo.lastName}`;
+      } else if (donorInfo.name) {
+        // Fallback for old format - split into firstName/lastName
+        const nameParts = donorInfo.name.split(' ');
+        updateData.firstName = nameParts[0] || '';
+        updateData.lastName = nameParts.slice(1).join(' ') || '';
+        updateData.name = donorInfo.name;
+      }
       if (donorInfo.email) updateData.email = donorInfo.email;
       if (donorInfo.phone) updateData.phone = donorInfo.phone;
     }
@@ -274,16 +284,17 @@ export async function POST(request: NextRequest) {
     console.log(`[Admin Money Donation API] Creating donation with status: ${donationStatus}`);
     
     // Generate money donation reference number in the format DM-XXXX-YYYY
-    let donationId = generateMoneyDonationReferenceNumber(donorInfo.name);
+    const donorFullName = `${donorInfo.firstName} ${donorInfo.lastName}`;
+    let donationId = generateMoneyDonationReferenceNumber(donorFullName);
     
-    console.log(`[Admin Money Donation API] Generated reference number: ${donationId} for donor: ${donorInfo.name}`);
+    console.log(`[Admin Money Donation API] Generated reference number: ${donationId} for donor: ${donorFullName}`);
     
     // Check if this reference number already exists
     const existingDonation = await MoneyDonation.findOne({ donationId });
     if (existingDonation) {
       // If it exists, generate a new one with a different random number
       console.log(`[Admin Money Donation API] Reference number collision detected: ${donationId}`);
-      const newDonationId = generateMoneyDonationReferenceNumber(donorInfo.name);
+      const newDonationId = generateMoneyDonationReferenceNumber(donorFullName);
       console.log(`[Admin Money Donation API] Generated new reference number: ${newDonationId}`);
       donationId = newDonationId;
     }
@@ -295,14 +306,16 @@ export async function POST(request: NextRequest) {
     }
     
     // Prioritize donor info from the form, ensure it's always used for the name
-    const donorName = donorInfo.name; // We require this field, don't fall back
+    const donorName = donorFullName; // Combine firstName and lastName
     const donorEmail = donorInfo.email || (existingUser ? existingUser.email : '');
     const donorPhone = donorInfo.phone || (existingUser ? existingUser.phone : '');
     
     // Create donation data with appropriate dates based on status
     const donationData = {
       donationId,
-      name: donorName,
+      firstName: donorInfo.firstName,
+      lastName: donorInfo.lastName,
+      name: donorFullName, // For backward compatibility
       email: donorEmail,
       phone: donorPhone,
       amount,
@@ -338,7 +351,7 @@ export async function POST(request: NextRequest) {
           subject: 'Thank You for Your Donation - New Steps Project',
           html: `
             <h2>Thank You for Your Donation!</h2>
-            <p>Dear ${donorInfo.name},</p>
+            <p>Dear ${donorFullName},</p>
             <p>We have received your monetary donation. Thank you for supporting the New Steps Project!</p>
             
             <h3>Donation Details:</h3>

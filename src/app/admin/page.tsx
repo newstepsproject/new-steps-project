@@ -1,15 +1,27 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, Users, BarChart3, Settings, DollarSign, ExternalLink, ArrowRight, Plus } from 'lucide-react';
+import { Package, Users, BarChart3, Settings, DollarSign, ExternalLink, ArrowRight, Plus, UserCircle, Shield, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const session = await getServerSession(authOptions);
+  
+  // Redirect to login if not authenticated or not admin
+  if (!session?.user || session.user.role !== 'admin') {
+    redirect('/login');
+  }
+
   return (
     <div className="space-y-6">
+      {/* Dashboard Overview */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">Dashboard Overview</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Welcome to the admin dashboard. Here's an overview of your platform.
+          Here's an overview of your platform and recent activity.
         </p>
       </div>
 

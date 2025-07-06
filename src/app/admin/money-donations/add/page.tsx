@@ -22,7 +22,7 @@ import { MoneyDonationStatus } from '@/types/common';
 
 // Status display names
 const statusDisplayNames = {
-  submit: 'Submitted',
+  submitted: 'Submitted',
   received: 'Received',
   processed: 'Processed',
   cancelled: 'Cancelled'
@@ -36,7 +36,8 @@ export default function AddMoneyDonationPage() {
   
   // Form state
   const [donorInfo, setDonorInfo] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: ''
   });
@@ -49,11 +50,11 @@ export default function AddMoneyDonationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form - only name is required
-    if (!donorInfo.name) {
+    // Validate form - only firstName and lastName are required
+    if (!donorInfo.firstName || !donorInfo.lastName) {
       toast({
         title: "Validation Error",
-        description: "Please enter the donor's name.",
+        description: "Please enter the donor's first and last name.",
         variant: "destructive",
       });
       return;
@@ -143,42 +144,55 @@ export default function AddMoneyDonationPage() {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="font-medium">
-                  Name <span className="text-red-500">*</span>
+                <Label htmlFor="firstName" className="font-medium">
+                  First Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="name"
-                  value={donorInfo.name}
-                  onChange={(e) => setDonorInfo({ ...donorInfo, name: e.target.value })}
+                  id="firstName"
+                  value={donorInfo.firstName}
+                  onChange={(e) => setDonorInfo({ ...donorInfo, firstName: e.target.value })}
                   required
                   className="h-10"
-                  placeholder="Enter donor's full name"
+                  placeholder="Enter donor's first name"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="font-medium">
-                  Email (Optional)
+                <Label htmlFor="lastName" className="font-medium">
+                  Last Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="email"
+                  id="lastName"
+                  value={donorInfo.lastName}
+                  onChange={(e) => setDonorInfo({ ...donorInfo, lastName: e.target.value })}
+                  required
+                  className="h-10"
+                  placeholder="Enter donor's last name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="donorEmail">
+                  Email
+                </Label>
+                <Input
+                  id="donorEmail"
                   type="email"
                   value={donorInfo.email}
                   onChange={(e) => setDonorInfo({ ...donorInfo, email: e.target.value })}
-                  className="h-10"
-                  placeholder="email@example.com"
+                  placeholder="Enter donor email"
+                  className="h-12"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone" className="font-medium">
-                  Phone (Optional)
+                <Label htmlFor="donorPhone">
+                  Phone
                 </Label>
                 <Input
-                  id="phone"
+                  id="donorPhone"
                   type="tel"
                   value={donorInfo.phone}
                   onChange={(e) => setDonorInfo({ ...donorInfo, phone: e.target.value })}
-                  className="h-10"
-                  placeholder="(123) 456-7890"
+                  placeholder="Enter donor phone"
+                  className="h-12"
                 />
               </div>
             </div>
@@ -213,17 +227,16 @@ export default function AddMoneyDonationPage() {
                 <p className="text-xs text-gray-500">Enter the donation amount in USD</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="checkNumber" className="font-medium">
-                  Check Number (Optional)
+                <Label htmlFor="checkNumber">
+                  Check Number
                 </Label>
                 <Input
                   id="checkNumber"
                   value={checkNumber}
                   onChange={(e) => setCheckNumber(e.target.value)}
-                  placeholder="e.g., 1234"
-                  className="h-10"
+                  placeholder="Enter check number if available"
+                  className="h-12"
                 />
-                <p className="text-xs text-gray-500">If the donation was made by check</p>
               </div>
             </div>
             
@@ -256,16 +269,15 @@ export default function AddMoneyDonationPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="notes" className="font-medium">
-                Notes (Optional)
+              <Label htmlFor="notes">
+                Notes
               </Label>
               <Textarea
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional information about this donation"
-                rows={4}
-                className="resize-none"
+                className="h-24"
               />
             </div>
             

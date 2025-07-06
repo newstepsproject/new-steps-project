@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useSafePathname } from '@/hooks/useSafeRouter';
 import { Home, Package, Users, DollarSign, FileText, Settings, LogOut, Footprints } from 'lucide-react';
 import MobileNav from './MobileNav';
 
@@ -11,7 +11,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const pathname = usePathname();
+  const pathname = useSafePathname();
   
   const navItems = [
     { label: 'Dashboard', href: '/admin', icon: <Home className="mr-2 h-4 w-4" /> },

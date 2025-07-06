@@ -133,7 +133,7 @@ export default function FAQPage() {
               If you can't find the answer you're looking for, please don't hesitate to contact us.
             </p>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-700"><strong>Email:</strong> newsteps.project@gmail.com</p>
+              <p className="text-gray-700"><strong>Email:</strong> newstepsfit@gmail.com</p>
               <p className="text-gray-700"><strong>Contact Form:</strong> <a href="/contact" className="text-brand hover:underline">Send us a message</a></p>
             </div>
           </div>

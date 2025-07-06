@@ -183,7 +183,7 @@ async function seedDonations(users: any[]) {
       address: '456 Demo Ave, Demo City, DC 54321',
       numberOfShoes: 3,
       shoeDetails: 'Three pairs of basketball shoes in good condition',
-      status: 'picked_up',
+      status: 'received',
       statusHistory: [
         {
           status: 'submitted',
@@ -191,9 +191,9 @@ async function seedDonations(users: any[]) {
           notes: 'Initial submission'
         },
         {
-          status: 'picked_up',
+          status: 'received',
           timestamp: new Date(),
-          notes: 'Picked up by volunteer'
+          notes: 'Received by team'
         }
       ]
     }
@@ -311,7 +311,7 @@ async function seedOrders(users: any[], shoes: any[]) {
       userName: users[1].name,
       userEmail: users[1].email,
       items: [{
-        shoeId: shoes[0]._id,
+        shoeId: shoes[0].shoeId,
         brand: shoes[0].brand,
         modelName: shoes[0].modelName,
         size: shoes[0].size,
@@ -332,7 +332,7 @@ async function seedOrders(users: any[], shoes: any[]) {
       userName: users[2].name,
       userEmail: users[2].email,
       items: [{
-        shoeId: shoes[1]._id,
+        shoeId: shoes[1].shoeId,
         brand: shoes[1].brand,
         modelName: shoes[1].modelName,
         size: shoes[1].size,

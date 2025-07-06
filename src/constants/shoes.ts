@@ -54,15 +54,10 @@ export const SHOE_BRANDS = [
   'Other'
 ];
 
-// Shoe status options
+// Shoe status options - Simplified 4-status system
 export const SHOE_STATUSES = {
-  AVAILABLE: 'available',
-  REQUESTED: 'requested',
-  CONFIRMED: 'confirmed',
-  RESERVED: 'reserved',
-  ORDERED: 'ordered',
-  SHIPPED: 'shipped',
-  DELIVERED: 'delivered',
-  PENDING_INVENTORY: 'pending_inventory',
-  UNAVAILABLE: 'unavailable'
+  AVAILABLE: 'available',     // Ready to be requested
+  REQUESTED: 'requested',     // In process (admin handling request)
+  SHIPPED: 'shipped',         // Sent to user
+  UNAVAILABLE: 'unavailable'  // Not available (damaged, lost, etc.)
 }; 

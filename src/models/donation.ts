@@ -11,10 +11,12 @@ export interface DonorAddress {
 }
 
 export interface DonorInfo {
-  name: string;
-  email: string;
-  phone: string;
-  address?: DonorAddress;
+  firstName: string;
+  lastName: string;
+  name?: string; // Keep for backward compatibility
+  email?: string; // Optional for offline donations
+  phone?: string; // Optional for offline donations
+  address?: DonorAddress; // Single address field - no duplication
 }
 
 export interface StatusHistoryEntry {
@@ -27,10 +29,13 @@ export interface StatusHistoryEntry {
 export interface DonationDocument extends Document {
   donationId: string;
   donationType: 'shoes' | 'money';
-  userId?: mongoose.Types.ObjectId; // Optional for offline donations
-  donorInfo?: DonorInfo; // For offline donations
+  
+  // USER INFORMATION - Use EITHER userId OR donorInfo, never both
+  userId?: mongoose.Types.ObjectId; // For online donations (logged-in users)
+  donorInfo?: DonorInfo; // For offline donations (manual entries)
+  
+  // DONATION DETAILS
   donationDescription: string;
-  donorAddress?: DonorAddress; // Separate field for address
   pickupPreference?: string;
   status: string;
   statusHistory: StatusHistoryEntry[];
@@ -40,8 +45,12 @@ export interface DonationDocument extends Document {
   processingDate?: Date;
   notes?: string;
   adminNotes?: string;
-  isOffline?: boolean; // True for manual entries
+  
+  // DONATION TYPE FLAGS
+  isOffline?: boolean; // True for manual entries, false for online submissions
   isBayArea?: boolean; // Whether donor is in Bay Area for pickup
+  
+  // METADATA
   numberOfShoes?: number; // Total number of shoes donated
   createdBy?: string; // Email of admin who created manual entry
   createdAt: Date;
@@ -57,10 +66,32 @@ const DonorAddressSchema = new Schema<DonorAddress>({
 });
 
 const DonorInfoSchema = new Schema<DonorInfo>({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  address: { type: DonorAddressSchema, required: false }
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  name: { type: String, required: false }, // Keep for backward compatibility
+  email: { type: String, required: false }, // Optional for offline donations
+  phone: { type: String, required: false }, // Optional for offline donations
+  address: { type: DonorAddressSchema, required: false } // Single address field
+});
+
+// Pre-save hook for DonorInfo to ensure name consistency
+DonorInfoSchema.pre('save', function(next) {
+  // If firstName and lastName are set but name is not, generate name
+  if (this.firstName && this.lastName && !this.name) {
+    this.name = `${this.firstName} ${this.lastName}`;
+  }
+  // If name is set but firstName and lastName are not, split name
+  else if (this.name && (!this.firstName || !this.lastName)) {
+    const nameParts = this.name.trim().split(' ');
+    if (nameParts.length >= 2) {
+      this.firstName = nameParts[0];
+      this.lastName = nameParts.slice(1).join(' ');
+    } else {
+      this.firstName = this.name;
+      this.lastName = '';
+    }
+  }
+  next();
 });
 
 const StatusHistoryEntrySchema = new Schema<StatusHistoryEntry>({
@@ -83,20 +114,23 @@ const DonationSchema = new Schema<DonationDocument>(
       required: true,
       default: 'shoes'
     },
+    
+    // USER INFORMATION - Use EITHER userId OR donorInfo
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: false // Made optional for offline donations
+      required: false // Only for online donations
     },
     donorInfo: {
       type: DonorInfoSchema,
-      required: false // Required for offline donations
+      required: false // Only for offline donations
     },
+    
+    // DONATION DETAILS
     donationDescription: {
       type: String,
       required: true
     },
-    donorAddress: DonorAddressSchema, // Separate field for address
     pickupPreference: String,
     status: {
       type: String,
@@ -113,6 +147,8 @@ const DonationSchema = new Schema<DonationDocument>(
     processingDate: Date,
     notes: String,
     adminNotes: String,
+    
+    // DONATION TYPE FLAGS
     isOffline: {
       type: Boolean,
       default: false
@@ -121,6 +157,8 @@ const DonationSchema = new Schema<DonationDocument>(
       type: Boolean,
       default: false
     },
+    
+    // METADATA
     numberOfShoes: {
       type: Number,
       min: 1
@@ -132,8 +170,31 @@ const DonationSchema = new Schema<DonationDocument>(
   }
 );
 
+// Validation: Ensure either userId OR donorInfo is provided, not both
+DonationSchema.pre('validate', function(next) {
+  if (this.isOffline) {
+    // Offline donations must have donorInfo
+    if (!this.donorInfo) {
+      return next(new Error('Offline donations must include donor information'));
+    }
+    // Offline donations should not have userId
+    if (this.userId) {
+      console.warn('Offline donation has userId - this may indicate data inconsistency');
+    }
+  } else {
+    // Online donations must have userId
+    if (!this.userId) {
+      return next(new Error('Online donations must be associated with a user account'));
+    }
+    // Online donations should not have donorInfo (user data comes from User model)
+    if (this.donorInfo) {
+      console.warn('Online donation has donorInfo - this may indicate data inconsistency');
+    }
+  }
+  next();
+});
+
 // Create indexes for faster lookups
-// Removed explicit donationId index - unique: true already creates an index
 DonationSchema.index({ userId: 1 });
 DonationSchema.index({ status: 1 });
 DonationSchema.index({ donationDate: 1 });

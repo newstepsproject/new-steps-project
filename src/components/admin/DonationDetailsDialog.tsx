@@ -76,7 +76,18 @@ export default function DonationDetailsDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Add state for editable donor information
-  const [donorName, setDonorName] = useState(donation.donor?.name || '');
+  const [donorFirstName, setDonorFirstName] = useState(() => {
+    // Split existing name into first and last if it exists
+    const existingName = donation.donor?.name || '';
+    const nameParts = existingName.split(' ');
+    return nameParts[0] || '';
+  });
+  const [donorLastName, setDonorLastName] = useState(() => {
+    // Split existing name into first and last if it exists
+    const existingName = donation.donor?.name || '';
+    const nameParts = existingName.split(' ');
+    return nameParts.slice(1).join(' ') || '';
+  });
   const [donorEmail, setDonorEmail] = useState(donation.donor?.email || '');
   const [donorPhone, setDonorPhone] = useState(donation.donor?.phone || '');
   
@@ -105,10 +116,11 @@ export default function DonationDetailsDialog({
 
   const handleStatusChange = async () => {
     // Check if any fields have changed
+    const combinedName = `${donorFirstName} ${donorLastName}`.trim();
     const isChanged = 
       newStatus !== donation.status || 
       notes !== donation.notes ||
-      donorName !== donation.donor?.name ||
+      combinedName !== donation.donor?.name ||
       donorEmail !== donation.donor?.email ||
       donorPhone !== donation.donor?.phone ||
       street !== donation.donorAddress?.street ||
@@ -136,7 +148,7 @@ export default function DonationDetailsDialog({
           status: newStatus,
           notes,
           donorInfo: {
-            name: donorName,
+            name: combinedName,
             email: donorEmail,
             phone: donorPhone
           },
@@ -241,12 +253,22 @@ export default function DonationDetailsDialog({
               
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="donor-name">Name</Label>
+                  <Label htmlFor="donor-first-name">First Name</Label>
                   <Input 
-                    id="donor-name" 
-                    value={donorName} 
-                    onChange={(e) => setDonorName(e.target.value)}
-                    placeholder="Donor name"
+                    id="donor-first-name" 
+                    value={donorFirstName} 
+                    onChange={(e) => setDonorFirstName(e.target.value)}
+                    placeholder="First name"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="donor-last-name">Last Name</Label>
+                  <Input 
+                    id="donor-last-name" 
+                    value={donorLastName} 
+                    onChange={(e) => setDonorLastName(e.target.value)}
+                    placeholder="Last name"
                   />
                 </div>
                 
@@ -262,7 +284,7 @@ export default function DonationDetailsDialog({
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="donor-phone">Phone</Label>
+                  <Label htmlFor="donor-phone">Phone Number</Label>
                   <Input 
                     id="donor-phone" 
                     value={donorPhone} 

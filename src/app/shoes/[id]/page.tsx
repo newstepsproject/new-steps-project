@@ -62,16 +62,21 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
     if (!shoe) return;
     
     const success = addItem({
-      id: shoe._id || '',
-      name: shoe.modelName || 'Unknown Model',
-      brand: shoe.brand || 'Unknown Brand',
-      sport: shoe.sport || 'General',
+      id: shoe._id,
+      shoeId: shoe.shoeId,
+      inventoryId: shoe._id,
+      name: shoe.modelName,
+      brand: shoe.brand,
+      modelName: shoe.modelName,
+      size: shoe.size,
+      color: shoe.color,
+      sport: shoe.sport,
+      condition: shoe.condition,
       gender: shoe.gender ?? 'unisex',
-      size: shoe.size ?? 'N/A',
-      color: shoe.color || 'Not specified',
-      condition: shoe.condition || 'good',
-      image: shoe.images?.[0] || '/images/placeholder-shoe.jpg',
-      shoeId: shoe.shoeId || 'N/A'
+      image: shoe.images[0] || '/images/placeholder-shoe.jpg',
+      quantity: 1,
+      price: 0, // Shoes are free
+      notes: ''
     });
     
     if (!success) {
@@ -161,7 +166,7 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
                 {/* Shoe ID Badge */}
                 <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-2 rounded-md flex items-center gap-1 sm:gap-2 shadow-sm">
                   <Hash className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="text-xs sm:text-sm font-mono font-bold">{shoe.shoeId || 'N/A'}</span>
+                  <span className="text-xs sm:text-sm font-mono font-bold">{shoe.shoeId}</span>
                 </div>
               </div>
             </div>
@@ -216,7 +221,7 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
                   <div className="flex items-center">
                     <Hash className="h-5 w-5 text-brand mr-2" />
                     <span className="text-sm font-medium text-brand">Shoe ID:</span>
-                    <span className="ml-2 text-lg font-mono font-bold text-brand">{shoe.shoeId || 'N/A'}</span>
+                    <span className="ml-2 text-lg font-mono font-bold text-brand">{shoe.shoeId}</span>
                   </div>
                   <p className="text-xs text-brand/70 mt-1">Reference this ID when requesting or for customer service</p>
                 </div>
@@ -391,17 +396,18 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
               {relatedShoes.map((relatedShoe) => (
                 <div key={relatedShoe._id} className="bg-white rounded-lg shadow-sm overflow-hidden">
                   <Link href={`/shoes/${relatedShoe._id}`} className="block">
-                    <div className="relative h-48">
+                    <div className="relative aspect-square">
                       <Image
                         src={relatedShoe.images?.[0] || '/images/placeholder-shoe.jpg'}
                         alt={relatedShoe.modelName || 'Shoe'}
                         fill
                         className="object-cover"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                       />
                       {/* Show shoe ID on related items too */}
                       <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-mono font-bold flex items-center gap-1">
                         <Hash className="h-3 w-3" />
-                        {relatedShoe.shoeId || 'N/A'}
+                        {relatedShoe.shoeId}
                       </div>
                     </div>
                     <div className="p-4">

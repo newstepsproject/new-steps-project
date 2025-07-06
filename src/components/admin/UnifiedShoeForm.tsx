@@ -19,14 +19,20 @@ import { createCompressedDataURL, formatFileSize } from '@/lib/image-utils';
 
 // Donor information schema
 const donorInfoSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
+  firstName: z.string().min(1, { message: 'First name is required' }),
+  lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Invalid email' }).optional().or(z.literal('')),
   phone: z.string().optional().or(z.literal('')),
 });
 
 // Form schema
 const formSchema = z.object({
-  donorInfo: donorInfoSchema,
+  donorInfo: z.object({
+    firstName: z.string().min(1, { message: 'First name is required' }),
+    lastName: z.string().min(1, { message: 'Last name is required' }),
+    email: z.string().email().optional().or(z.literal('')),
+    phone: z.string().optional(),
+  }),
   isOffline: z.boolean().default(true),
   donationReference: z.string().optional(),
   notes: z.string().optional(),
@@ -39,7 +45,6 @@ const formSchema = z.object({
   condition: z.string().min(1, { message: 'Condition is required' }),
   description: z.string().optional(),
   inventoryCount: z.coerce.number().int().positive().default(1),
-  featured: z.boolean().default(false),
   inventoryNotes: z.string().optional(),
   status: z.string().default(SHOE_STATUSES.AVAILABLE),
 }).refine(data => {
@@ -56,8 +61,8 @@ const formSchema = z.object({
   if (!data.isOffline && !data.donorInfo.email) {
     return false;
   }
-  // For all donations, name is required
-  return !!data.donorInfo.name;
+  // For all donations, firstName and lastName are required
+  return !!data.donorInfo.firstName && !!data.donorInfo.lastName;
 }, {
   message: "Online donations require donor name and email",
   path: ["donorInfo", "email"]
@@ -88,7 +93,8 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       donorInfo: {
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         phone: '',
       },
@@ -104,7 +110,6 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
       condition: 'like_new',
       description: '',
       inventoryCount: 1,
-      featured: false,
       inventoryNotes: '',
       status: SHOE_STATUSES.AVAILABLE,
     },
@@ -208,9 +213,21 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
       
       if (data.donation) {
         // Update donor info fields with the found donation
-        form.setValue('donorInfo.name', data.donation.donorInfo?.name || '');
-        form.setValue('donorInfo.email', data.donation.donorInfo?.email || '');
-        form.setValue('donorInfo.phone', data.donation.donorInfo?.phone || '');
+        const donorInfo = data.donation.donorInfo;
+        if (donorInfo) {
+          // Handle both old (name) and new (firstName/lastName) formats
+          if (donorInfo.firstName && donorInfo.lastName) {
+            form.setValue('donorInfo.firstName', donorInfo.firstName);
+            form.setValue('donorInfo.lastName', donorInfo.lastName);
+          } else if (donorInfo.name) {
+            // Split single name into first and last name
+            const nameParts = donorInfo.name.split(' ');
+            form.setValue('donorInfo.firstName', nameParts[0] || '');
+            form.setValue('donorInfo.lastName', nameParts.slice(1).join(' ') || '');
+          }
+          form.setValue('donorInfo.email', donorInfo.email || '');
+          form.setValue('donorInfo.phone', donorInfo.phone || '');
+        }
         
         // Format processing status for toast message
         const totalShoes = data.donation.numberOfShoes || 0;
@@ -298,7 +315,6 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
         donationReference: data.donationReference,
         notes: data.notes,
         description: data.description,
-        featured: data.featured,
         inventoryNotes: data.inventoryNotes
       };
       
@@ -335,19 +351,10 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
     }
   };
 
+  // Reset form for new entry
   const handleNewEntry = () => {
-    setShowResults(false);
-    setSubmittedShoes([]);
-    setImageFiles([]);
-    setImageUrls([]);
-    
-    // Reset form
     form.reset({
-      donorInfo: {
-        name: '',
-        email: '',
-        phone: '',
-      },
+      donorInfo: { firstName: '', lastName: '', email: '', phone: '' },
       isOffline: true,
       donationReference: '',
       notes: '',
@@ -360,10 +367,12 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
       condition: 'like_new',
       description: '',
       inventoryCount: 1,
-      featured: false,
       inventoryNotes: '',
       status: SHOE_STATUSES.AVAILABLE,
     });
+    setImageFiles([]);
+    setImageUrls([]);
+    setShowResults(false);
   };
 
   return (
@@ -520,17 +529,33 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                   </div>
                 )}
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="donorInfo.name"
+                    name="donorInfo.firstName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Donor Name <span className="text-red-500">*</span>
+                          First Name <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter donor name" className="h-12" />
+                          <Input {...field} placeholder="Enter first name" className="h-12" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="donorInfo.lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Last Name <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter last name" className="h-12" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -675,7 +700,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select brand" />
                             </SelectTrigger>
                           </FormControl>
@@ -715,7 +740,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                           </FormControl>
@@ -773,7 +798,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select sport" />
                             </SelectTrigger>
                           </FormControl>
@@ -801,7 +826,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select condition" />
                             </SelectTrigger>
                           </FormControl>
@@ -857,6 +882,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                             type="number" 
                             min="1" 
                             step="1" 
+                            className="h-12"
                             {...field} 
                           />
                         </FormControl>
@@ -876,7 +902,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-12">
                               <SelectValue placeholder="Select inventory status" />
                             </SelectTrigger>
                           </FormControl>
@@ -893,29 +919,6 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     )}
                   />
                 </div>
-                
-                <FormField
-                  control={form.control}
-                  name="featured"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Featured Shoe
-                        </FormLabel>
-                        <p className="text-sm text-gray-500">
-                          Feature this shoe prominently on the site
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
                 
                 <FormField
                   control={form.control}

@@ -100,28 +100,27 @@ export default function ShoesPage() {
     fetchShoes();
   }, []);
 
-  // Filter shoes based on search and filters
+  // Filter shoes based on search query
   const filteredShoes = shoes.filter(shoe => {
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      const matchesSearch = 
-        shoe.modelName?.toLowerCase().includes(query) || 
-        shoe.brand?.toLowerCase().includes(query) || 
-        shoe.sport?.toLowerCase().includes(query) ||
-        shoe.shoeId?.toLowerCase().includes(query);
-      
-      if (!matchesSearch) return false;
+    if (!searchQuery) return true;
+    
+    const query = searchQuery.toLowerCase();
+    
+    // Check if search query is numeric for shoe ID matching
+    const numericQuery = parseInt(searchQuery, 10);
+    if (!isNaN(numericQuery)) {
+      return shoe.shoeId === numericQuery ||
+             shoe.brand.toLowerCase().includes(query) ||
+             shoe.modelName.toLowerCase().includes(query) ||
+             shoe.sport.toLowerCase().includes(query) ||
+             shoe.color.toLowerCase().includes(query);
     }
     
-    // Apply dropdown filters
-    if (selectedSport !== 'all' && shoe.sport !== selectedSport) return false;
-    if (selectedBrand !== 'all' && shoe.brand !== selectedBrand) return false;
-    if (selectedGender !== 'all' && shoe.gender !== selectedGender) return false;
-    if (selectedCondition !== 'all' && shoe.condition !== selectedCondition) return false;
-    if (selectedSize !== 'all' && shoe.size !== selectedSize) return false;
-    
-    return true;
+    // Text-based search
+    return shoe.brand.toLowerCase().includes(query) ||
+           shoe.modelName.toLowerCase().includes(query) ||
+           shoe.sport.toLowerCase().includes(query) ||
+           shoe.color.toLowerCase().includes(query);
   });
 
   // Pagination logic
@@ -324,8 +323,10 @@ export default function ShoesPage() {
                               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                             />
                             {/* Prominent Shoe ID Badge */}
-                            <div className="absolute top-2 left-2 bg-brand text-white px-2 py-1 rounded-md text-sm font-mono font-semibold shadow-sm">
-                              ID: {shoe.shoeId || 'N/A'}
+                            <div className="absolute top-2 right-2 z-10">
+                              <div className="bg-brand text-white px-2 py-1 rounded text-xs font-mono font-bold">
+                                ID: {shoe.shoeId}
+                              </div>
                             </div>
                             <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded-md text-xs">
                               {getConditionDisplay(shoe.condition)}
@@ -363,16 +364,20 @@ export default function ShoesPage() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   const success = addItem({
-                                    id: shoe._id,
-                                    shoeId: shoe.shoeId || 'N/A',
-                                    name: shoe.modelName || 'Unknown Model',
-                                    brand: shoe.brand || 'Unknown Brand',
-                                    sport: shoe.sport || 'General',
+                                    shoeId: shoe.shoeId,
+                                    inventoryId: shoe._id,
+                                    name: shoe.modelName,
+                                    brand: shoe.brand,
+                                    modelName: shoe.modelName,
+                                    size: shoe.size,
+                                    color: shoe.color,
+                                    sport: shoe.sport,
+                                    condition: shoe.condition,
                                     gender: shoe.gender ?? 'unisex',
-                                    size: shoe.size ?? 'N/A',
-                                    color: shoe.color || 'Not specified',
-                                    condition: shoe.condition || 'good',
-                                    image: shoe.images?.[0] || '/images/placeholder-shoe.jpg'
+                                    image: shoe.images[0] || '/images/placeholder-shoe.jpg',
+                                    quantity: 1,
+                                    price: 0, // Shoes are free
+                                    notes: ''
                                   });
                                   if (!success) {
                                     toast({

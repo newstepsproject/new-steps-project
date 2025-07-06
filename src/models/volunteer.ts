@@ -4,7 +4,9 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface VolunteerDocument extends Document {
   volunteerId: string;
   userId?: mongoose.Types.ObjectId;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name?: string; // Keep for backward compatibility
   email: string;
   phone: string;
   city: string;
@@ -31,9 +33,17 @@ const volunteerSchema = new Schema<VolunteerDocument>(
       ref: 'User',
       required: false
     },
-    name: {
+    firstName: {
       type: String,
       required: true
+    },
+    lastName: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: false // Keep for backward compatibility
     },
     email: {
       type: String,
@@ -75,6 +85,26 @@ const volunteerSchema = new Schema<VolunteerDocument>(
     timestamps: true
   }
 );
+
+// Pre-save hook to ensure name consistency
+volunteerSchema.pre('save', function(next) {
+  // If firstName and lastName are set but name is not, generate name
+  if (this.firstName && this.lastName && !this.name) {
+    this.name = `${this.firstName} ${this.lastName}`;
+  }
+  // If name is set but firstName and lastName are not, split name
+  else if (this.name && (!this.firstName || !this.lastName)) {
+    const nameParts = this.name.trim().split(' ');
+    if (nameParts.length >= 2) {
+      this.firstName = nameParts[0];
+      this.lastName = nameParts.slice(1).join(' ');
+    } else {
+      this.firstName = this.name;
+      this.lastName = '';
+    }
+  }
+  next();
+});
 
 // Create indexes for faster lookups
 volunteerSchema.index({ userId: 1 });

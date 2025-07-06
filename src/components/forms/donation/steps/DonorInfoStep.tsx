@@ -13,7 +13,8 @@ import {
 // Define a more complete type that includes all required fields for the multi-step form
 interface DonationFormWithMethodData {
   donorInfo: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone: string;
     street: string;
@@ -40,8 +41,9 @@ interface DonationFormWithMethodData {
     method: 'dropoff' | 'pickup' | 'ship';
   };
   donationDescription: string;
-  // Original form fields for backward compatibility
-  name: string;
+  // Updated form fields for firstName/lastName
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   street: string;
@@ -67,18 +69,34 @@ export default function DonorInfoStep() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">
-              Full Name <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              {...register('name')}
-              placeholder="Enter your full name"
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="firstName"
+                {...register('firstName')}
+                placeholder="Enter your first name"
+              />
+              {errors.firstName && (
+                <p className="text-sm text-red-500">{errors.firstName.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="lastName">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="lastName"
+                {...register('lastName')}
+                placeholder="Enter your last name"
+              />
+              {errors.lastName && (
+                <p className="text-sm text-red-500">{errors.lastName.message}</p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -90,7 +108,7 @@ export default function DonorInfoStep() {
                 id="email"
                 type="email"
                 {...register('email')}
-                placeholder="Enter your email"
+                placeholder="Enter your email address"
               />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -99,7 +117,7 @@ export default function DonorInfoStep() {
 
             <div className="space-y-2">
               <Label htmlFor="phone">
-                Phone Number <span className="text-red-500">*</span>
+                Phone Number
               </Label>
               <Input
                 id="phone"

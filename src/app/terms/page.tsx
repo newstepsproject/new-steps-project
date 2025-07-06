@@ -96,7 +96,7 @@ export default function TermsPage() {
               </p>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-gray-700"><strong>New Steps Project</strong></p>
-                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:newsteps.project@gmail.com" className="text-brand hover:underline">newsteps.project@gmail.com</a></p>
+                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:newstepsfit@gmail.com" className="text-brand hover:underline">newstepsfit@gmail.com</a></p>
               </div>
             </section>
           </div>

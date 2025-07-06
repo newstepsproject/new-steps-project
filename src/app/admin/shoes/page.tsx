@@ -34,7 +34,7 @@ import { usePagination } from '@/hooks/usePagination';
 // Define the Shoe type
 interface Shoe {
   _id: string;
-  shoeId?: string;
+  shoeId: number;
   sku: string;
   brand: string;
   modelName: string;
@@ -69,7 +69,7 @@ export default function InventoryPage() {
       shoe.brand.toLowerCase().includes(filters.search.toLowerCase()) ||
       shoe.modelName.toLowerCase().includes(filters.search.toLowerCase()) ||
       shoe.sku.toLowerCase().includes(filters.search.toLowerCase()) ||
-      (shoe.shoeId && shoe.shoeId.toLowerCase().includes(filters.search.toLowerCase()));
+      (shoe.shoeId && shoe.shoeId.toString().includes(filters.search.toLowerCase()));
     
     const matchesStatus = filters.status === 'all' || filters.status === shoe.status;
     const matchesSport = filters.sport === 'all' || filters.sport === shoe.sport;
@@ -105,7 +105,7 @@ export default function InventoryPage() {
     shoe.status === SHOE_STATUSES.AVAILABLE && shoe.inventoryCount > 0
   ).reduce((sum, shoe) => sum + shoe.inventoryCount, 0);
   const shippedShoes = shoes.filter((shoe: Shoe) => 
-    shoe.status === SHOE_STATUSES.SHIPPED || shoe.status === SHOE_STATUSES.DELIVERED
+    shoe.status === SHOE_STATUSES.SHIPPED
   ).length;
   
   // Fetch shoes data
@@ -132,13 +132,13 @@ export default function InventoryPage() {
   }, []);
 
   // Handle delete shoe
-  const handleDelete = async (shoeId: string) => {
+  const handleDelete = async (mongoId: string) => {
     if (!confirm('Are you sure you want to delete this shoe? This action cannot be undone.')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/admin/shoes/${shoeId}`, {
+      const response = await fetch(`/api/admin/shoes/${mongoId}`, {
         method: 'DELETE',
       });
 
@@ -147,34 +147,22 @@ export default function InventoryPage() {
       }
 
       // Remove the shoe from the local state
-      setShoes(shoes.filter(shoe => shoe._id !== shoeId));
+      setShoes(shoes.filter(shoe => shoe._id !== mongoId));
     } catch (error) {
       console.error('Error deleting shoe:', error);
       alert('Failed to delete shoe. Please try again.');
     }
   };
 
-  // Status badge style based on status
+  // Status badge styles - Simplified for 4-status system
   const getStatusBadgeStyle = (status: string) => {
-    if (!status) return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
-    
     switch (status) {
       case SHOE_STATUSES.AVAILABLE:
         return 'bg-green-100 text-green-800 hover:bg-green-200';
       case SHOE_STATUSES.REQUESTED:
         return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
-      case SHOE_STATUSES.CONFIRMED:
-        return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
-      case SHOE_STATUSES.RESERVED:
-        return 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200';
-      case SHOE_STATUSES.ORDERED:
-        return 'bg-orange-100 text-orange-800 hover:bg-orange-200';
       case SHOE_STATUSES.SHIPPED:
         return 'bg-purple-100 text-purple-800 hover:bg-purple-200';
-      case SHOE_STATUSES.DELIVERED:
-        return 'bg-teal-100 text-teal-800 hover:bg-teal-200';
-      case SHOE_STATUSES.PENDING_INVENTORY:
-        return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
       case SHOE_STATUSES.UNAVAILABLE:
         return 'bg-red-100 text-red-800 hover:bg-red-200';
       default:

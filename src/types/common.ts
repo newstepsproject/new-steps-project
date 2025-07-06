@@ -1,8 +1,8 @@
 // Common status types
-export type Status = 'submitted' | 'picked_up' | 'received' | 'processed' | 'cancelled';
+export type Status = 'submitted' | 'received' | 'processed' | 'cancelled' | 'shipped' | 'delivered' | 'pending' | 'approved' | 'rejected';
 
 // Money donation status types
-export type MoneyDonationStatus = 'submit' | 'received' | 'processed' | 'cancelled';
+export type MoneyDonationStatus = 'submitted' | 'received' | 'processed' | 'cancelled';
 
 // Common filter parameters interface
 export interface FilterParams {
@@ -57,30 +57,46 @@ export interface StatusConfig {
 // Common status badge mapping
 export const STATUS_CONFIGS: Record<Status, StatusConfig> = {
   submitted: {
-    color: 'bg-yellow-100 text-yellow-800',
+    color: 'bg-blue-100 text-blue-800',
     text: 'Submitted'
   },
-  picked_up: {
-    color: 'bg-indigo-100 text-indigo-800',
-    text: 'Picked Up'
-  },
   received: {
-    color: 'bg-cyan-100 text-cyan-800',
+    color: 'bg-green-100 text-green-800',
     text: 'Received'
   },
   processed: {
-    color: 'bg-green-100 text-green-800',
+    color: 'bg-purple-100 text-purple-800',
     text: 'Processed'
   },
   cancelled: {
-    color: 'bg-gray-100 text-gray-800',
+    color: 'bg-red-100 text-red-800',
     text: 'Cancelled'
+  },
+  shipped: {
+    color: 'bg-indigo-100 text-indigo-800',
+    text: 'Shipped'
+  },
+  delivered: {
+    color: 'bg-green-100 text-green-800',
+    text: 'Delivered'
+  },
+  pending: {
+    color: 'bg-yellow-100 text-yellow-800',
+    text: 'Pending'
+  },
+  approved: {
+    color: 'bg-green-100 text-green-800',
+    text: 'Approved'
+  },
+  rejected: {
+    color: 'bg-red-100 text-red-800',
+    text: 'Rejected'
   }
 };
 
 // Money donation status badge mapping
 export const MONEY_DONATION_STATUS_CONFIGS: Record<MoneyDonationStatus, StatusConfig> = {
-  submit: {
+  submitted: {
     color: 'bg-blue-100 text-blue-800',
     text: 'Submitted'
   },
@@ -112,16 +128,59 @@ export interface PaginationParams {
   total: number;
 }
 
+export interface CartItem {
+  id: string;
+  shoeId: number; // Sequential ID from inventory
+  inventoryId: string;
+  name: string;
+  brand: string;
+  modelName: string;
+  size: string;
+  color: string;
+  sport: string;
+  condition: string;
+  gender: 'men' | 'women' | 'unisex' | 'boys' | 'girls';
+  image: string;
+  quantity: number;
+  price: number;
+  notes?: string;
+}
+
 export interface ShoeRequestItem {
-  shoeId?: string; // Sequential ID from inventory
-  inventoryId?: string; // MongoDB ObjectId reference  
+  inventoryId: string;
+  shoeId: number;
   brand: string;
   name: string;
+  modelName?: string;
   size: string;
-  gender: string;
+  color: string;
+  sport: string;
   condition: string;
-  sport?: string;
+  gender: 'men' | 'women' | 'unisex' | 'boys' | 'girls';
+  image: string;
+  quantity: number;
   notes?: string;
+}
+
+export interface ShoeRequestOrder {
+  id: string;
+  userId: string;
+  items: ShoeRequestItem[];
+  status: 'submitted' | 'approved' | 'shipped' | 'rejected';
+  shippingAddress: {
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  shippingMethod: 'standard' | 'pickup';
+  shippingFee: number;
+  specialRequests?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  adminNotes?: string;
 }
 
 export enum RequestStatus {
@@ -168,20 +227,17 @@ export interface ShoeRequest {
   };
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'requested_return' | 'return_received';
+export type OrderStatus = 'pending' | 'rejected' | 'shipped' | 'cancelled';
 
 export const ORDER_STATUSES: Record<string, OrderStatus> = {
   PENDING: 'pending',
-  CONFIRMED: 'confirmed',
+  REJECTED: 'rejected', 
   SHIPPED: 'shipped',
-  DELIVERED: 'delivered',
-  CANCELLED: 'cancelled',
-  RETURN_REQUESTED: 'requested_return',
-  RETURN_RECEIVED: 'return_received'
+  CANCELLED: 'cancelled'
 };
 
 export interface OrderItem {
-  shoeId: string;
+  shoeId: number;
   shoeName: string;
   quantity: number;
   price: number;

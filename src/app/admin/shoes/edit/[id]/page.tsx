@@ -42,28 +42,24 @@ import { Checkbox } from '@/components/ui/checkbox';
 // Form schema for shoe editing
 const shoeSchema = z.object({
   id: z.string(),
-  sku: z.string().min(3, { message: 'SKU must be at least 3 characters' }),
+  sku: z.string().min(1, { message: 'SKU is required' }),
   brand: z.string().min(1, { message: 'Brand is required' }),
   modelName: z.string().min(1, { message: 'Model name is required' }),
-  gender: z.enum(['men', 'women', 'unisex', 'boys', 'girls'], { 
-    message: 'Please select a valid gender option' 
-  }),
+  gender: z.enum(['men', 'women', 'unisex', 'boys', 'girls']),
   size: z.string().min(1, { message: 'Size is required' }),
   color: z.string().min(1, { message: 'Color is required' }),
   sport: z.string().min(1, { message: 'Sport is required' }),
-  condition: z.enum(['like_new', 'good', 'fair'], { 
-    message: 'Please select a valid condition' 
-  }),
+  condition: z.enum(['like_new', 'good', 'fair']),
   description: z.string().optional(),
-  status: z.string().min(1, { message: 'Status is required' }),
-  inventoryCount: z.coerce
+  status: z.enum(Object.values(SHOE_STATUSES) as [string, ...string[]]),
+  inventoryCount: z
     .number()
     .min(0, { message: 'Inventory count must be at least 0' })
     .int({ message: 'Inventory count must be a whole number' }),
   inventoryNotes: z.string().optional(),
-  featured: z.boolean().optional().default(false),
   // Donor information
-  donorName: z.string().optional(),
+  donorFirstName: z.string().optional(),
+  donorLastName: z.string().optional(),
   donorEmail: z.string().email({ message: 'Invalid email format' }).optional().or(z.literal('')),
   donorPhone: z.string().optional().or(z.literal('')),
   isOffline: z.boolean().optional().default(true)
@@ -98,8 +94,8 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
       status: SHOE_STATUSES.AVAILABLE,
       inventoryCount: 1,
       inventoryNotes: '',
-      featured: false,
-      donorName: '',
+      donorFirstName: '',
+      donorLastName: '',
       donorEmail: '',
       donorPhone: '',
       isOffline: true
@@ -208,8 +204,8 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
           status: shoe.status,
           inventoryCount: shoe.inventoryCount,
           inventoryNotes: shoe.inventoryNotes || '',
-          featured: shoe.featured || false,
-          donorName: shoe.donorName || '',
+          donorFirstName: shoe.donorFirstName || '',
+          donorLastName: shoe.donorLastName || '',
           donorEmail: shoe.donorEmail || '',
           donorPhone: shoe.donorPhone || '',
           isOffline: shoe.isOffline !== false
@@ -326,14 +322,32 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField
                     control={form.control}
-                    name="donorName"
+                    name="donorFirstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Donor Name</FormLabel>
+                        <FormLabel>Donor First Name</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="Enter donor name" 
+                            placeholder="Enter donor first name" 
+                            disabled={fromDonation}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="donorLastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Donor Last Name</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            placeholder="Enter donor last name" 
                             disabled={fromDonation}
                           />
                         </FormControl>
@@ -360,47 +374,23 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
                       </FormItem>
                     )}
                   />
-                  
-                  <FormField
-                    control={form.control}
-                    name="donorPhone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Donor Phone</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            placeholder="(123) 456-7890" 
-                            type="tel"
-                            disabled={fromDonation}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
                 
                 <FormField
                   control={form.control}
-                  name="isOffline"
+                  name="donorPhone"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormItem>
+                      <FormLabel>Donor Phone</FormLabel>
                       <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
+                        <Input 
+                          {...field} 
+                          placeholder="(123) 456-7890" 
+                          type="tel"
                           disabled={fromDonation}
                         />
                       </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          This is an offline donation
-                        </FormLabel>
-                        <p className="text-sm text-gray-500">
-                          Mark this if the donation was made in person or by mail
-                        </p>
-                      </div>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -760,29 +750,6 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
                     )}
                   />
                 </div>
-                
-                <FormField
-                  control={form.control}
-                  name="featured"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Featured Shoe
-                        </FormLabel>
-                        <p className="text-sm text-gray-500">
-                          Feature this shoe prominently on the site
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
                 
                 <FormField
                   control={form.control}

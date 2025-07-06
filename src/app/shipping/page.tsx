@@ -191,7 +191,7 @@ export default function ShippingPage() {
                 </p>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-700"><strong>Email:</strong> newsteps.project@gmail.com</p>
+                    <p className="text-gray-700"><strong>Email:</strong> newstepsfit@gmail.com</p>
                     <p className="text-gray-700"><strong>Subject Line:</strong> "Shipping Question"</p>
                   </div>
                   <div>

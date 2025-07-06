@@ -12,7 +12,8 @@ import { CalendarIcon, TruckIcon, MapPinIcon } from 'lucide-react';
 // Define a more complete type that includes all required fields for the multi-step form
 interface DonationFormWithMethodData {
   donorInfo: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone: string;
     street: string;

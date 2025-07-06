@@ -26,7 +26,8 @@ import { ShoeItem } from '@/types/common';
 // Define a more complete type that includes all required fields for the multi-step form
 interface DonationFormWithMethodData {
   donorInfo: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone: string;
     street: string;
@@ -53,8 +54,9 @@ interface DonationFormWithMethodData {
     method: 'dropoff' | 'pickup' | 'ship';
   };
   donationDescription: string;
-  // Original form fields for backward compatibility
-  name: string;
+  // Updated form fields for firstName/lastName
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   street: string;
@@ -328,7 +330,7 @@ export function ShoeDetailsStep({ items, onItemsChange, onNext, onBack }: ShoeDe
                 <Textarea
                   id={`description-${index}`}
                   {...register(`shoeDetails.shoes.${index}.description`)}
-                  placeholder="Provide any additional details about the shoes (optional)"
+                  placeholder="Provide any additional details about the shoes"
                   className="h-20"
                 />
               </div>

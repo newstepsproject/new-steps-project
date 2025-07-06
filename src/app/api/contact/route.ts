@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendPartnerInquiryConfirmation, sendCustomEmail } from '@/lib/email';
-import { CONTACT_INFO } from '@/constants/config';
+import { getEmailAddress, getAppSettings } from '@/lib/settings';
 
 // Define the contact form data type
 type ContactFormData = {
-  name: string;
+  // Support both old format (name) and new format (firstName + lastName)
+  name?: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   subject: string;
   message: string;
   inquiryType?: 'general' | 'partnership' | 'volunteer' | 'donation';
   organization?: string;
+  organizationName?: string; // Partnership forms use this
+  organizationType?: string; // Partnership forms use this
+  phone?: string;
+  type?: string; // Some forms send this instead of inquiryType
 };
 
 export async function POST(request: NextRequest) {
@@ -17,10 +24,13 @@ export async function POST(request: NextRequest) {
     // Parse the request body
     const data: ContactFormData = await request.json();
     
+    // Extract the contact name (support both formats)
+    const contactName = data.name || (data.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : '');
+    
     // Validate required fields
-    if (!data.name || !data.email || !data.subject || !data.message) {
+    if (!contactName || !data.email || !data.subject || !data.message) {
       return NextResponse.json(
-        { success: false, message: 'Missing required fields: name, email, subject, and message are required' },
+        { success: false, message: 'Missing required fields: name (or firstName/lastName), email, subject, and message are required' },
         { status: 400 }
       );
     }
@@ -34,26 +44,38 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    // Determine inquiry type
+    const inquiryType = data.inquiryType || data.type || 'general';
+    
     console.log('Contact form submitted:', {
-      name: data.name,
+      name: contactName,
       email: data.email,
       subject: data.subject,
-      inquiryType: data.inquiryType || 'general',
-      organization: data.organization,
+      inquiryType,
+      organization: data.organization || data.organizationName,
+      organizationType: data.organizationType,
+      phone: data.phone,
       messageLength: data.message.length
     });
     
     // Send notification email to the team
     try {
+      const contactEmail = await getEmailAddress('contact');
+      const organizationInfo = data.organizationName ? `
+        <p><strong>Organization:</strong> ${data.organizationName}</p>
+        <p><strong>Organization Type:</strong> ${data.organizationType || 'Not specified'}</p>
+      ` : data.organization ? `<p><strong>Organization:</strong> ${data.organization}</p>` : '';
+      
       await sendCustomEmail(
-        CONTACT_INFO.email,
+        contactEmail,
         `New Contact Form Submission: ${data.subject}`,
         `
           <h2>New Contact Form Submission</h2>
-          <p><strong>From:</strong> ${data.name} (${data.email})</p>
+          <p><strong>From:</strong> ${contactName} (${data.email})</p>
           <p><strong>Subject:</strong> ${data.subject}</p>
-          <p><strong>Inquiry Type:</strong> ${data.inquiryType || 'general'}</p>
-          ${data.organization ? `<p><strong>Organization:</strong> ${data.organization}</p>` : ''}
+          <p><strong>Inquiry Type:</strong> ${inquiryType}</p>
+          ${organizationInfo}
+          ${data.phone ? `<p><strong>Phone:</strong> ${data.phone}</p>` : ''}
           <p><strong>Message:</strong></p>
           <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 10px 0;">
             ${data.message.replace(/\n/g, '<br>')}
@@ -69,12 +91,12 @@ export async function POST(request: NextRequest) {
     
     // Send confirmation email to the user
     try {
-      if (data.inquiryType === 'partnership' || data.subject.toLowerCase().includes('partner')) {
+      if (inquiryType === 'partnership' || data.subject.toLowerCase().includes('partner')) {
         // Send partner inquiry confirmation
         await sendPartnerInquiryConfirmation({
           to: data.email,
-          name: data.name,
-          organization: data.organization,
+          name: contactName,
+          organization: data.organizationName || data.organization,
           message: data.message
         });
         console.log('✅ Partner inquiry confirmation sent to:', data.email);
@@ -85,7 +107,7 @@ export async function POST(request: NextRequest) {
           'Thank you for contacting New Steps Project',
           `
             <h1>Thank you for reaching out!</h1>
-            <p>Dear ${data.name},</p>
+            <p>Dear ${contactName},</p>
             <p>We've received your message and will get back to you within 24-48 hours during business days.</p>
             
             <h2>Your Message:</h2>
@@ -94,11 +116,11 @@ export async function POST(request: NextRequest) {
               ${data.message.replace(/\n/g, '<br>')}
             </div>
             
-            <p>If you have any urgent questions, please don't hesitate to call us at ${CONTACT_INFO.phone}.</p>
+            <p>If you have any urgent questions, please don't hesitate to call us at ${(await getAppSettings()).projectPhone}.</p>
             
             <p>Best regards,<br>
             The New Steps Project Team<br>
-            Email: ${CONTACT_INFO.email}</p>
+            Email: ${await getEmailAddress('contact')}</p>
           `
         );
         console.log('✅ General contact confirmation sent to:', data.email);
