@@ -31,7 +31,8 @@ const VerificationTokenSchema = new Schema<VerificationTokenDocument>(
 );
 
 // Create indexes for faster lookup and automatic token expiration
-VerificationTokenSchema.index({ userId: 1 });
+// Note: userId index is already created by the ref option in the schema definition
+// Note: token index is already created by the unique: true option in the schema definition
 VerificationTokenSchema.index({ expires: 1 }, { expireAfterSeconds: 0 }); // TTL index, auto-delete expired tokens
 
 // Create and export the model, checking if it already exists to avoid Next.js hot reload issues

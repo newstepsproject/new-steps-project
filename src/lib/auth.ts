@@ -133,15 +133,21 @@ export const authOptions: NextAuthOptions = {
           } else {
             // Create new user for Google OAuth
             console.log('Creating new Google user:', user.email);
+            
+            // Extract firstName and lastName from Google profile
+            const firstName = (profile as any)?.given_name || user.name?.split(' ')[0] || '';
+            const lastName = (profile as any)?.family_name || user.name?.split(' ').slice(1).join(' ') || '';
+            
             const newUser = await UserModel.create({
               email: user.email?.toLowerCase(),
               name: user.name,
+              firstName,
+              lastName,
+              phone: '', // Empty phone for OAuth users
               image: user.image,
               role: 'user', // Default role for new users
               emailVerified: true, // Google accounts are pre-verified
-              password: null, // No password for OAuth users
-              createdAt: new Date(),
-              lastLogin: new Date()
+              // Don't include password field at all for OAuth users
             });
             
             console.log('New Google user created:', newUser._id);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
 import { MoneyDonationFormData } from '@/components/forms/donation/MoneyDonationForm';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import MoneyDonation from '@/models/MoneyDonation';
 import { generateMoneyDonationReferenceNumber } from '@/lib/utils';
 import { sendMoneyDonationConfirmation } from '@/lib/email';
@@ -9,7 +9,7 @@ import { sendMoneyDonationConfirmation } from '@/lib/email';
 export async function POST(request: NextRequest) {
   try {
     // Connect to database 
-    await connectDB();
+    await connectToDatabase();
     
     // Parse the request data
     const data: MoneyDonationFormData = await request.json();

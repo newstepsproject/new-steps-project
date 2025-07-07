@@ -54,9 +54,13 @@ async function connectToDatabase(): Promise<mongoose.Mongoose> {
     }
 
     const opts = {
-      bufferCommands: false,
-      serverSelectionTimeoutMS: 10000, // Timeout after 10s
+      bufferCommands: true,
+      serverSelectionTimeoutMS: 30000, // Timeout after 30s
       socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      minPoolSize: 5, // Maintain a minimum of 5 socket connections
+      maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+      waitQueueTimeoutMS: 5000, // How long a thread will wait for a socket to become available
     };
 
     // If TEST_MODE is set, we'll use the MongoDB memory server URI that was set by the test script

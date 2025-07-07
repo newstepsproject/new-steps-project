@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import User from '@/models/user';
 import ShoeRequest, { ShoeRequestStatus } from '@/models/shoeRequest';
 import Shoe from '@/models/shoe';
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Connect to database
-    await connectDB();
+    await connectToDatabase();
     
     // Get user information
     const user = await User.findOne({ email: session.user?.email });
@@ -248,7 +248,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Connect to database
-    await connectDB();
+    await connectToDatabase();
     
     // Get user information
     const user = await User.findOne({ email: session.user?.email });

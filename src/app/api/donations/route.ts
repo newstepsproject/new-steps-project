@@ -12,50 +12,54 @@ import { generateId } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'You must be logged in to make a donation' },
-        { status: 401 }
-      );
-    }
-
-    // Get form data
+    // Get form data first
     const data = await request.json();
     
     // Connect to the database
     await connectToDatabase();
 
-    // Find user by ID - add type safety
-    const userId = (session.user as SessionUser).id;
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID not found in session' },
-        { status: 400 }
-      );
+    // Check authentication (optional for shoe donations)
+    const session = await getServerSession(authOptions);
+    
+    // Determine donor information and donation ID
+    let user = null;
+    let donorName = '';
+    let donationId = '';
+    
+    if (session?.user) {
+      // User is logged in - use their information
+      const userId = (session.user as SessionUser).id;
+      if (userId) {
+        user = await User.findById(userId);
+        if (user) {
+          donorName = user.name;
+          donationId = generateId('DON', user.name);
+        }
+      }
     }
-
-    const user = await User.findById(userId);
+    
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      // User not logged in or not found - use provided donor information
+      donorName = data.firstName && data.lastName 
+        ? `${data.firstName} ${data.lastName}`
+        : data.name || 'Anonymous Donor';
+      
+      if (!donorName || donorName === 'Anonymous Donor') {
+        return NextResponse.json(
+          { error: 'Donor name is required for shoe donations' },
+          { status: 400 }
+        );
+      }
+      
+      donationId = generateId('DON', donorName);
     }
-
-    // Generate a unique donation ID using the proper format (DS-XXXX-YYYY)
-    const donationId = generateId('DON', user.name);
 
     // Determine if donor is in Bay Area
     const isBayArea = data.isBayArea || false;
 
-    // Create a new donation record using simplified model
-    const newDonation = new Donation({
+    // Create donation record based on authentication status
+    const donationData: any = {
       donationId,
-      userId: user._id, // Online donation - use userId
-      // Do NOT set donorInfo for online donations - user data comes from User model
       donationType: 'shoes',
       donationDescription: data.donationDescription,
       status: DONATION_STATUSES.SUBMITTED,
@@ -73,29 +77,52 @@ export async function POST(request: NextRequest) {
       isBayArea: isBayArea,
       numberOfShoes: data.numberOfShoes || 1,
       donationDate: new Date()
-    });
+    };
 
-    // Save the donation
+    if (user) {
+      // Authenticated user - use userId and get info from User model
+      donationData.userId = user._id;
+    } else {
+      // Non-authenticated user - use donorInfo
+      donationData.donorInfo = {
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        name: donorName,
+        email: data.email || '',
+        phone: data.phone || '',
+        address: data.address || {}
+      };
+    }
+
+    // Create and save the donation
+    const newDonation = new Donation(donationData);
     const savedDonation = await newDonation.save();
 
-    // Add the donation to the user's donations array
-    await User.updateOne(
-      { _id: user._id },
-      { $push: { donations: savedDonation._id } }
-    );
+    // Add the donation to the user's donations array (if user is logged in)
+    if (user) {
+      await User.updateOne(
+        { _id: user._id },
+        { $push: { donations: savedDonation._id } }
+      );
+    }
 
     // Send confirmation email
     try {
-      await sendEmail(
-        user.email,
-        EmailTemplate.DONATION_CONFIRMATION,
-        {
-          name: user.name,
-          donationId,
-          donationDescription: data.donationDescription,
-          isBayArea
-        }
-      );
+      const recipientEmail = user ? user.email : data.email;
+      const recipientName = user ? user.name : donorName;
+      
+      if (recipientEmail) {
+        await sendEmail(
+          recipientEmail,
+          EmailTemplate.DONATION_CONFIRMATION,
+          {
+            name: recipientName,
+            donationId,
+            donationDescription: data.donationDescription,
+            isBayArea
+          }
+        );
+      }
     } catch (emailError) {
       console.error('Error sending donation confirmation email:', emailError);
       // Continue with the process even if email fails

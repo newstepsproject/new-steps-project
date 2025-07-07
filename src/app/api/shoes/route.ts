@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import Shoe from '@/models/shoe';
 import { SHOE_STATUSES } from '@/constants/config';
 
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    await connectToDatabase();
     
     // Get query parameters for filtering
     const searchParams = request.nextUrl.searchParams;

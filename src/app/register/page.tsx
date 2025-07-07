@@ -173,15 +173,14 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone <span className="text-red-500">*</span></Label>
+              <Label htmlFor="phone">Phone</Label>
               <Input
                 id="phone"
                 name="phone"
                 type="tel"
-                placeholder="(123) 456-7890"
+                placeholder="(123) 456-7890 (optional)"
                 value={formData.phone}
                 onChange={handleChange}
-                required
                 disabled={isLoading}
               />
             </div>

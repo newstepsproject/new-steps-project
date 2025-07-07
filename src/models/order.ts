@@ -137,9 +137,8 @@ const OrderSchema = new Schema<OrderDocument>(
 );
 
 // Create indexes for faster lookups
-OrderSchema.index({ userId: 1 });
+// Note: userId index is already created by the ref option in the schema definition
 OrderSchema.index({ status: 1 });
-OrderSchema.index({ 'items.shoeId': 1 });
 OrderSchema.index({ createdAt: 1 });
 
 // Create and export the model, checking if it already exists to avoid Next.js hot reload issues

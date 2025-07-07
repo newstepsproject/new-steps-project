@@ -107,7 +107,7 @@ volunteerSchema.pre('save', function(next) {
 });
 
 // Create indexes for faster lookups
-volunteerSchema.index({ userId: 1 });
+// Note: userId index is already created by the ref option in the schema definition
 volunteerSchema.index({ email: 1 });
 volunteerSchema.index({ status: 1 });
 volunteerSchema.index({ submittedAt: 1 });

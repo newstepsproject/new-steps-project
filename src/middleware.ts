@@ -23,6 +23,7 @@ export const config = {
     '/account/:path*',
     '/api/user/:path*',
     '/api/orders/:path*',
-    '/api/donations/:path*',
+    // Note: /api/donations removed to allow public shoe donations without authentication
+    // Specific admin donation endpoints still require auth via individual API route checks
   ],
 }; 

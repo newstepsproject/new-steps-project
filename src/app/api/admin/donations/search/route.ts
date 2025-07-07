@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import Donation from '@/models/donation';
 
 // Force dynamic rendering due to headers usage
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    await connectDB();
+    await connectToDatabase();
 
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get('q') || '';

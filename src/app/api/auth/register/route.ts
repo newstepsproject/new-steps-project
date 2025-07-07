@@ -12,7 +12,7 @@ const registerSchema = z.object({
   firstName: ValidationPatterns.firstName,
   lastName: ValidationPatterns.lastName,
   email: ValidationPatterns.email,
-  phone: ValidationPatterns.phone,
+  phone: ValidationPatterns.phoneOptional, // Phone is optional for all registrations
   password: ValidationPatterns.password,
   name: z.string().optional(), // Optional for backward compatibility
   address: ValidationPatterns.addressOptional,

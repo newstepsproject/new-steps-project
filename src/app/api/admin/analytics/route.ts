@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import Shoe from '@/models/shoe';
 import ShoeRequest from '@/models/shoeRequest';
 import Donation from '@/models/donation';

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import Donation from '@/models/donation';
 import { DONATION_STATUSES } from '@/constants/config';
 import MoneyDonation from '@/models/MoneyDonation';

@@ -15,7 +15,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   name?: string; // Keeping for backward compatibility
-  phone: string;
+  phone?: string;
   address?: {
     street: string;
     city: string;
@@ -70,19 +70,20 @@ const UserSchema = new Schema<UserDocument>(
     },
     firstName: {
       type: String,
-      required: false // Not required for backward compatibility
+      required: true // Required as primary name field
     },
     lastName: {
       type: String,
-      required: false // Not required for backward compatibility
+      required: true // Required as primary name field
     },
     name: {
       type: String,
-      required: true
+      required: false // Name is optional since we use firstName/lastName as primary
     },
     phone: {
       type: String,
-      required: true
+      required: false, // Not required for OAuth users (Google doesn't provide phone)
+      default: ''
     },
     address: AddressSchema,
     // Optional fields
@@ -160,8 +161,8 @@ UserSchema.methods.comparePassword = async function(candidatePassword: string): 
 
 // Pre-save hook to hash password
 UserSchema.pre('save', async function(next) {
-  // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) return next();
+  // Only hash the password if it has been modified (or is new) AND it exists
+  if (!this.isModified('password') || !this.password) return next();
   
   try {
     // Generate a salt

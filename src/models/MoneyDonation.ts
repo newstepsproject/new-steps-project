@@ -119,8 +119,7 @@ moneyDonationSchema.pre('save', function(next) {
 // Create indexes
 moneyDonationSchema.index({ email: 1 });
 moneyDonationSchema.index({ status: 1 });
-moneyDonationSchema.index({ userId: 1 });
-moneyDonationSchema.index({ createdAt: -1 });
+moneyDonationSchema.index({ createdAt: 1 });
 moneyDonationSchema.index({ isOffline: 1 });
 
 // Create or use the existing model

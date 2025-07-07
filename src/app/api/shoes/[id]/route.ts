@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
+import connectToDatabase from '@/lib/db';
 import Shoe from '@/models/shoe';
 import { SHOE_STATUSES } from '@/constants/config';
 
@@ -15,7 +15,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectDB();
+    await connectToDatabase();
     
     const { id } = params;
     

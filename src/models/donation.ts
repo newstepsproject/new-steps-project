@@ -3,11 +3,11 @@ import { DONATION_STATUSES } from '@/constants/config';
 
 // Define interfaces for donation components
 export interface DonorAddress {
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
+  street?: string; // Optional for admin/offline operations
+  city?: string; // Optional for admin/offline operations
+  state?: string; // Optional for admin/offline operations
+  zipCode?: string; // Optional for admin/offline operations
+  country?: string; // Optional for admin/offline operations
 }
 
 export interface DonorInfo {
@@ -58,11 +58,11 @@ export interface DonationDocument extends Document {
 }
 
 const DonorAddressSchema = new Schema<DonorAddress>({
-  street: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  zipCode: { type: String, required: true },
-  country: { type: String, required: true }
+  street: { type: String, required: false }, // Optional for admin/offline operations
+  city: { type: String, required: false }, // Optional for admin/offline operations
+  state: { type: String, required: false }, // Optional for admin/offline operations
+  zipCode: { type: String, required: false }, // Optional for admin/offline operations
+  country: { type: String, required: false, default: 'USA' } // Optional with default
 });
 
 const DonorInfoSchema = new Schema<DonorInfo>({
@@ -170,10 +170,10 @@ const DonationSchema = new Schema<DonationDocument>(
   }
 );
 
-// Validation: Ensure either userId OR donorInfo is provided, not both
+// Validation: Ensure proper user information is provided based on donation type
 DonationSchema.pre('validate', function(next) {
   if (this.isOffline) {
-    // Offline donations must have donorInfo
+    // Offline donations (admin-created) must have donorInfo
     if (!this.donorInfo) {
       return next(new Error('Offline donations must include donor information'));
     }
@@ -182,23 +182,21 @@ DonationSchema.pre('validate', function(next) {
       console.warn('Offline donation has userId - this may indicate data inconsistency');
     }
   } else {
-    // Online donations must have userId
-    if (!this.userId) {
-      return next(new Error('Online donations must be associated with a user account'));
+    // Online donations can have either userId (logged-in users) OR donorInfo (anonymous users)
+    if (!this.userId && !this.donorInfo) {
+      return next(new Error('Online donations must have either user account or donor information'));
     }
-    // Online donations should not have donorInfo (user data comes from User model)
-    if (this.donorInfo) {
-      console.warn('Online donation has donorInfo - this may indicate data inconsistency');
-    }
+    // If both are provided, that's OK - logged-in user with additional donor info
   }
   next();
 });
 
 // Create indexes for faster lookups
-DonationSchema.index({ userId: 1 });
+// Note: userId index is already created by the ref option in the schema definition
 DonationSchema.index({ status: 1 });
-DonationSchema.index({ donationDate: 1 });
 DonationSchema.index({ donationType: 1 });
+DonationSchema.index({ donationDate: 1 });
+DonationSchema.index({ 'donorInfo.email': 1 });
 DonationSchema.index({ isOffline: 1 });
 
 // Create and export the model, checking if it already exists to avoid Next.js hot reload issues
