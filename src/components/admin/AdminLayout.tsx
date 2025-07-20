@@ -46,13 +46,36 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href="/api/auth/signout"
-                className="text-gray-300 hover:bg-slate-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+              <button
+                onClick={async () => {
+                  try {
+                    // Import signOut dynamically
+                    const { signOut } = await import('next-auth/react');
+                    
+                    // Clear NextAuth session and force redirect
+                    await signOut({ 
+                      callbackUrl: '/login?message=admin-logout',
+                      redirect: false 
+                    });
+                    
+                    // Clear browser storage and force refresh
+                    if (typeof window !== 'undefined') {
+                      localStorage.clear();
+                      sessionStorage.clear();
+                      // Force redirect to clear all caches
+                      window.location.href = '/login?message=admin-logout';
+                    }
+                  } catch (error) {
+                    console.error('Logout error:', error);
+                    // Fallback - force redirect
+                    window.location.href = '/login';
+                  }
+                }}
+                className="text-gray-300 hover:bg-slate-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left"
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
-              </Link>
+              </button>
             </nav>
           </div>
         </div>

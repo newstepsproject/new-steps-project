@@ -202,7 +202,27 @@ export default function AdminLayout({
                       </Link>
                       <div className="border-t border-gray-100 mt-1 pt-1">
                         <button 
-                          onClick={() => signOut({ callbackUrl: '/' })}
+                          onClick={async () => {
+                            try {
+                              // Clear NextAuth session and force redirect
+                              await signOut({ 
+                                callbackUrl: '/login?message=admin-logout',
+                                redirect: false 
+                              });
+                              
+                              // Clear browser storage and force refresh
+                              if (typeof window !== 'undefined') {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                // Force redirect to clear all caches
+                                window.location.href = '/login?message=admin-logout';
+                              }
+                            } catch (error) {
+                              console.error('Logout error:', error);
+                              // Fallback - force redirect
+                              window.location.href = '/login';
+                            }
+                          }}
                           className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors"
                         >
                           <LogOut className="w-4 h-4 mr-3 text-red-500" />
