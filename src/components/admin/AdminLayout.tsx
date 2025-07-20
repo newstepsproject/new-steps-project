@@ -49,24 +49,35 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <button
                 onClick={async () => {
                   try {
+                    console.log('🔄 LOGOUT ATTEMPT - Environment:', process.env.NODE_ENV);
+                    console.log('🔄 LOGOUT ATTEMPT - Domain:', window.location.hostname);
+                    
                     // Import signOut dynamically
                     const { signOut } = await import('next-auth/react');
                     
                     // Clear NextAuth session and force redirect
-                    await signOut({ 
+                    const result = await signOut({ 
                       callbackUrl: '/login?message=admin-logout',
                       redirect: false 
                     });
                     
+                    console.log('✅ SIGNOUT RESULT:', result);
+                    
                     // Clear browser storage and force refresh
                     if (typeof window !== 'undefined') {
+                      console.log('🧹 CLEARING BROWSER STORAGE');
                       localStorage.clear();
                       sessionStorage.clear();
+                      
+                      // Check if cookies are cleared
+                      console.log('🍪 CHECKING COOKIES AFTER LOGOUT:', document.cookie);
+                      
                       // Force redirect to clear all caches
+                      console.log('🔄 FORCING REDIRECT TO LOGIN');
                       window.location.href = '/login?message=admin-logout';
                     }
                   } catch (error) {
-                    console.error('Logout error:', error);
+                    console.error('❌ LOGOUT ERROR:', error);
                     // Fallback - force redirect
                     window.location.href = '/login';
                   }

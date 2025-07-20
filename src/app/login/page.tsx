@@ -35,23 +35,79 @@ export default function LoginPage() {
     setError('');
 
     try {
+      console.log('🔍 LOGIN ATTEMPT:', { email });
+      
+      // METHOD 1: Try NextAuth signIn
       const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
       });
 
-      if (result?.error) {
-        setError('Invalid email or password. Please try again.');
+      console.log('🔍 LOGIN RESULT:', result);
+
+      // If NextAuth signIn works, proceed normally
+      if (result?.ok && !result?.error) {
+        console.log('✅ NEXTAUTH LOGIN SUCCESSFUL');
+        setTimeout(() => {
+          router.push(callbackUrl);
+          router.refresh();
+        }, 500);
         setIsLoading(false);
         return;
       }
 
-      // Redirect to callback URL or default location
-      if (result?.ok) {
-        router.push(callbackUrl);
-        router.refresh();
+      // Handle "Configuration" error - authentication succeeded but client config issue
+      if (result?.ok && result?.error === 'Configuration') {
+        console.log('✅ NEXTAUTH LOGIN SUCCEEDED WITH CONFIG WARNING');
+        // Authentication actually worked, just proceed
+        setTimeout(() => {
+          router.push(callbackUrl);
+          router.refresh();
+        }, 500);
+        setIsLoading(false);
+        return;
       }
+
+      // METHOD 2: If NextAuth fails, try direct API call
+      console.log('🔄 NEXTAUTH FAILED, TRYING DIRECT API...');
+      
+      const directResponse = await fetch('/api/auth/signin/credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log('🔍 DIRECT API RESPONSE:', directResponse.status);
+
+      if (directResponse.ok) {
+        console.log('✅ DIRECT API LOGIN SUCCESSFUL');
+        // Wait a moment for session to be established
+        setTimeout(async () => {
+          // Check if session is now established
+          const sessionCheck = await fetch('/api/auth/session');
+          const session = await sessionCheck.json();
+          console.log('🔍 SESSION CHECK:', session);
+          
+          if (session?.user) {
+            router.push(callbackUrl);
+            router.refresh();
+          } else {
+            console.error('❌ NO SESSION AFTER DIRECT LOGIN');
+            setError('Login succeeded but session failed. Please try again.');
+          }
+        }, 1000);
+        setIsLoading(false);
+        return;
+      }
+
+      // METHOD 3: If both fail, show error
+      console.error('❌ BOTH METHODS FAILED');
+      setError('Invalid email or password. Please try again.');
+      setIsLoading(false);
+      
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
       console.error('Login error:', error);
