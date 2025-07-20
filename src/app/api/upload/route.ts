@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { uploadImageToS3 } from '@/lib/s3';
+import { writeFile, mkdir } from 'fs/promises';
+import { join } from 'path';
 import { UPLOAD_LIMITS } from '@/constants/config';
 
 /**
  * API endpoint for image uploads
- * Accepts multipart form data with files
+ * Stores images locally instead of S3 for testing
  */
 export async function POST(request: NextRequest) {
   try {
@@ -48,54 +49,68 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert the file to buffer
-    const buffer = Buffer.from(await file.arrayBuffer());
-
-    // Upload to S3
-    const { s3Url, cloudFrontUrl } = await uploadImageToS3(
-      buffer,
-      file.type,
-      folder
-    );
-
-    // Return the URLs
-    return NextResponse.json(
-      {
-        success: true,
-        urls: {
-          s3Url,
-          cloudFrontUrl,
-        },
-        fileName: file.name,
-        fileType: file.type,
-        fileSize: file.size,
-      },
-      { status: 200 }
-    );
+    // Generate unique filename
+    const timestamp = Date.now();
+    const extension = file.name.split('.').pop() || 'jpg';
+    const filename = `${folder}-${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
     
+    // Create upload directory if it doesn't exist
+    const uploadDir = join(process.cwd(), 'public', 'images', folder);
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (error) {
+      // Directory might already exist, that's fine
+      console.log('Upload directory already exists or created');
+    }
+
+    // Convert file to buffer and write to filesystem
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    const filepath = join(uploadDir, filename);
+    await writeFile(filepath, buffer);
+    
+    console.log('File uploaded successfully to:', filepath);
+
+    // Return the public URL
+    const publicUrl = `/images/${folder}/${filename}`;
+    
+    return NextResponse.json({
+      success: true,
+      url: publicUrl,
+      filename: filename,
+      size: file.size,
+      type: file.type,
+      message: 'Image uploaded successfully (local storage)',
+      // Include upload limits info for debugging
+      limits: {
+        maxFileSize: UPLOAD_LIMITS.maxFileSize,
+        maxFileSizeMB: UPLOAD_LIMITS.maxFileSize / (1024 * 1024),
+        allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
+        maxFiles: UPLOAD_LIMITS.maxFiles,
+      }
+    });
+
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error('Upload error:', error);
     return NextResponse.json(
       { 
-        error: 'Failed to upload image', 
-        details: error instanceof Error ? error.message : String(error) 
+        error: 'Failed to upload image',
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
   }
 }
 
-/**
- * Test endpoint for checking allowed file types and size limits
- */
+// GET endpoint to return upload configuration and limits
 export async function GET() {
-  return NextResponse.json(
-    {
+  return NextResponse.json({
+    limits: {
       maxFileSize: UPLOAD_LIMITS.maxFileSize,
       maxFileSizeMB: UPLOAD_LIMITS.maxFileSize / (1024 * 1024),
       allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
       maxFiles: UPLOAD_LIMITS.maxFiles,
-    },
-    { status: 200 }
-  );
+    }
+  });
 } 

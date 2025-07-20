@@ -1,6 +1,7 @@
 /**
  * PM2 ECOSYSTEM CONFIGURATION
  * Production process management for New Steps Project
+ * OPTIMIZED FOR t3.small (2 vCPU, 2GB RAM)
  */
 
 module.exports = {
@@ -10,8 +11,8 @@ module.exports = {
       script: 'npm',
       args: 'start',
       cwd: '/var/www/newsteps',
-      instances: 2,
-      exec_mode: 'cluster',
+      instances: 1,  // Can use 2 with t3.small, but 1 is safer for start
+      exec_mode: 'fork',  // Start with fork, can change to cluster later
       
       // Environment variables
       env: {
@@ -26,8 +27,8 @@ module.exports = {
       out_file: '/var/log/pm2/newsteps-out.log',
       log_file: '/var/log/pm2/newsteps-combined.log',
       
-      // Performance settings
-      max_memory_restart: '1G',
+      // Performance settings optimized for t3.small
+      max_memory_restart: '800M',  // Increased from 400M to 800M
       node_args: '--max-old-space-size=1024',
       
       // Restart settings
