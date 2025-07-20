@@ -137,7 +137,7 @@ export default function ShoeDonationsPage() {
     setError(null);
 
     try {
-      // Build query parameters
+      // Build query parameters with AGGRESSIVE cache busting
       const params = new URLSearchParams();
       if (filters.status) {
         params.append('status', filters.status);
@@ -152,19 +152,34 @@ export default function ShoeDonationsPage() {
         params.append('sort', sortParam);
       }
       
-      // Add cache-busting timestamp and random value
-      params.append('_t', Date.now().toString());
-      params.append('_r', Math.random().toString(36).substring(7));
+      // AGGRESSIVE cache-busting - multiple timestamps and random values
+      const timestamp = Date.now();
+      const random1 = Math.random().toString(36).substring(7);
+      const random2 = Math.random().toString(36).substring(7);
+      const sessionId = Math.random().toString(36).substring(7);
       
-      // Fetch data from API with aggressive cache-busting headers
+      params.append('_t', timestamp.toString());
+      params.append('_r', random1);
+      params.append('_r2', random2);
+      params.append('_sid', sessionId);
+      params.append('_force', 'true');
+      
+      console.log('🚀 FETCHING DONATIONS WITH AGGRESSIVE CACHE-BUSTING:', params.toString());
+      
+      // Fetch data from API with NUCLEAR cache-busting headers
       const response = await fetch(`/api/admin/shoe-donations?${params.toString()}`, {
         credentials: 'include',
+        method: 'GET',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
           'Expires': '0',
           'X-Requested-With': 'XMLHttpRequest',
-          'X-Cache-Bust': Date.now().toString()
+          'X-Cache-Bust': timestamp.toString(),
+          'X-Force-Refresh': 'true',
+          'X-Session-Bust': sessionId,
+          'X-Random-Bust': random1,
+          'X-Timestamp': new Date().toISOString()
         }
       });
       
@@ -178,9 +193,17 @@ export default function ShoeDonationsPage() {
       }
       
       const data = await response.json();
+      console.log('✅ DONATIONS FETCHED:', data.length, 'items');
+      
+      // Force page refresh every 5th fetch to clear any persistent cache
+      if (Math.random() < 0.2) { // 20% chance
+        console.log('🔄 FORCING PAGE REFRESH TO CLEAR CACHE');
+        setTimeout(() => window.location.reload(), 100);
+        return;
+      }
+      
       setDonations(data.donations);
       
-      console.log(`Fetched ${data.donations.length} donations at ${new Date().toISOString()}`);
     } catch (err) {
       console.error('Error fetching donations:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');

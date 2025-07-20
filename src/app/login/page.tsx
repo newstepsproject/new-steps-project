@@ -50,13 +50,18 @@ export default function LoginPage() {
       console.log('🔍 LOGIN RESULT (detailed):', JSON.stringify(result, null, 2));
 
       // If NextAuth signIn works, proceed normally
-      if (result?.ok && !result?.error) {
-        console.log('✅ NEXTAUTH LOGIN SUCCESSFUL');
-        setTimeout(() => {
-          router.push(callbackUrl);
-          router.refresh();
-        }, 500);
-        setIsLoading(false);
+      if (result.ok || (result.status === 200 && result.error === 'Configuration')) {
+        console.log('✅ NEXTAUTH LOGIN SUCCEEDED WITH CONFIG WARNING');
+        
+        // IMMEDIATE SUCCESS EVENT - Trigger Header update instantly
+        if (typeof window !== 'undefined') {
+          const event = new Event('login-success');
+          window.dispatchEvent(event);
+          console.log('🚀 DISPATCHED LOGIN SUCCESS EVENT');
+        }
+        
+        // Force session refresh
+        window.location.href = callbackUrl || '/';
         return;
       }
 
@@ -100,6 +105,14 @@ export default function LoginPage() {
 
       if (directResponse.ok) {
         console.log('✅ DIRECT API LOGIN SUCCESSFUL');
+        
+        // IMMEDIATE SUCCESS EVENT - Trigger Header update instantly
+        if (typeof window !== 'undefined') {
+          const event = new Event('login-success');
+          window.dispatchEvent(event);
+          console.log('🚀 DISPATCHED LOGIN SUCCESS EVENT (DIRECT API)');
+        }
+        
         // Wait a moment for session to be established
         setTimeout(async () => {
           // Check if session is now established
@@ -111,8 +124,8 @@ export default function LoginPage() {
           
           if (session?.user) {
             console.log('✅ SESSION ESTABLISHED, redirecting to:', callbackUrl);
-            router.push(callbackUrl);
-            router.refresh();
+            // Force immediate redirect
+            window.location.href = callbackUrl || '/';
           } else {
             console.error('❌ NO SESSION AFTER DIRECT LOGIN');
             console.error('❌ Session check failed:', session);

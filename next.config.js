@@ -53,7 +53,7 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
   
-  // Moderate caching headers suitable for frequent updates
+  // ZERO CACHE POLICY - No caching in development OR production for immediate updates
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
     
@@ -81,14 +81,22 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin'
           },
-          // Moderate cache headers for frequent updates
+          // ZERO CACHE POLICY - No caching at all for immediate updates
           {
             key: 'Cache-Control',
-            value: isDev ? 'no-cache, no-store, must-revalidate' : 'public, max-age=900' // No cache in dev, 15 minutes in production
+            value: 'no-cache, no-store, must-revalidate'
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache'
+          },
+          {
+            key: 'Expires',
+            value: '0'
           }
         ],
       },
-      // NO CACHE for admin API routes - they need real-time data
+      // ZERO CACHE for admin API routes
       {
         source: '/api/admin/(.*)',
         headers: [
@@ -106,9 +114,45 @@ const nextConfig = {
           }
         ],
       },
-      // NO CACHE for admin pages - they need real-time data
+      // ZERO CACHE for admin pages
       {
         source: '/admin/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate'
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache'
+          },
+          {
+            key: 'Expires',
+            value: '0'
+          }
+        ],
+      },
+      // ZERO CACHE for login/auth pages
+      {
+        source: '/login',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate'
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache'
+          },
+          {
+            key: 'Expires',
+            value: '0'
+          }
+        ],
+      },
+      // ZERO CACHE for auth API routes
+      {
+        source: '/api/auth/(.*)',
         headers: [
           {
             key: 'Cache-Control',
@@ -129,7 +173,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: isDev ? 'no-cache, max-age=0' : 'public, max-age=1800' // No cache in dev, 30 minutes in production
+            value: 'no-cache, max-age=0'
           }
         ],
       },
@@ -138,7 +182,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: isDev ? 'no-cache, max-age=0' : 'public, max-age=1800' // No cache in dev, 30 minutes in production
+            value: 'no-cache, max-age=0'
           }
         ],
       },
@@ -147,7 +191,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: isDev ? 'no-cache, max-age=0' : 'public, max-age=1800' // No cache in dev, 30 minutes in production
+            value: 'no-cache, max-age=0'
           }
         ],
       }

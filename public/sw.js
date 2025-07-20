@@ -2,7 +2,7 @@
 const CACHE_NAME = 'new-steps-mobile-v1';
 const STATIC_CACHE = 'new-steps-static-v1';
 
-// Critical resources to cache for mobile
+// Critical resources to cache for mobile (PUBLIC ONLY - no admin/auth)
 const CRITICAL_RESOURCES = [
   '/',
   '/shoes',
@@ -15,11 +15,26 @@ const CRITICAL_RESOURCES = [
   '/manifest.json'
 ];
 
-// API endpoints to cache for offline functionality
+// API endpoints to cache for offline functionality (PUBLIC ONLY - no admin)
 const API_CACHE_PATTERNS = [
   '/api/shoes',
   '/api/health'
 ];
+
+// ROUTES TO NEVER CACHE - Admin, Auth, Account routes
+const NEVER_CACHE_PATTERNS = [
+  '/admin',
+  '/api/admin',
+  '/login',
+  '/api/auth', 
+  '/account',
+  '/api/user'
+];
+
+// Helper function to check if URL should never be cached
+function shouldNeverCache(url) {
+  return NEVER_CACHE_PATTERNS.some(pattern => url.pathname.startsWith(pattern));
+}
 
 // Install event - cache critical resources
 self.addEventListener('install', event => {
@@ -64,8 +79,23 @@ self.addEventListener('fetch', event => {
   if (url.origin !== location.origin) {
     return;
   }
+  
+  // NEVER CACHE admin, auth, or account routes - always go to network
+  if (shouldNeverCache(url)) {
+    console.log('🚫 SW: NEVER CACHE route:', url.pathname);
+    event.respondWith(
+      fetch(request, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      })
+    );
+    return;
+  }
 
-  // API requests - Network First with cache fallback
+  // API requests - Network First with cache fallback (PUBLIC ONLY)
   if (API_CACHE_PATTERNS.some(pattern => url.pathname.startsWith(pattern))) {
     event.respondWith(
       fetch(request)
@@ -113,13 +143,13 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // HTML pages - Network First with cache fallback
+  // HTML pages - Network First with cache fallback (PUBLIC ONLY)
   if (request.destination === 'document') {
     event.respondWith(
       fetch(request)
         .then(response => {
-          // Cache successful page responses
-          if (response.ok) {
+          // Only cache PUBLIC pages (not admin/auth/account)
+          if (response.ok && !shouldNeverCache(url)) {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then(cache => {
               cache.put(request, responseClone);
@@ -128,14 +158,18 @@ self.addEventListener('fetch', event => {
           return response;
         })
         .catch(() => {
-          // Fallback to cache or offline page
-          return caches.match(request).then(response => {
-            if (response) {
-              return response;
-            }
-            // Return cached homepage as fallback
-            return caches.match('/');
-          });
+          // Fallback to cache or offline page (but not for never-cache routes)
+          if (!shouldNeverCache(url)) {
+            return caches.match(request).then(response => {
+              if (response) {
+                return response;
+              }
+              // Return cached homepage as fallback
+              return caches.match('/');
+            });
+          }
+          // For never-cache routes, don't provide fallback
+          throw new Error('Network unavailable for secure route');
         })
     );
     return;

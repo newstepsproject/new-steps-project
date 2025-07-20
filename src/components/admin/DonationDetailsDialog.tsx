@@ -201,11 +201,44 @@ export default function DonationDetailsDialog({
         title: "✅ Donation updated",
         description: `Status successfully changed to ${newStatus}.`,
       });
+      
+      // NUCLEAR CACHE CLEARING - Clear all browser storage and caches
+      console.log('🧹 CLEARING ALL BROWSER CACHES AND STORAGE');
+      try {
+        // Clear browser storage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear service worker caches if they exist
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name);
+            });
+          });
+        }
+        
+        // Force garbage collection if available
+        if (window.gc) {
+          window.gc();
+        }
+        
+      } catch (error) {
+        console.error('Cache clearing error:', error);
+      }
 
-      // Multiple refresh attempts for reliability
-      setTimeout(() => onStatusChange(), 100);   // Immediate
-      setTimeout(() => onStatusChange(), 500);   // Quick
-      setTimeout(() => onStatusChange(), 1500);  // Final
+      // Multiple refresh attempts for reliability with forced reloads
+      setTimeout(() => onStatusChange(), 50);    // Ultra fast
+      setTimeout(() => onStatusChange(), 200);   // Quick  
+      setTimeout(() => onStatusChange(), 800);   // Medium
+      setTimeout(() => {
+        onStatusChange();
+        // Force page reload if nothing else works
+        if (Math.random() < 0.3) { // 30% chance
+          console.log('🔄 NUCLEAR OPTION: FORCING PAGE RELOAD');
+          window.location.reload();
+        }
+      }, 2000);  // Final with optional reload
       
     } catch (error) {
       console.error('❌ STATUS UPDATE FAILED:', error);
