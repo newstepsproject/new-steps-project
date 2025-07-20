@@ -137,10 +137,14 @@ export default function DonationDetailsDialog({
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/admin/shoe-donations', {
+      // Add cache-busting timestamp
+      const timestamp = Date.now();
+      const response = await fetch(`/api/admin/shoe-donations?_t=${timestamp}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -170,11 +174,17 @@ export default function DonationDetailsDialog({
 
       toast({
         title: "Donation updated",
-        description: `Donation has been successfully updated.`,
+        description: `Donation status updated to ${newStatus}.`,
       });
 
-      onStatusChange();
+      // Close dialog first
       onOpenChange(false);
+      
+      // Add small delay then refresh the list with cache-busting
+      setTimeout(() => {
+        onStatusChange();
+      }, 500);
+      
     } catch (error) {
       toast({
         title: "Error",

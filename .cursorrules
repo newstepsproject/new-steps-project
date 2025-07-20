@@ -1140,3 +1140,5 @@ Production Stack:
 - Complete emergency procedures
 
 **Status**: SAVED AND READY FOR PRODUCTION DEPLOYMENT 🚀
+
+- **Production API Error Resolution (July 20, 2025)**: Fixed critical admin functionality issues during production testing. **Upload API 500 Error**: Root cause was AWS S3 credentials set to "placeholder" values in production environment. Fixed by implementing local file storage system that saves images to `public/images/[folder]/` directory with unique filenames. Upload API now returns 200 with local file URLs. **Donation Status Update Not Refreshing**: List wasn't updating after successful PATCH requests due to browser caching. Fixed by adding cache-busting headers (`Cache-Control: no-cache`) and timestamps to API calls, plus 500ms delayed refresh after status updates. **Pattern**: When S3 credentials unavailable, local file storage provides immediate testing solution. Always use cache-busting for admin data that updates frequently. **Files Updated**: `/api/upload/route.ts` (local storage implementation), `DonationDetailsDialog.tsx` (cache-busting), `page.tsx` (refresh timing).

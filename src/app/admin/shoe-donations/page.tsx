@@ -152,9 +152,16 @@ export default function ShoeDonationsPage() {
         params.append('sort', sortParam);
       }
       
-      // Fetch data from API
+      // Add cache-busting timestamp
+      params.append('_t', Date.now().toString());
+      
+      // Fetch data from API with cache-busting headers
       const response = await fetch(`/api/admin/shoe-donations?${params.toString()}`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
       });
       
       if (!response.ok) {
@@ -168,6 +175,8 @@ export default function ShoeDonationsPage() {
       
       const data = await response.json();
       setDonations(data.donations);
+      
+      console.log(`Fetched ${data.donations.length} donations at ${new Date().toISOString()}`);
     } catch (err) {
       console.error('Error fetching donations:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
