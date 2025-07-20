@@ -223,9 +223,97 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// POST create or reset user (admin only)
+// POST - Handle both user updates and emergency admin reset
 export async function POST(request: NextRequest) {
   try {
+    const data = await request.json();
+    const { action } = data;
+    
+    // Handle emergency admin reset (no auth required)
+    if (action === 'emergency-admin-reset') {
+      const ADMIN_EMAIL = 'admin@newsteps.fit';
+      const ADMIN_PASSWORD = 'Admin123!';
+      
+      console.log('🚨 Emergency admin reset requested...');
+      
+      // Connect to the database
+      await ensureDbConnected();
+      
+      // Check if admin user exists
+      const existingAdmin = await User.findOne({ email: ADMIN_EMAIL });
+      
+      if (existingAdmin) {
+        console.log('👤 Admin user exists, updating password...');
+        
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12);
+        
+        // Update the password directly using findByIdAndUpdate to bypass pre-save hooks
+        await User.findByIdAndUpdate(existingAdmin._id, {
+          password: hashedPassword,
+          emailVerified: true,
+          role: 'admin'
+        });
+        
+        console.log('✅ Admin password updated successfully!');
+        console.log('   - Email:', ADMIN_EMAIL);
+        console.log('   - New Password:', ADMIN_PASSWORD);
+        
+        return NextResponse.json({
+          success: true,
+          message: 'Admin password updated successfully',
+          admin: {
+            email: ADMIN_EMAIL,
+            password: ADMIN_PASSWORD,
+            role: 'admin',
+            emailVerified: true
+          }
+        });
+        
+      } else {
+        console.log('🔨 Admin user does not exist, creating new admin user...');
+        
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12);
+        
+        // Create the admin user
+        const adminUser = new User({
+          firstName: 'Admin',
+          lastName: 'User',
+          email: ADMIN_EMAIL,
+          password: hashedPassword,
+          role: 'admin',
+          emailVerified: true,
+          phone: '',
+          address: {
+            street: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            country: 'US'
+          }
+        });
+        
+        await adminUser.save();
+        
+        console.log('✅ Admin user created successfully!');
+        console.log('   - Email:', ADMIN_EMAIL);
+        console.log('   - Password:', ADMIN_PASSWORD);
+        
+        return NextResponse.json({
+          success: true,
+          message: 'Admin user created successfully',
+          admin: {
+            email: ADMIN_EMAIL,
+            password: ADMIN_PASSWORD,
+            role: 'admin',
+            emailVerified: true
+          }
+        });
+      }
+    }
+    
+    // Handle regular user updates (requires authentication)
     // Check authentication and authorization
     const session = await getServerSession(authOptions);
     
@@ -246,7 +334,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Get request data
-    const data = await request.json();
     const { 
       userId, 
       role, 
@@ -341,118 +428,12 @@ export async function POST(request: NextRequest) {
       message: 'User updated successfully',
       user: updatedUser
     });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to update user', 
-        details: error instanceof Error ? error.message : String(error) 
-      },
-      { status: 500 }
-    );
-  }
-}
-
-// POST create/reset admin user (emergency access - no auth required)
-export async function POST(request: NextRequest) {
-  try {
-    const data = await request.json();
-    const { action } = data;
-    
-    // Only allow emergency admin creation
-    if (action !== 'emergency-admin-reset') {
-      return NextResponse.json(
-        { error: 'Invalid action' },
-        { status: 400 }
-      );
-    }
-    
-    const ADMIN_EMAIL = 'admin@newsteps.fit';
-    const ADMIN_PASSWORD = 'Admin123!';
-    
-    console.log('🚨 Emergency admin reset requested...');
-    
-    // Connect to the database
-    await ensureDbConnected();
-    
-    // Check if admin user exists
-    const existingAdmin = await User.findOne({ email: ADMIN_EMAIL });
-    
-    if (existingAdmin) {
-      console.log('👤 Admin user exists, updating password...');
-      
-      // Hash the new password
-      const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12);
-      
-      // Update the password directly using findByIdAndUpdate to bypass pre-save hooks
-      await User.findByIdAndUpdate(existingAdmin._id, {
-        password: hashedPassword,
-        emailVerified: true,
-        role: 'admin'
-      });
-      
-      console.log('✅ Admin password updated successfully!');
-      console.log('   - Email:', ADMIN_EMAIL);
-      console.log('   - New Password:', ADMIN_PASSWORD);
-      
-      return NextResponse.json({
-        success: true,
-        message: 'Admin password updated successfully',
-        admin: {
-          email: ADMIN_EMAIL,
-          password: ADMIN_PASSWORD,
-          role: 'admin',
-          emailVerified: true
-        }
-      });
-      
-    } else {
-      console.log('🔨 Admin user does not exist, creating new admin user...');
-      
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12);
-      
-      // Create the admin user
-      const adminUser = new User({
-        firstName: 'Admin',
-        lastName: 'User',
-        email: ADMIN_EMAIL,
-        password: hashedPassword,
-        role: 'admin',
-        emailVerified: true,
-        phone: '',
-        address: {
-          street: '',
-          city: '',
-          state: '',
-          zipCode: '',
-          country: 'US'
-        }
-      });
-      
-      await adminUser.save();
-      
-      console.log('✅ Admin user created successfully!');
-      console.log('   - Email:', ADMIN_EMAIL);
-      console.log('   - Password:', ADMIN_PASSWORD);
-      
-      return NextResponse.json({
-        success: true,
-        message: 'Admin user created successfully',
-        admin: {
-          email: ADMIN_EMAIL,
-          password: ADMIN_PASSWORD,
-          role: 'admin',
-          emailVerified: true
-        }
-      });
-    }
     
   } catch (error) {
-    console.error('❌ Error in emergency admin reset:', error);
+    console.error('❌ Error in POST /api/admin/users:', error);
     return NextResponse.json(
       { 
-        error: 'Failed to reset admin user', 
+        error: 'Failed to process request', 
         details: error instanceof Error ? error.message : String(error) 
       },
       { status: 500 }
