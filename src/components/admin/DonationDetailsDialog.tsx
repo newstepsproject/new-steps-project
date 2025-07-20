@@ -137,14 +137,18 @@ export default function DonationDetailsDialog({
 
     setIsSubmitting(true);
     try {
-      // Add cache-busting timestamp
+      // Add cache-busting timestamp and random value
       const timestamp = Date.now();
-      const response = await fetch(`/api/admin/shoe-donations?_t=${timestamp}`, {
+      const random = Math.random().toString(36).substring(7);
+      const response = await fetch(`/api/admin/shoe-donations?_t=${timestamp}&_r=${random}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-Cache-Bust': timestamp.toString()
         },
         credentials: 'include',
         body: JSON.stringify({

@@ -88,6 +88,42 @@ const nextConfig = {
           }
         ],
       },
+      // NO CACHE for admin API routes - they need real-time data
+      {
+        source: '/api/admin/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate'
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache'
+          },
+          {
+            key: 'Expires',
+            value: '0'
+          }
+        ],
+      },
+      // NO CACHE for admin pages - they need real-time data
+      {
+        source: '/admin/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate'
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache'
+          },
+          {
+            key: 'Expires',
+            value: '0'
+          }
+        ],
+      },
       {
         source: '/images/(.*)',
         headers: [

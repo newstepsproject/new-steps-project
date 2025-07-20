@@ -22,7 +22,14 @@ export async function GET(request: NextRequest) {
     if (!session?.user) {
       return NextResponse.json(
         { error: 'Authentication required' },
-        { status: 401 }
+        { 
+          status: 401,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        }
       );
     }
 
@@ -31,7 +38,14 @@ export async function GET(request: NextRequest) {
     if (user.role !== 'admin') {
       return NextResponse.json(
         { error: 'Admin privileges required' },
-        { status: 403 }
+        { 
+          status: 403,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        }
       );
     }
 
@@ -155,6 +169,12 @@ export async function GET(request: NextRequest) {
         limit,
         totalPages: Math.ceil(totalDonations / limit)
       }
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
   } catch (error) {
     console.error('Error fetching donations:', error);
@@ -181,7 +201,14 @@ export async function PATCH(request: NextRequest) {
       console.log('[PATCH] Authentication failed: No session or user');
       return NextResponse.json(
         { error: 'Authentication required' },
-        { status: 401 }
+        { 
+          status: 401,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        }
       );
     }
 
@@ -193,7 +220,14 @@ export async function PATCH(request: NextRequest) {
       console.log('[PATCH] Authorization failed: User is not an admin');
       return NextResponse.json(
         { error: 'Admin privileges required' },
-        { status: 403 }
+        { 
+          status: 403,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        }
       );
     }
 
@@ -392,6 +426,12 @@ export async function PATCH(request: NextRequest) {
         success: true,
         message: 'Donation updated successfully',
         donation: updatedDonation
+      }, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       });
     } catch (updateError) {
       console.error('[PATCH] Error updating donation:', updateError);

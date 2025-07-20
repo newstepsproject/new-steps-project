@@ -152,15 +152,19 @@ export default function ShoeDonationsPage() {
         params.append('sort', sortParam);
       }
       
-      // Add cache-busting timestamp
+      // Add cache-busting timestamp and random value
       params.append('_t', Date.now().toString());
+      params.append('_r', Math.random().toString(36).substring(7));
       
-      // Fetch data from API with cache-busting headers
+      // Fetch data from API with aggressive cache-busting headers
       const response = await fetch(`/api/admin/shoe-donations?${params.toString()}`, {
         credentials: 'include',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-Cache-Bust': Date.now().toString()
         }
       });
       
