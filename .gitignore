@@ -49,4 +49,4 @@ project_description.md
 
 # Local documentation
 docs-local/
-style_from_gpt/
+style_from_gpt/.env.local
