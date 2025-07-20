@@ -102,37 +102,39 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   secret: process.env.NEXTAUTH_SECRET,
-  cookies: {
-    sessionToken: {
-      name: 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production', // HTTPS in production, HTTP in dev
-        // Only set domain explicitly for localhost in development
-        ...(process.env.NODE_ENV !== 'production' && { domain: 'localhost' })
-      }
-    },
-    callbackUrl: {
-      name: 'next-auth.callback-url',
-      options: {
-        httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    },
-    csrfToken: {
-      name: 'next-auth.csrf-token',
-      options: {
-        httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
+  // Only customize cookies for development - let NextAuth use defaults in production
+  ...(process.env.NODE_ENV !== 'production' && {
+    cookies: {
+      sessionToken: {
+        name: 'next-auth.session-token',
+        options: {
+          httpOnly: true,
+          sameSite: 'lax',
+          path: '/',
+          secure: false, // HTTP for localhost
+          domain: 'localhost' // Explicit domain for localhost
+        }
+      },
+      callbackUrl: {
+        name: 'next-auth.callback-url',
+        options: {
+          httpOnly: true,
+          sameSite: 'lax',
+          path: '/',
+          secure: false
+        }
+      },
+      csrfToken: {
+        name: 'next-auth.csrf-token',
+        options: {
+          httpOnly: true,
+          sameSite: 'lax',
+          path: '/',
+          secure: false
+        }
       }
     }
-  },
+  }),
   pages: {
     signIn: '/login',
     error: '/login',
