@@ -539,11 +539,13 @@ export async function POST(request: NextRequest) {
       console.log(`[POST] Found existing donation with ID: ${donationId}`);
     } else {
       // For offline donations, generate a new donation reference ID using the DS-XXXX-YYYY format
-      // Always use the donor name from the form, which is required
-      const donorName = data.donorInfo.name;
+      // Use the same donor name logic as validation - firstName/lastName or name field
+      const donorNameForId = data.donorInfo?.firstName && data.donorInfo?.lastName 
+        ? `${data.donorInfo.firstName} ${data.donorInfo.lastName}`
+        : data.donorInfo?.name || 'DONOR';
       
       // Extract first 4 letters of donor name (uppercase and padded if needed)
-      const namePrefix = donorName
+      const namePrefix = donorNameForId
         .replace(/[^a-zA-Z0-9]/g, '')
         .toUpperCase()
         .substring(0, 4)
