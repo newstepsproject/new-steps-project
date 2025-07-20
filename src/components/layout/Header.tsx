@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Menu, X, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSafePathname } from "@/hooks/useSafeRouter";
@@ -13,10 +13,48 @@ import { useCart } from "@/components/cart/CartProvider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const Header = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = useSafePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
   const { itemCount } = useCart();
+
+  // Listen for logout events to immediately update UI
+  useEffect(() => {
+    const handleLogout = () => {
+      console.log('🔄 LOGOUT EVENT DETECTED - Immediately hiding user menu');
+      setIsLoggedOut(true);
+      
+      // Force session revalidation after short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    };
+    
+    window.addEventListener('beforeunload', handleLogout);
+    
+    // Listen for storage events (logout in other tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'nextauth.message') {
+        handleLogout();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleLogout);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  // Reset logout state when session changes
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      setIsLoggedOut(true);
+    } else if (status === 'authenticated') {
+      setIsLoggedOut(false);
+    }
+  }, [status]);
 
   // Navigation links
   const navLinks = [
@@ -80,7 +118,7 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-5">
             <CartIcon />
             
-            {session ? (
+            {(session && !isLoggedOut) ? (
               <Popover>
                 <PopoverTrigger asChild>
                   <button className="text-gpt-text hover:text-gpt-primary transition-colors" aria-label="User profile">

@@ -136,11 +136,29 @@ export default function DonationDetailsDialog({
     }
 
     setIsSubmitting(true);
+    
+    // OPTIMISTIC UPDATE: Update parent immediately for instant feedback
+    console.log('🚀 OPTIMISTIC UPDATE: Status changing from', donation.status, 'to', newStatus);
+    
+    // Close dialog immediately for better UX
+    onOpenChange(false);
+    
+    // Show immediate toast
+    toast({
+      title: "Updating donation...",
+      description: `Changing status to ${newStatus}...`,
+    });
+    
+    // Trigger parent refresh immediately (optimistic)
+    onStatusChange();
+    
     try {
-      // Add cache-busting timestamp and random value
+      // Add even more aggressive cache-busting
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(7);
-      const response = await fetch(`/api/admin/shoe-donations?_t=${timestamp}&_r=${random}`, {
+      const sessionToken = Math.random().toString(36).substring(7);
+      
+      const response = await fetch(`/api/admin/shoe-donations?_t=${timestamp}&_r=${random}&_s=${sessionToken}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +166,9 @@ export default function DonationDetailsDialog({
           'Pragma': 'no-cache',
           'Expires': '0',
           'X-Requested-With': 'XMLHttpRequest',
-          'X-Cache-Bust': timestamp.toString()
+          'X-Cache-Bust': timestamp.toString(),
+          'X-Force-Refresh': 'true',
+          'X-Session-Bust': sessionToken
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -176,25 +196,30 @@ export default function DonationDetailsDialog({
         throw new Error('Failed to update donation');
       }
 
+      // Success toast
       toast({
-        title: "Donation updated",
-        description: `Donation status updated to ${newStatus}.`,
+        title: "✅ Donation updated",
+        description: `Status successfully changed to ${newStatus}.`,
       });
 
-      // Close dialog first
-      onOpenChange(false);
-      
-      // Add small delay then refresh the list with cache-busting
-      setTimeout(() => {
-        onStatusChange();
-      }, 500);
+      // Multiple refresh attempts for reliability
+      setTimeout(() => onStatusChange(), 100);   // Immediate
+      setTimeout(() => onStatusChange(), 500);   // Quick
+      setTimeout(() => onStatusChange(), 1500);  // Final
       
     } catch (error) {
+      console.error('❌ STATUS UPDATE FAILED:', error);
+      
+      // Revert optimistic update on error
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update donation",
+        title: "❌ Update failed",
+        description: error instanceof Error ? error.message : "Failed to update donation. Please try again.",
         variant: "destructive",
       });
+      
+      // Force refresh to show correct state
+      setTimeout(() => onStatusChange(), 500);
+      
     } finally {
       setIsSubmitting(false);
     }
