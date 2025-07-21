@@ -3,7 +3,10 @@ console.log('DEBUG: NEXTAUTH_URL at build time:', process.env.NEXTAUTH_URL);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  // Removed output: 'standalone' to fix routing issues
+  
+  // External packages for server components (moved from experimental in Next.js 15)
+  serverExternalPackages: ['mongoose'],
   
   // Mobile Performance Optimizations
   images: {
@@ -47,156 +50,53 @@ const nextConfig = {
   },
   
   experimental: {
-    serverComponentsExternalPackages: ['mongoose'],
     // Mobile performance optimizations - disabled optimizeCss due to build issues
     // optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
   
   // ZERO CACHE POLICY - No caching in development OR production for immediate updates
-  async headers() {
-    const isDev = process.env.NODE_ENV === 'development';
-    
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
-          },
-          // ZERO CACHE POLICY - No caching at all for immediate updates
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate'
-          },
-          {
-            key: 'Pragma',
-            value: 'no-cache'
-          },
-          {
-            key: 'Expires',
-            value: '0'
-          }
-        ],
-      },
-      // ZERO CACHE for admin API routes
-      {
-        source: '/api/admin/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate'
-          },
-          {
-            key: 'Pragma',
-            value: 'no-cache'
-          },
-          {
-            key: 'Expires',
-            value: '0'
-          }
-        ],
-      },
-      // ZERO CACHE for admin pages
-      {
-        source: '/admin/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate'
-          },
-          {
-            key: 'Pragma',
-            value: 'no-cache'
-          },
-          {
-            key: 'Expires',
-            value: '0'
-          }
-        ],
-      },
-      // ZERO CACHE for login/auth pages
-      {
-        source: '/login',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate'
-          },
-          {
-            key: 'Pragma',
-            value: 'no-cache'
-          },
-          {
-            key: 'Expires',
-            value: '0'
-          }
-        ],
-      },
-      // ZERO CACHE for auth API routes
-      {
-        source: '/api/auth/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate'
-          },
-          {
-            key: 'Pragma',
-            value: 'no-cache'
-          },
-          {
-            key: 'Expires',
-            value: '0'
-          }
-        ],
-      },
-      {
-        source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, max-age=0'
-          }
-        ],
-      },
-      {
-        source: '/(.*).js',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, max-age=0'
-          }
-        ],
-      },
-      {
-        source: '/(.*).css',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, max-age=0'
-          }
-        ],
-      }
-    ];
-  },
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: process.env.NODE_ENV === 'development' 
+            ? 'no-cache, no-store, must-revalidate' 
+            : 'public, max-age=900, s-maxage=900', // 15 minutes in production
+        },
+      ],
+    },
+    // ZERO CACHE for admin routes
+    {
+      source: '/admin/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-cache, no-store, must-revalidate',
+        },
+        {
+          key: 'Pragma',
+          value: 'no-cache',
+        },
+        {
+          key: 'Expires',
+          value: '0',
+        },
+      ],
+    },
+    // ZERO CACHE for API routes  
+    {
+      source: '/api/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-cache, no-store, must-revalidate',
+        },
+      ],
+    },
+  ],
   
   // Compression and Performance
   compress: true,
@@ -243,4 +143,4 @@ const nextConfig = {
   generateEtags: process.env.NODE_ENV !== 'development', // Disable ETags in development
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig; 
