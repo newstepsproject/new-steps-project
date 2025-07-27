@@ -29,6 +29,47 @@ export function LoginForm() {
     }
   }, [searchParams]);
 
+  // Add event listener for successful OAuth return
+  useEffect(() => {
+    const handleOAuthReturn = async () => {
+      console.log('🔍 Checking if we returned from OAuth...');
+      
+      // Check if we have URL parameters that suggest OAuth return
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasOAuthParams = urlParams.has('code') || urlParams.has('state');
+      
+      if (hasOAuthParams) {
+        console.log('✅ OAuth return detected, checking session...');
+        setIsLoading(true);
+        
+        // Wait a moment for session to be established
+        setTimeout(async () => {
+          try {
+            const response = await fetch('/api/auth/session');
+            const session = await response.json();
+            
+            if (session?.user) {
+              console.log('✅ OAuth successful! User logged in:', session.user.email);
+              // Immediate redirect after successful OAuth
+              const redirectUrl = callbackUrl || '/account';
+              console.log('🔄 Redirecting to:', redirectUrl);
+              window.location.href = redirectUrl;
+            } else {
+              console.log('❌ No session found after OAuth return');
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error('❌ Error checking session after OAuth:', error);
+            setIsLoading(false);
+          }
+        }, 1000);
+      }
+    };
+
+    // Check on component mount
+    handleOAuthReturn();
+  }, [callbackUrl]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -153,41 +194,24 @@ export function LoginForm() {
     setError('');
     
     try {
-      console.log('🔍 GOOGLE OAUTH ATTEMPT:', { callbackUrl, environment: process.env.NODE_EN })
-      console.log('🔍 Starting Google sign-in...');
-      
-      const result = await signIn('google', { 
-        callbackUrl,
-        redirect: true // Ensure redirect happens
+      console.log('🔍 GOOGLE OAUTH ATTEMPT:', { 
+        callbackUrl, 
+        currentUrl: window.location.href,
+        environment: process.env.NODE_ENV 
       });
       
-      console.log('🔍 GOOGLE OAUTH RESULT:', result);
+      // For OAuth providers, signIn should redirect immediately to Google
+      // If we reach code after this, something went wrong
+      console.log('🚀 Redirecting to Google OAuth...');
       
-      // For OAuth providers, NextAuth typically handles the redirect automatically
-      // But if we reach here, something might have gone wrong
-      if (result?.error) {
-        console.error('❌ GOOGLE OAUTH ERROR:', result.error);
-        setError('Google sign-in failed. Please try again.');
-        setIsLoading(false);
-      } else {
-        console.log('✅ GOOGLE OAUTH SUCCESS - NextAuth should handle redirect');
-        // Keep loading state as NextAuth should redirect us
-        // But add a timeout as fallback in case redirect fails
-        setTimeout(() => {
-          console.log('⚠️ OAuth redirect timeout - clearing loading state');
-          setIsLoading(false);
-          // Check if we're still on login page and have a session
-          fetch('/api/auth/session')
-            .then(res => res.json())
-            .then(session => {
-              if (session?.user) {
-                console.log('✅ Session exists but redirect failed - manual redirect');
-                window.location.href = callbackUrl || '/account';
-              }
-            })
-            .catch(err => console.error('Session check failed:', err));
-        }, 5000); // 5 second timeout
-      }
+      await signIn('google', { 
+        callbackUrl: callbackUrl || '/account'
+      });
+      
+      // If we reach here, the redirect to Google failed
+      console.error('❌ GOOGLE OAUTH REDIRECT FAILED - should have redirected to Google');
+      setError('Failed to redirect to Google. Please try again.');
+      setIsLoading(false);
       
     } catch (error) {
       console.error('❌ GOOGLE OAUTH EXCEPTION:', error);
