@@ -29,51 +29,55 @@ export function LoginForm() {
     }
   }, [searchParams]);
 
-  // Add event listener for successful OAuth return
+  // Simplified OAuth return detection
   useEffect(() => {
-    const handleOAuthReturn = async () => {
-      console.log('🔍 Checking if we returned from OAuth...');
+    const checkOAuthReturn = async () => {
+      console.log('🔍 Checking OAuth return status...');
       
-      try {
-        // Check if we have URL parameters that suggest OAuth return
-        const urlParams = new URLSearchParams(window.location.search);
-        const hasOAuthParams = urlParams.has('code') && urlParams.has('state');
+      // Check if URL suggests we returned from OAuth
+      const urlParams = new URLSearchParams(window.location.search);
+      const isOAuthReturn = urlParams.has('code') && urlParams.has('state');
+      
+      if (isOAuthReturn) {
+        console.log('✅ OAuth return detected - waiting for NextAuth processing...');
+        setIsLoading(true);
         
-        if (hasOAuthParams) {
-          console.log('✅ OAuth return detected, checking session...');
-          setIsLoading(true);
-          
-          // Wait a bit longer for NextAuth to process the OAuth callback
-          setTimeout(async () => {
-            try {
-              const response = await fetch('/api/auth/session');
-              const session = await response.json();
-              
-              if (session?.user) {
-                console.log('✅ OAuth successful! User logged in:', session.user.email);
-                // Let NextAuth handle the redirect naturally first
-                setTimeout(() => {
-                  const redirectUrl = callbackUrl || '/account';
-                  console.log('🔄 Manual redirect to:', redirectUrl);
-                  window.location.href = redirectUrl;
-                }, 500);
-              } else {
-                console.log('❌ No session found after OAuth return');
-                setIsLoading(false);
-              }
-            } catch (error) {
-              console.error('❌ Error checking session after OAuth:', error);
+        // Give NextAuth time to process, then check session
+        const checkSession = async (attempt = 1) => {
+          try {
+            console.log(`🔍 Checking session (attempt ${attempt})...`);
+            const response = await fetch('/api/auth/session');
+            const session = await response.json();
+            
+            if (session?.user) {
+              console.log('✅ Session found! Redirecting...', session.user.email);
+              window.location.href = callbackUrl || '/account';
+              return;
+            }
+            
+            // Retry up to 3 times with increasing delays
+            if (attempt < 3) {
+              setTimeout(() => checkSession(attempt + 1), attempt * 1000);
+            } else {
+              console.log('❌ No session after 3 attempts');
               setIsLoading(false);
             }
-          }, 2000); // Increased wait time for NextAuth processing
-        }
-      } catch (error) {
-        console.error('❌ Error in OAuth return handler:', error);
+          } catch (error) {
+            console.error('❌ Session check error:', error);
+            if (attempt < 3) {
+              setTimeout(() => checkSession(attempt + 1), attempt * 1000);
+            } else {
+              setIsLoading(false);
+            }
+          }
+        };
+        
+        // Start checking session after 1 second
+        setTimeout(() => checkSession(), 1000);
       }
     };
 
-    // Check on component mount
-    handleOAuthReturn();
+    checkOAuthReturn();
   }, [callbackUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -196,32 +200,24 @@ export function LoginForm() {
   };
 
   const handleGoogleSignIn = async () => {
+    console.log('🔍 Starting Google OAuth...', { callbackUrl });
     setIsLoading(true);
     setError('');
     
     try {
-      console.log('🔍 GOOGLE OAUTH ATTEMPT:', { 
-        callbackUrl, 
-        currentUrl: window.location.href,
-        environment: process.env.NODE_ENV 
+      // Use NextAuth signIn with redirect enabled (default behavior)
+      const result = await signIn('google', {
+        callbackUrl: callbackUrl || '/account',
+        redirect: true // Let NextAuth handle redirects
       });
       
-      // For OAuth providers, signIn should redirect immediately to Google
-      // If we reach code after this, something went wrong
-      console.log('🚀 Redirecting to Google OAuth...');
-      
-      await signIn('google', { 
-        callbackUrl: callbackUrl || '/account'
-      });
-      
-      // If we reach here, the redirect to Google failed
-      console.error('❌ GOOGLE OAUTH REDIRECT FAILED - should have redirected to Google');
-      setError('Failed to redirect to Google. Please try again.');
-      setIsLoading(false);
+      // Note: For OAuth providers with redirect:true, this code typically won't execute
+      // because the browser redirects to Google immediately
+      console.log('🔍 Google OAuth result:', result);
       
     } catch (error) {
-      console.error('❌ GOOGLE OAUTH EXCEPTION:', error);
-      setError('An error occurred with Google sign in. Please try again.');
+      console.error('❌ Google OAuth error:', error);
+      setError('Google sign-in failed. Please try again.');
       setIsLoading(false);
     }
   };
