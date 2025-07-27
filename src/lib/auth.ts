@@ -140,6 +140,25 @@ export const authOptions: NextAuthOptions = {
     error: '/login',
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      console.log('🔄 NEXTAUTH REDIRECT CALLBACK:', { url, baseUrl });
+      
+      // Handle relative URLs
+      if (url.startsWith('/')) {
+        console.log('✅ REDIRECTING TO RELATIVE URL:', url);
+        return `${baseUrl}${url}`;
+      }
+      
+      // Handle same-origin URLs 
+      if (new URL(url).origin === baseUrl) {
+        console.log('✅ REDIRECTING TO SAME-ORIGIN URL:', url);
+        return url;
+      }
+      
+      // Default to account page for successful login
+      console.log('✅ REDIRECTING TO DEFAULT ACCOUNT PAGE');
+      return `${baseUrl}/account`;
+    },
     async signIn({ user, account, profile, email, credentials }) {
       console.log('SignIn callback triggered:', { user, account, profile });
       

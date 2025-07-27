@@ -150,11 +150,48 @@ export function LoginForm() {
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    setError('');
+    
     try {
-      await signIn('google', { callbackUrl });
+      console.log('🔍 GOOGLE OAUTH ATTEMPT:', { callbackUrl, environment: process.env.NODE_EN })
+      console.log('🔍 Starting Google sign-in...');
+      
+      const result = await signIn('google', { 
+        callbackUrl,
+        redirect: true // Ensure redirect happens
+      });
+      
+      console.log('🔍 GOOGLE OAUTH RESULT:', result);
+      
+      // For OAuth providers, NextAuth typically handles the redirect automatically
+      // But if we reach here, something might have gone wrong
+      if (result?.error) {
+        console.error('❌ GOOGLE OAUTH ERROR:', result.error);
+        setError('Google sign-in failed. Please try again.');
+        setIsLoading(false);
+      } else {
+        console.log('✅ GOOGLE OAUTH SUCCESS - NextAuth should handle redirect');
+        // Keep loading state as NextAuth should redirect us
+        // But add a timeout as fallback in case redirect fails
+        setTimeout(() => {
+          console.log('⚠️ OAuth redirect timeout - clearing loading state');
+          setIsLoading(false);
+          // Check if we're still on login page and have a session
+          fetch('/api/auth/session')
+            .then(res => res.json())
+            .then(session => {
+              if (session?.user) {
+                console.log('✅ Session exists but redirect failed - manual redirect');
+                window.location.href = callbackUrl || '/account';
+              }
+            })
+            .catch(err => console.error('Session check failed:', err));
+        }, 5000); // 5 second timeout
+      }
+      
     } catch (error) {
+      console.error('❌ GOOGLE OAUTH EXCEPTION:', error);
       setError('An error occurred with Google sign in. Please try again.');
-      console.error('Google login error:', error);
       setIsLoading(false);
     }
   };
