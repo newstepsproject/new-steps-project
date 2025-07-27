@@ -34,35 +34,41 @@ export function LoginForm() {
     const handleOAuthReturn = async () => {
       console.log('🔍 Checking if we returned from OAuth...');
       
-      // Check if we have URL parameters that suggest OAuth return
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasOAuthParams = urlParams.has('code') || urlParams.has('state');
-      
-      if (hasOAuthParams) {
-        console.log('✅ OAuth return detected, checking session...');
-        setIsLoading(true);
+      try {
+        // Check if we have URL parameters that suggest OAuth return
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasOAuthParams = urlParams.has('code') && urlParams.has('state');
         
-        // Wait a moment for session to be established
-        setTimeout(async () => {
-          try {
-            const response = await fetch('/api/auth/session');
-            const session = await response.json();
-            
-            if (session?.user) {
-              console.log('✅ OAuth successful! User logged in:', session.user.email);
-              // Immediate redirect after successful OAuth
-              const redirectUrl = callbackUrl || '/account';
-              console.log('🔄 Redirecting to:', redirectUrl);
-              window.location.href = redirectUrl;
-            } else {
-              console.log('❌ No session found after OAuth return');
+        if (hasOAuthParams) {
+          console.log('✅ OAuth return detected, checking session...');
+          setIsLoading(true);
+          
+          // Wait a bit longer for NextAuth to process the OAuth callback
+          setTimeout(async () => {
+            try {
+              const response = await fetch('/api/auth/session');
+              const session = await response.json();
+              
+              if (session?.user) {
+                console.log('✅ OAuth successful! User logged in:', session.user.email);
+                // Let NextAuth handle the redirect naturally first
+                setTimeout(() => {
+                  const redirectUrl = callbackUrl || '/account';
+                  console.log('🔄 Manual redirect to:', redirectUrl);
+                  window.location.href = redirectUrl;
+                }, 500);
+              } else {
+                console.log('❌ No session found after OAuth return');
+                setIsLoading(false);
+              }
+            } catch (error) {
+              console.error('❌ Error checking session after OAuth:', error);
               setIsLoading(false);
             }
-          } catch (error) {
-            console.error('❌ Error checking session after OAuth:', error);
-            setIsLoading(false);
-          }
-        }, 1000);
+          }, 2000); // Increased wait time for NextAuth processing
+        }
+      } catch (error) {
+        console.error('❌ Error in OAuth return handler:', error);
       }
     };
 

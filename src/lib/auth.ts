@@ -143,21 +143,29 @@ export const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       console.log('🔄 NEXTAUTH REDIRECT CALLBACK:', { url, baseUrl });
       
-      // Handle relative URLs
-      if (url.startsWith('/')) {
-        console.log('✅ REDIRECTING TO RELATIVE URL:', url);
-        return `${baseUrl}${url}`;
+      try {
+        // Handle relative URLs
+        if (url.startsWith('/')) {
+          console.log('✅ REDIRECTING TO RELATIVE URL:', url);
+          return `${baseUrl}${url}`;
+        }
+        
+        // Handle same-origin URLs 
+        const urlObj = new URL(url);
+        if (urlObj.origin === baseUrl) {
+          console.log('✅ REDIRECTING TO SAME-ORIGIN URL:', url);
+          return url;
+        }
+        
+        // For external URLs, redirect to account page for security
+        console.log('⚠️ EXTERNAL URL DETECTED, REDIRECTING TO ACCOUNT PAGE');
+        return `${baseUrl}/account`;
+        
+      } catch (error) {
+        console.error('❌ ERROR IN REDIRECT CALLBACK:', error, { url, baseUrl });
+        // Safe fallback - always redirect to account page if there's an error
+        return `${baseUrl}/account`;
       }
-      
-      // Handle same-origin URLs 
-      if (new URL(url).origin === baseUrl) {
-        console.log('✅ REDIRECTING TO SAME-ORIGIN URL:', url);
-        return url;
-      }
-      
-      // Default to account page for successful login
-      console.log('✅ REDIRECTING TO DEFAULT ACCOUNT PAGE');
-      return `${baseUrl}/account`;
     },
     async signIn({ user, account, profile, email, credentials }) {
       console.log('SignIn callback triggered:', { user, account, profile });
