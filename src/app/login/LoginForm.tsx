@@ -29,33 +29,7 @@ export function LoginForm() {
     }
   }, [searchParams]);
 
-  // Direct authentication check - bypass URL parameter detection
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      console.log('🔍 Checking current auth status...');
-      
-      try {
-        const response = await fetch('/api/auth/session');
-        const session = await response.json();
-        
-        if (session?.user) {
-          console.log('✅ User is already authenticated:', session.user.email);
-          console.log('🔄 Redirecting to account page...');
-          // User is authenticated, redirect immediately
-          window.location.href = callbackUrl || '/account';
-        } else {
-          console.log('ℹ️ User not authenticated, staying on login page');
-        }
-      } catch (error) {
-        console.error('❌ Error checking auth status:', error);
-      }
-    };
-
-    // Check auth status after a short delay to let the page load
-    const timeoutId = setTimeout(checkAuthStatus, 500);
-    
-    return () => clearTimeout(timeoutId);
-  }, [callbackUrl]);
+  // Remove automatic redirect - was causing infinite loop
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
