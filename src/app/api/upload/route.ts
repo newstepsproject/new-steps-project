@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
-    const folder = formData.get('folder') as string || 'general';
+    const folder = formData.get('folder') as string || 'shoes'; // Changed from 'general' to 'shoes'
 
     // Validate file exists
     if (!file) {
