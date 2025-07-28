@@ -81,13 +81,61 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('S3 upload error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to upload image to S3',
-        details: error instanceof Error ? error.message : String(error)
-      },
-      { status: 500 }
-    );
+    
+    // LOCAL STORAGE FALLBACK - when S3 fails, save locally
+    try {
+      console.log('S3 failed, attempting local storage fallback...');
+      
+      const fs = require('fs');
+      const path = require('path');
+      const { v4: uuidv4 } = require('uuid');
+      
+      // Generate unique filename
+      const fileExtension = file.type.split('/')[1] || 'jpeg';
+      const fileName = `${uuidv4()}.${fileExtension}`;
+      const localPath = path.join(process.cwd(), 'public', 'images', folder, fileName);
+      
+      // Ensure directory exists
+      const dir = path.dirname(localPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      
+      // Write file to local storage
+      fs.writeFileSync(localPath, buffer);
+      
+      // Return local URL
+      const localUrl = `/images/${folder}/${fileName}`;
+      
+      console.log('Image saved locally:', localUrl);
+      
+      return NextResponse.json({
+        success: true,
+        url: localUrl,
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        message: 'Image uploaded successfully to local storage (S3 unavailable)',
+        storage: 'local',
+        limits: {
+          maxFileSize: UPLOAD_LIMITS.maxFileSize,
+          maxFileSizeMB: UPLOAD_LIMITS.maxFileSize / (1024 * 1024),
+          allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
+          maxFiles: UPLOAD_LIMITS.maxFiles,
+        }
+      });
+      
+    } catch (localError) {
+      console.error('Local storage fallback also failed:', localError);
+      return NextResponse.json(
+        { 
+          error: 'Failed to upload image to both S3 and local storage',
+          s3Error: error instanceof Error ? error.message : String(error),
+          localError: localError instanceof Error ? localError.message : String(localError)
+        },
+        { status: 500 }
+      );
+    }
   }
 }
 
