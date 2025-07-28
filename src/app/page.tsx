@@ -1,5 +1,3 @@
-import Image from 'next/image';
-import { ResponsiveImage } from '@/components/ui/responsive-image';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag, CreditCard, Footprints } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -124,14 +122,24 @@ export default async function Home() {
             </div>
             <div className="lg:w-1/2 relative animate-fade-in animate-delay-200 flex justify-center">
               <div className="relative aspect-[3/4] h-[350px] md:h-[400px] lg:h-[450px] max-w-sm">
-                <ResponsiveImage 
-                  src="/images/home_photo.png" 
-                  alt="Athletes with sports shoes ready to step into their possibilities" 
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 70vw, 40vw"
-                  className="object-cover hover:scale-105 transition-transform duration-700 rounded-2xl"
-                />
+                <picture className="absolute inset-0">
+                  <source
+                    srcSet="/images/home_photo-400w.webp 400w, /images/home_photo-800w.webp 800w"
+                    sizes="(max-width: 768px) 70vw, 40vw"
+                    type="image/webp"
+                  />
+                  <source
+                    srcSet="/images/home_photo-400w.jpg 400w, /images/home_photo-800w.jpg 800w"
+                    sizes="(max-width: 768px) 70vw, 40vw"
+                    type="image/jpeg"
+                  />
+                  <img
+                    src="/images/home_photo-optimized.jpg"
+                    alt="Athletes with sports shoes ready to step into their possibilities"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 rounded-2xl"
+                    loading="eager"
+                  />
+                </picture>
               </div>
             </div>
           </div>
