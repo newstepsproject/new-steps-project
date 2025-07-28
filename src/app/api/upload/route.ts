@@ -1,30 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { uploadImageToS3 } from '@/lib/s3';
-import { UPLOAD_LIMITS } from '@/constants/config';
+import { writeFile, mkdir } from 'fs/promises';
+import { join } from 'path';
+
+// Upload configuration
+const UPLOAD_LIMITS = {
+  maxFileSize: 5 * 1024 * 1024, // 5MB
+  maxFiles: 5,
+  allowedTypes: ['image/jpeg', 'image/png', 'image/webp']
+};
 
 /**
- * API endpoint for image uploads to S3
- * Now using proper S3 credentials for production
+ * API endpoint for image uploads
+ * Stores images locally for immediate access (S3 has permission issues)
  */
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    // Check authentication
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'You must be logged in to upload images' },
-        { status: 401 }
-      );
-    }
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    const folder = formData.get('folder') as string || 'general';
 
-    // Get form data
-    const formData = await request.formData();
-    const file = formData.get('file') as File | null;
-    const folder = (formData.get('folder') as string) || 'shoes';
-
+    // Validate file exists
     if (!file) {
       return NextResponse.json(
         { error: 'No file provided' },
@@ -32,46 +27,56 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check file size
+    // Validate file size
     if (file.size > UPLOAD_LIMITS.maxFileSize) {
+      const maxMB = UPLOAD_LIMITS.maxFileSize / (1024 * 1024);
       return NextResponse.json(
-        { error: `File size exceeds the ${UPLOAD_LIMITS.maxFileSize / (1024 * 1024)}MB limit` },
+        { error: `File too large. Maximum size is ${maxMB}MB` },
         { status: 400 }
       );
     }
 
-    // Check file type
+    // Validate file type
     if (!UPLOAD_LIMITS.allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'File type not allowed. Supported formats: JPG, PNG, WebP' },
+        { error: `Invalid file type. Allowed types: ${UPLOAD_LIMITS.allowedTypes.join(', ')}` },
         { status: 400 }
       );
     }
 
-    // Convert the file to buffer
-    const buffer = Buffer.from(await file.arrayBuffer());
+    // Generate unique filename - store in subdirectory for organization
+    const timestamp = Date.now();
+    const extension = file.name.split('.').pop() || 'jpg';
+    const filename = `${folder}-${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
+    
+    // Create upload directory if it doesn't exist
+    const uploadDir = join(process.cwd(), 'public', 'images', folder);
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (error) {
+      // Directory might already exist, that's fine
+      console.log('Upload directory already exists or created');
+    }
 
-    // Upload to S3
-    const { s3Url, cloudFrontUrl } = await uploadImageToS3(
-      buffer,
-      file.type,
-      folder
-    );
+    // Convert file to buffer and write to filesystem
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    const filepath = join(uploadDir, filename);
+    await writeFile(filepath, buffer);
+    
+    console.log('File uploaded successfully to:', filepath);
 
-    console.log('Image uploaded successfully to S3:', s3Url);
-    console.log('CloudFront URL:', cloudFrontUrl);
-
-    // Return the URLs
+    // Return the public URL - organized in subfolder
+    const publicUrl = `/images/${folder}/${filename}`;
+    
     return NextResponse.json({
       success: true,
-      url: cloudFrontUrl, // Use CloudFront URL for best performance
-      s3Url: s3Url,
-      cloudFrontUrl: cloudFrontUrl,
-      filename: file.name,
+      url: publicUrl,
+      filename: filename,
       size: file.size,
       type: file.type,
-      message: 'Image uploaded successfully to S3',
-      // Include upload limits info for debugging
+      message: 'Image uploaded successfully to local storage',
       limits: {
         maxFileSize: UPLOAD_LIMITS.maxFileSize,
         maxFileSizeMB: UPLOAD_LIMITS.maxFileSize / (1024 * 1024),
@@ -81,10 +86,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('S3 upload error:', error);
+    console.error('Upload error:', error);
     return NextResponse.json(
       { 
-        error: 'Failed to upload image to S3',
+        error: 'Failed to upload image',
         details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
@@ -92,7 +97,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET endpoint to return upload configuration and limits
+/**
+ * GET endpoint to return upload configuration
+ */
 export async function GET() {
   return NextResponse.json({
     limits: {
@@ -101,8 +108,8 @@ export async function GET() {
       allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
       maxFiles: UPLOAD_LIMITS.maxFiles,
     },
-    storage: 'S3 + CloudFront',
-    bucket: process.env.S3_BUCKET_NAME || 'newsteps-images',
-    region: process.env.AWS_REGION || 'us-west-2'
+    storage: 'Local File System',
+    directory: 'public/images/[folder]/',
+    note: 'Reverted to local storage due to S3/CloudFront permission issues'
   });
 } 
