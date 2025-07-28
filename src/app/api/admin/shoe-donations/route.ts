@@ -10,8 +10,8 @@ import { sendEmail, sendDonationConfirmationEmail } from '@/lib/email';
 import { generateId } from '@/lib/utils';
 
 import { ensureDbConnected } from '@/lib/db-utils';
-import { Counter } from '@/models/counter';
-import { Shoe } from '@/models/shoe';
+import Counter from '@/models/counter';
+import Shoe from '@/models/shoe';
 
 // GET all donations (admin only)
 export async function GET(request: NextRequest) {
