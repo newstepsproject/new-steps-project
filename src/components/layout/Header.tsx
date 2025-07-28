@@ -17,43 +17,18 @@ const Header = () => {
   const pathname = useSafePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
-  const [forceRefresh, setForceRefresh] = useState(0);
   const { itemCount } = useCart();
 
-  // AGGRESSIVE SESSION POLLING - Force session updates every 2 seconds
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      console.log('🔄 FORCE SESSION UPDATE - Current status:', status);
-      try {
-        await update();
-      } catch (error) {
-        console.error('Session update error:', error);
-      }
-    }, 2000);
-    
-    return () => clearInterval(interval);
-  }, [update, status]);
+  // Remove aggressive session polling that was causing continuous login/logout cycle
 
-  // Listen for logout events to immediately update UI
+  // Listen for logout events - simplified without aggressive refreshing
   useEffect(() => {
     const handleLogout = () => {
-      console.log('🔄 LOGOUT EVENT DETECTED - Immediately hiding user menu');
       setIsLoggedOut(true);
-      
-      // Force immediate UI refresh
-      setForceRefresh(prev => prev + 1);
-      
-      // Force session revalidation after short delay
-      setTimeout(async () => {
-        await update();
-        window.location.reload();
-      }, 1000);
     };
     
     const handleLogin = () => {
-      console.log('🔄 LOGIN EVENT DETECTED - Immediately showing user menu');
       setIsLoggedOut(false);
-      setForceRefresh(prev => prev + 1);
     };
     
     window.addEventListener('beforeunload', handleLogout);
@@ -72,20 +47,15 @@ const Header = () => {
       window.removeEventListener('login-success', handleLogin);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [update]);
+  }, []);
 
-  // Reset logout state when session changes + aggressive status checking
+  // Reset logout state when session changes - simplified
   useEffect(() => {
-    console.log('🔍 SESSION STATUS CHANGE:', { status, hasSession: !!session, forceRefresh });
-    
     if (status === 'unauthenticated') {
       setIsLoggedOut(true);
     } else if (status === 'authenticated' && session) {
       setIsLoggedOut(false);
     }
-    
-    // Force re-render when status changes
-    setForceRefresh(prev => prev + 1);
   }, [status, session]);
 
   // Navigation links
