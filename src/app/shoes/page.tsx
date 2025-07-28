@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -315,12 +315,10 @@ export default function ShoesPage() {
                       <div key={shoe._id} className="bg-white rounded-lg shadow-sm border overflow-hidden group hover:shadow-md transition-shadow">
                         <Link href={`/shoes/${shoe._id}`}>
                           <div className="relative aspect-square">
-                            <Image
+                            <img
                               src={shoe.images?.[0] || '/images/placeholder-shoe.jpg'}
                               alt={`${shoe.brand} ${shoe.modelName}`}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                             {/* Prominent Shoe ID Badge */}
                             <div className="absolute top-2 right-2 z-10">

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Footprints, ChevronLeft, Star, Check, Info, ShoppingCart, Image as ImageIcon, Ruler, Hash } from 'lucide-react';
@@ -155,13 +155,10 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
           <div className="sticky top-20 lg:top-24">
             <div className="bg-white p-2 sm:p-4 rounded-lg shadow-sm mb-4">
               <div className="relative aspect-square overflow-hidden rounded-md">
-                <Image
+                <img
                   src={shoe.images?.[activeImage] || '/images/placeholder-shoe.jpg'}
                   alt={shoe.modelName}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
+                  className="w-full h-full object-cover"
                 />
                 {/* Shoe ID Badge */}
                 <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-2 rounded-md flex items-center gap-1 sm:gap-2 shadow-sm">
@@ -182,11 +179,10 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
                     }`}
                     onClick={() => setActiveImage(idx)}
                   >
-                    <Image
+                    <img
                       src={img}
                       alt={`${shoe.modelName} thumbnail ${idx + 1}`}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                   </button>
                 ))}
@@ -397,12 +393,10 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
                 <div key={relatedShoe._id} className="bg-white rounded-lg shadow-sm overflow-hidden">
                   <Link href={`/shoes/${relatedShoe._id}`} className="block">
                     <div className="relative aspect-square">
-                      <Image
+                      <img
                         src={relatedShoe.images?.[0] || '/images/placeholder-shoe.jpg'}
                         alt={relatedShoe.modelName || 'Shoe'}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                        className="w-full h-full object-cover"
                       />
                       {/* Show shoe ID on related items too */}
                       <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-mono font-bold flex items-center gap-1">
