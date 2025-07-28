@@ -29,55 +29,32 @@ export function LoginForm() {
     }
   }, [searchParams]);
 
-  // Simplified OAuth return detection
+  // Direct authentication check - bypass URL parameter detection
   useEffect(() => {
-    const checkOAuthReturn = async () => {
-      console.log('🔍 Checking OAuth return status...');
+    const checkAuthStatus = async () => {
+      console.log('🔍 Checking current auth status...');
       
-      // Check if URL suggests we returned from OAuth
-      const urlParams = new URLSearchParams(window.location.search);
-      const isOAuthReturn = urlParams.has('code') && urlParams.has('state');
-      
-      if (isOAuthReturn) {
-        console.log('✅ OAuth return detected - waiting for NextAuth processing...');
-        setIsLoading(true);
+      try {
+        const response = await fetch('/api/auth/session');
+        const session = await response.json();
         
-        // Give NextAuth time to process, then check session
-        const checkSession = async (attempt = 1) => {
-          try {
-            console.log(`🔍 Checking session (attempt ${attempt})...`);
-            const response = await fetch('/api/auth/session');
-            const session = await response.json();
-            
-            if (session?.user) {
-              console.log('✅ Session found! Redirecting...', session.user.email);
-              window.location.href = callbackUrl || '/account';
-              return;
-            }
-            
-            // Retry up to 3 times with increasing delays
-            if (attempt < 3) {
-              setTimeout(() => checkSession(attempt + 1), attempt * 1000);
-            } else {
-              console.log('❌ No session after 3 attempts');
-              setIsLoading(false);
-            }
-          } catch (error) {
-            console.error('❌ Session check error:', error);
-            if (attempt < 3) {
-              setTimeout(() => checkSession(attempt + 1), attempt * 1000);
-            } else {
-              setIsLoading(false);
-            }
-          }
-        };
-        
-        // Start checking session after 1 second
-        setTimeout(() => checkSession(), 1000);
+        if (session?.user) {
+          console.log('✅ User is already authenticated:', session.user.email);
+          console.log('🔄 Redirecting to account page...');
+          // User is authenticated, redirect immediately
+          window.location.href = callbackUrl || '/account';
+        } else {
+          console.log('ℹ️ User not authenticated, staying on login page');
+        }
+      } catch (error) {
+        console.error('❌ Error checking auth status:', error);
       }
     };
 
-    checkOAuthReturn();
+    // Check auth status after a short delay to let the page load
+    const timeoutId = setTimeout(checkAuthStatus, 500);
+    
+    return () => clearTimeout(timeoutId);
   }, [callbackUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
