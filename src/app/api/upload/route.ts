@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { uploadImageToS3 } from '@/lib/s3';
 import { UPLOAD_LIMITS } from '@/constants/config';
 
 /**
- * API endpoint for image uploads
- * Stores images locally instead of S3 for testing
+ * API endpoint for image uploads to S3
+ * Now using proper S3 credentials for production
  */
 export async function POST(request: NextRequest) {
   try {
@@ -49,39 +48,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename - store in root images directory to avoid subdirectory serving issues
-    const timestamp = Date.now();
-    const extension = file.name.split('.').pop() || 'jpg';
-    const filename = `${folder}-${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
-    
-    // Store in root images directory (not subdirectory) to avoid Next.js static serving issues
-    const uploadDir = join(process.cwd(), 'public', 'images');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (error) {
-      // Directory might already exist, that's fine
-      console.log('Upload directory already exists or created');
-    }
+    // Convert the file to buffer
+    const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Convert file to buffer and write to filesystem
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    
-    const filepath = join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-    
-    console.log('File uploaded successfully to:', filepath);
+    // Upload to S3
+    const { s3Url, cloudFrontUrl } = await uploadImageToS3(
+      buffer,
+      file.type,
+      folder
+    );
 
-    // Return the public URL - now in root images directory
-    const publicUrl = `/images/${filename}`;
-    
+    console.log('Image uploaded successfully to S3:', s3Url);
+    console.log('CloudFront URL:', cloudFrontUrl);
+
+    // Return the URLs
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      filename: filename,
+      url: cloudFrontUrl, // Use CloudFront URL for best performance
+      s3Url: s3Url,
+      cloudFrontUrl: cloudFrontUrl,
+      filename: file.name,
       size: file.size,
       type: file.type,
-      message: 'Image uploaded successfully (local storage)',
+      message: 'Image uploaded successfully to S3',
       // Include upload limits info for debugging
       limits: {
         maxFileSize: UPLOAD_LIMITS.maxFileSize,
@@ -92,10 +81,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('S3 upload error:', error);
     return NextResponse.json(
       { 
-        error: 'Failed to upload image',
+        error: 'Failed to upload image to S3',
         details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
@@ -111,6 +100,9 @@ export async function GET() {
       maxFileSizeMB: UPLOAD_LIMITS.maxFileSize / (1024 * 1024),
       allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
       maxFiles: UPLOAD_LIMITS.maxFiles,
-    }
+    },
+    storage: 'S3 + CloudFront',
+    bucket: process.env.S3_BUCKET_NAME || 'newsteps-images',
+    region: process.env.AWS_REGION || 'us-west-2'
   });
 } 
