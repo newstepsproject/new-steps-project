@@ -49,13 +49,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
+    // Generate unique filename - store in root images directory to avoid subdirectory serving issues
     const timestamp = Date.now();
     const extension = file.name.split('.').pop() || 'jpg';
     const filename = `${folder}-${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
     
-    // Create upload directory if it doesn't exist
-    const uploadDir = join(process.cwd(), 'public', 'images', folder);
+    // Store in root images directory (not subdirectory) to avoid Next.js static serving issues
+    const uploadDir = join(process.cwd(), 'public', 'images');
     try {
       await mkdir(uploadDir, { recursive: true });
     } catch (error) {
@@ -72,8 +72,8 @@ export async function POST(request: NextRequest) {
     
     console.log('File uploaded successfully to:', filepath);
 
-    // Return the public URL
-    const publicUrl = `/images/${folder}/${filename}`;
+    // Return the public URL - now in root images directory
+    const publicUrl = `/images/${filename}`;
     
     return NextResponse.json({
       success: true,
