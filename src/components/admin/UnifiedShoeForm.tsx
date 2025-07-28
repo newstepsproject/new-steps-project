@@ -568,13 +568,16 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Donor Email <span className="text-red-500">*</span>
+                          Donor Email {!form.watch('isOffline') && <span className="text-red-500">*</span>}
                         </FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="donor@example.com" type="email" className="h-12" />
                         </FormControl>
                         <FormDescription>
-                          Required for online donations, optional for offline donations
+                          {form.watch('isOffline') 
+                            ? 'Optional for offline donations' 
+                            : 'Required for online donations'
+                          }
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
