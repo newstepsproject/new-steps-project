@@ -235,10 +235,14 @@ export async function PATCH(request: NextRequest) {
           await Shoe.findByIdAndUpdate(
             item.inventoryId,
             { 
-              $set: { status: 'available' }
+              $inc: { inventoryCount: 1 },    // ✅ Restore inventory count
+              $set: { 
+                status: 'available',           // ✅ Set status back to available
+                lastUpdated: new Date()        // ✅ Update timestamp
+              }
             }
           );
-          console.log('[INVENTORY] Restored shoe:', item.shoeId || item.inventoryId, 'to available');
+          console.log('[INVENTORY] Restored shoe inventory:', item.shoeId || item.inventoryId, 'count +1, status: available');
         }
       }
     }
@@ -252,10 +256,14 @@ export async function PATCH(request: NextRequest) {
           await Shoe.findByIdAndUpdate(
             item.inventoryId,
             { 
-              $set: { status: 'requested' }
+              $inc: { inventoryCount: -1 },   // ✅ Reduce inventory count again
+              $set: { 
+                status: 'requested',          // ✅ Set status back to requested
+                lastUpdated: new Date()       // ✅ Update timestamp
+              }
             }
           );
-          console.log('[INVENTORY] Re-allocated shoe:', item.shoeId || item.inventoryId, 'to requested');
+          console.log('[INVENTORY] Re-allocated shoe inventory:', item.shoeId || item.inventoryId, 'count -1, status: requested');
         }
       }
     }
