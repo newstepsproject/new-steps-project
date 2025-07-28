@@ -19,23 +19,44 @@ export async function GET(
     
     const { id } = params;
     
-    // Validate ID format
-    if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
+    // Validate that an ID was provided
+    if (!id) {
       return NextResponse.json(
         { 
           success: false,
-          error: 'Invalid shoe ID format'
+          error: 'Shoe ID is required'
         },
         { status: 400 }
       );
     }
     
+    let query: any;
+    
+    // Check if it's a MongoDB ObjectId format (24 hex characters)
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      query = { _id: id };
+    } 
+    // Check if it's a numeric shoeId
+    else if (/^\d+$/.test(id)) {
+      query = { shoeId: parseInt(id, 10) };
+    }
+    // Invalid format
+    else {
+      return NextResponse.json(
+        { 
+          success: false,
+          error: 'Invalid shoe ID format. Must be either a MongoDB ObjectId or numeric shoe ID.'
+        },
+        { status: 400 }
+      );
+    }
+    
+    // Add availability filters to the query
+    query.status = SHOE_STATUSES.AVAILABLE;
+    query.inventoryCount = { $gt: 0 };
+    
     // Fetch the shoe - only if it's available
-    const shoe = await Shoe.findOne({
-      _id: id,
-      status: SHOE_STATUSES.AVAILABLE,
-      inventoryCount: { $gt: 0 }
-    }).lean();
+    const shoe = await Shoe.findOne(query).lean();
     
     if (!shoe) {
       return NextResponse.json(

@@ -3,7 +3,7 @@
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import React, { ReactNode } from 'react';
-import { CartProvider } from './cart-provider';
+import { CartProvider } from '../components/cart/CartProvider';
 
 interface ProvidersProps {
   children: ReactNode;
