@@ -94,16 +94,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Add an item to the cart
   const addItem = (item: CartItem): boolean => {
+    console.log('🛒 Adding item to cart:', {
+      itemId: item.id,
+      shoeId: item.shoeId,
+      brand: item.brand,
+      modelName: item.modelName,
+      currentItemsInCart: items.length,
+      maxItems,
+      currentCartItems: items.map(i => ({ id: i.id, shoeId: i.shoeId, brand: i.brand, modelName: i.modelName }))
+    });
+
     // Check if we've reached the maximum number of items
     if (items.length >= maxItems) {
+      console.log('❌ Cart limit reached:', items.length, '>=', maxItems);
       return false; // Cannot add more items
     }
 
+    // Check if the item is already in the cart
+    const existingItem = items.find((i) => i.id === item.id);
+    if (existingItem) {
+      console.log('❌ Item already in cart:', {
+        existingId: existingItem.id,
+        newId: item.id,
+        match: existingItem.id === item.id
+      });
+      return false; // Item already exists
+    }
+
     setItems((prevItems) => {
-      // Check if the item is already in the cart
-      if (prevItems.some((i) => i.id === item.id)) {
-        return prevItems;
-      }
+      console.log('✅ Adding item to cart - before:', prevItems.length, 'after:', prevItems.length + 1);
       return [...prevItems, item];
     });
     
@@ -122,7 +141,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Check if an item is in the cart
   const isInCart = (id: string) => {
-    return items.some((item) => item.id === id);
+    const inCart = items.some((item) => item.id === id);
+    console.log('🔍 Checking if item is in cart:', {
+      checkingId: id,
+      inCart,
+      cartItems: items.map(item => ({ id: item.id, shoeId: item.shoeId, brand: item.brand }))
+    });
+    return inCart;
   };
 
   // Calculate the number of items in the cart

@@ -100,11 +100,13 @@ export default function CheckoutPage() {
     if (needsPayment && !paypalLoaded) {
       // Check if we have a valid PayPal client ID
       const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-      if (!clientId || clientId === 'test' || clientId.length < 20 || clientId.includes('AZHWGKdx9_SHZr7rBP3IYlsKgmyv5aDl5LJ4J4SjKm5FGqvJ1_8Gm9qQZ0vLXnNZ_l6C8OKqJvXQQ9qD')) {
-        console.warn('Using placeholder PayPal client ID - skipping PayPal integration for testing');
+      if (!clientId || clientId === 'test' || clientId.length < 20) {
+        console.warn('PayPal client ID missing or invalid - skipping PayPal integration');
         setFormError('PayPal not configured. Please use "Pickup (Free)" option for testing.');
         return;
       }
+      
+      console.log('PayPal client ID found, loading PayPal SDK...', clientId.substring(0, 10) + '...');
       
       // Check if PayPal SDK is already loaded globally
       if ((window as any).paypal) {
