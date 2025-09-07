@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { SessionUser } from '@/types/user';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 // Force dynamic to handle file uploads
 export const dynamic = 'force-dynamic';
@@ -45,19 +46,38 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop();
     const fileName = `officer-${timestamp}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
 
-    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Save file to public/images/team directory
+    const storageProvider = (process.env.STORAGE_PROVIDER || 'local').toLowerCase();
+
+    if (storageProvider === 's3') {
+      const region = process.env.S3_REGION || '';
+      const bucket = process.env.S3_BUCKET || '';
+      const prefix = process.env.S3_PREFIX || '';
+      const publicBase = process.env.S3_PUBLIC_URL || '';
+
+      if (region && bucket) {
+        const key = [prefix, 'team', fileName].filter(Boolean).join('/');
+        const s3 = new S3Client({ region });
+        await s3.send(new PutObjectCommand({
+          Bucket: bucket,
+          Key: key,
+          Body: buffer,
+          ContentType: file.type,
+          ACL: 'public-read'
+        }));
+        const url = publicBase
+          ? `${publicBase.replace(/\/$/, '')}/team/${fileName}`
+          : `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+        return NextResponse.json({ success: true, fileName, url, provider: 's3', message: 'Photo uploaded successfully' });
+      }
+    }
+
+    // Local fallback
     const filePath = join(process.cwd(), 'public/images/team', fileName);
     await writeFile(filePath, buffer);
-
-    return NextResponse.json({
-      success: true,
-      fileName: fileName,
-      message: 'Photo uploaded successfully'
-    });
+    return NextResponse.json({ success: true, fileName, url: `/images/team/${fileName}`, provider: 'local', message: 'Photo uploaded successfully' });
 
   } catch (error) {
     console.error('Error uploading photo:', error);

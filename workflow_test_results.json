@@ -1,0 +1,473 @@
+{
+  "summary": {
+    "total_tests": 26,
+    "passed": 16,
+    "failed": 4,
+    "critical_failures": 4,
+    "success_rate": 61.53846153846154,
+    "workflow_results": [
+      [
+        "Navigation",
+        false
+      ],
+      [
+        "Registration",
+        false
+      ],
+      [
+        "Login",
+        false
+      ],
+      [
+        "Shoe Browsing",
+        false
+      ],
+      [
+        "Cart Management",
+        true
+      ],
+      [
+        "Checkout",
+        true
+      ],
+      [
+        "Donation",
+        true
+      ]
+    ]
+  },
+  "detailed_results": [
+    {
+      "workflow": "Site Navigation",
+      "step": "Navigate to About",
+      "status": "PASS",
+      "details": "Successfully navigated to https://newsteps.fit/about",
+      "critical": false,
+      "timestamp": "2025-07-28 02:44:29"
+    },
+    {
+      "workflow": "Site Navigation",
+      "step": "Navigate to Donate",
+      "status": "PASS",
+      "details": "Successfully navigated to https://newsteps.fit/donate",
+      "critical": false,
+      "timestamp": "2025-07-28 02:44:31"
+    },
+    {
+      "workflow": "Site Navigation",
+      "step": "Navigate to Request Shoes",
+      "status": "PASS",
+      "details": "Successfully navigated to https://newsteps.fit/shoes",
+      "critical": false,
+      "timestamp": "2025-07-28 02:44:33"
+    },
+    {
+      "workflow": "Site Navigation",
+      "step": "Navigate to Contact",
+      "status": "PASS",
+      "details": "Successfully navigated to https://newsteps.fit/contact",
+      "critical": false,
+      "timestamp": "2025-07-28 02:44:35"
+    },
+    {
+      "workflow": "Site Navigation",
+      "step": "Footer Links",
+      "status": "WARN",
+      "details": "No footer links found",
+      "critical": false,
+      "timestamp": "2025-07-28 02:44:36"
+    },
+    {
+      "workflow": "Site Navigation",
+      "step": "Navigation Workflow",
+      "status": "FAIL",
+      "details": "Exception: Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"button[aria-label*=\\\"menu\\\"], .mobile-menu-button, button:has-text(\\\"\u2630\\\")\")\n    - locator resolved to <button aria-label=\"Open menu\" class=\"md:hidden text-gpt-text hover:text-gpt-primary transition-colors p-1 rounded-md\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
+      "critical": true,
+      "timestamp": "2025-07-28 02:45:06"
+    },
+    {
+      "workflow": "User Registration",
+      "step": "Navigate to Register",
+      "status": "PASS",
+      "details": "Registration page loaded",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:11"
+    },
+    {
+      "workflow": "User Registration",
+      "step": "Fill Registration Form",
+      "status": "PASS",
+      "details": "All fields filled successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:11"
+    },
+    {
+      "workflow": "User Registration",
+      "step": "Registration Submission",
+      "status": "FAIL",
+      "details": "Error: *",
+      "critical": true,
+      "timestamp": "2025-07-28 02:45:14"
+    },
+    {
+      "workflow": "User Login",
+      "step": "Navigate to Login",
+      "status": "PASS",
+      "details": "Login page loaded",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:19"
+    },
+    {
+      "workflow": "User Login",
+      "step": "Login Workflow",
+      "status": "FAIL",
+      "details": "Exception: Page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"input[name=\\\"email\\\"]\")\n",
+      "critical": true,
+      "timestamp": "2025-07-28 02:45:49"
+    },
+    {
+      "workflow": "Shoe Browsing",
+      "step": "Navigate to Shoes",
+      "status": "PASS",
+      "details": "Shoes browse page loaded",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:53"
+    },
+    {
+      "workflow": "Shoe Browsing",
+      "step": "Shoes Display",
+      "status": "PASS",
+      "details": "Found 4 shoes displayed",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:53"
+    },
+    {
+      "workflow": "Shoe Browsing",
+      "step": "Shoe Detail Navigation",
+      "status": "PASS",
+      "details": "Navigated to shoe detail: https://newsteps.fit/shoes/688709e5179376ab825bb8d1",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:55"
+    },
+    {
+      "workflow": "Shoe Browsing",
+      "step": "Add to Cart",
+      "status": "FAIL",
+      "details": "No add to cart button found",
+      "critical": true,
+      "timestamp": "2025-07-28 02:45:55"
+    },
+    {
+      "workflow": "Cart Management",
+      "step": "Navigate to Cart",
+      "status": "PASS",
+      "details": "Cart page loaded",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:59"
+    },
+    {
+      "workflow": "Cart Management",
+      "step": "Cart Contents",
+      "status": "PASS",
+      "details": "Empty cart displayed correctly",
+      "critical": false,
+      "timestamp": "2025-07-28 02:45:59"
+    },
+    {
+      "workflow": "Checkout Process",
+      "step": "Navigate to Checkout",
+      "status": "PASS",
+      "details": "Checkout page loaded",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:06"
+    },
+    {
+      "workflow": "Checkout Process",
+      "step": "Fill Shipping Info",
+      "status": "WARN",
+      "details": "No shipping fields found or filled",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:06"
+    },
+    {
+      "workflow": "Checkout Process",
+      "step": "Select Delivery Method",
+      "status": "WARN",
+      "details": "No delivery options found",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:06"
+    },
+    {
+      "workflow": "Checkout Process",
+      "step": "Payment Section",
+      "status": "INFO",
+      "details": "No payment section (may be free)",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:06"
+    },
+    {
+      "workflow": "Checkout Process",
+      "step": "Submit Button",
+      "status": "WARN",
+      "details": "No submit button found",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:06"
+    },
+    {
+      "workflow": "Shoe Donation",
+      "step": "Navigate to Donation",
+      "status": "PASS",
+      "details": "Donation form loaded",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:09"
+    },
+    {
+      "workflow": "Shoe Donation",
+      "step": "Fill Donor Information",
+      "status": "PASS",
+      "details": "Filled 5 donor fields",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:09"
+    },
+    {
+      "workflow": "Shoe Donation",
+      "step": "Select Pickup Method",
+      "status": "WARN",
+      "details": "No pickup options found",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:09"
+    },
+    {
+      "workflow": "Shoe Donation",
+      "step": "Form Validation",
+      "status": "PASS",
+      "details": "Submit button enabled: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:46:09"
+    }
+  ],
+  "workflow_groups": {
+    "Site Navigation": [
+      {
+        "workflow": "Site Navigation",
+        "step": "Navigate to About",
+        "status": "PASS",
+        "details": "Successfully navigated to https://newsteps.fit/about",
+        "critical": false,
+        "timestamp": "2025-07-28 02:44:29"
+      },
+      {
+        "workflow": "Site Navigation",
+        "step": "Navigate to Donate",
+        "status": "PASS",
+        "details": "Successfully navigated to https://newsteps.fit/donate",
+        "critical": false,
+        "timestamp": "2025-07-28 02:44:31"
+      },
+      {
+        "workflow": "Site Navigation",
+        "step": "Navigate to Request Shoes",
+        "status": "PASS",
+        "details": "Successfully navigated to https://newsteps.fit/shoes",
+        "critical": false,
+        "timestamp": "2025-07-28 02:44:33"
+      },
+      {
+        "workflow": "Site Navigation",
+        "step": "Navigate to Contact",
+        "status": "PASS",
+        "details": "Successfully navigated to https://newsteps.fit/contact",
+        "critical": false,
+        "timestamp": "2025-07-28 02:44:35"
+      },
+      {
+        "workflow": "Site Navigation",
+        "step": "Footer Links",
+        "status": "WARN",
+        "details": "No footer links found",
+        "critical": false,
+        "timestamp": "2025-07-28 02:44:36"
+      },
+      {
+        "workflow": "Site Navigation",
+        "step": "Navigation Workflow",
+        "status": "FAIL",
+        "details": "Exception: Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"button[aria-label*=\\\"menu\\\"], .mobile-menu-button, button:has-text(\\\"\u2630\\\")\")\n    - locator resolved to <button aria-label=\"Open menu\" class=\"md:hidden text-gpt-text hover:text-gpt-primary transition-colors p-1 rounded-md\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
+        "critical": true,
+        "timestamp": "2025-07-28 02:45:06"
+      }
+    ],
+    "User Registration": [
+      {
+        "workflow": "User Registration",
+        "step": "Navigate to Register",
+        "status": "PASS",
+        "details": "Registration page loaded",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:11"
+      },
+      {
+        "workflow": "User Registration",
+        "step": "Fill Registration Form",
+        "status": "PASS",
+        "details": "All fields filled successfully",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:11"
+      },
+      {
+        "workflow": "User Registration",
+        "step": "Registration Submission",
+        "status": "FAIL",
+        "details": "Error: *",
+        "critical": true,
+        "timestamp": "2025-07-28 02:45:14"
+      }
+    ],
+    "User Login": [
+      {
+        "workflow": "User Login",
+        "step": "Navigate to Login",
+        "status": "PASS",
+        "details": "Login page loaded",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:19"
+      },
+      {
+        "workflow": "User Login",
+        "step": "Login Workflow",
+        "status": "FAIL",
+        "details": "Exception: Page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"input[name=\\\"email\\\"]\")\n",
+        "critical": true,
+        "timestamp": "2025-07-28 02:45:49"
+      }
+    ],
+    "Shoe Browsing": [
+      {
+        "workflow": "Shoe Browsing",
+        "step": "Navigate to Shoes",
+        "status": "PASS",
+        "details": "Shoes browse page loaded",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:53"
+      },
+      {
+        "workflow": "Shoe Browsing",
+        "step": "Shoes Display",
+        "status": "PASS",
+        "details": "Found 4 shoes displayed",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:53"
+      },
+      {
+        "workflow": "Shoe Browsing",
+        "step": "Shoe Detail Navigation",
+        "status": "PASS",
+        "details": "Navigated to shoe detail: https://newsteps.fit/shoes/688709e5179376ab825bb8d1",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:55"
+      },
+      {
+        "workflow": "Shoe Browsing",
+        "step": "Add to Cart",
+        "status": "FAIL",
+        "details": "No add to cart button found",
+        "critical": true,
+        "timestamp": "2025-07-28 02:45:55"
+      }
+    ],
+    "Cart Management": [
+      {
+        "workflow": "Cart Management",
+        "step": "Navigate to Cart",
+        "status": "PASS",
+        "details": "Cart page loaded",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:59"
+      },
+      {
+        "workflow": "Cart Management",
+        "step": "Cart Contents",
+        "status": "PASS",
+        "details": "Empty cart displayed correctly",
+        "critical": false,
+        "timestamp": "2025-07-28 02:45:59"
+      }
+    ],
+    "Checkout Process": [
+      {
+        "workflow": "Checkout Process",
+        "step": "Navigate to Checkout",
+        "status": "PASS",
+        "details": "Checkout page loaded",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:06"
+      },
+      {
+        "workflow": "Checkout Process",
+        "step": "Fill Shipping Info",
+        "status": "WARN",
+        "details": "No shipping fields found or filled",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:06"
+      },
+      {
+        "workflow": "Checkout Process",
+        "step": "Select Delivery Method",
+        "status": "WARN",
+        "details": "No delivery options found",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:06"
+      },
+      {
+        "workflow": "Checkout Process",
+        "step": "Payment Section",
+        "status": "INFO",
+        "details": "No payment section (may be free)",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:06"
+      },
+      {
+        "workflow": "Checkout Process",
+        "step": "Submit Button",
+        "status": "WARN",
+        "details": "No submit button found",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:06"
+      }
+    ],
+    "Shoe Donation": [
+      {
+        "workflow": "Shoe Donation",
+        "step": "Navigate to Donation",
+        "status": "PASS",
+        "details": "Donation form loaded",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:09"
+      },
+      {
+        "workflow": "Shoe Donation",
+        "step": "Fill Donor Information",
+        "status": "PASS",
+        "details": "Filled 5 donor fields",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:09"
+      },
+      {
+        "workflow": "Shoe Donation",
+        "step": "Select Pickup Method",
+        "status": "WARN",
+        "details": "No pickup options found",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:09"
+      },
+      {
+        "workflow": "Shoe Donation",
+        "step": "Form Validation",
+        "status": "PASS",
+        "details": "Submit button enabled: True",
+        "critical": false,
+        "timestamp": "2025-07-28 02:46:09"
+      }
+    ]
+  }
+}

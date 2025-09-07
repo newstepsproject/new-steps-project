@@ -1,0 +1,405 @@
+{
+  "summary": {
+    "total_tests": 56,
+    "passed": 56,
+    "failed": 0,
+    "critical_failures": 0,
+    "success_rate": 100.0,
+    "images_success": true,
+    "failed_images": []
+  },
+  "detailed_results": [
+    {
+      "test": "Image: /images/home_photo-optimized.jpg",
+      "status": "PASS",
+      "details": "\u2705 76066 bytes, image/jpeg",
+      "critical": true,
+      "timestamp": "2025-07-28 02:39:07"
+    },
+    {
+      "test": "Image: /images/home_photo-400w.webp",
+      "status": "PASS",
+      "details": "\u2705 25922 bytes, image/webp",
+      "critical": true,
+      "timestamp": "2025-07-28 02:39:08"
+    },
+    {
+      "test": "Image: /images/home_photo-400w.jpg",
+      "status": "PASS",
+      "details": "\u2705 15319 bytes, image/jpeg",
+      "critical": true,
+      "timestamp": "2025-07-28 02:39:10"
+    },
+    {
+      "test": "Image: /images/logo.png",
+      "status": "PASS",
+      "details": "\u2705 153794 bytes, image/png",
+      "critical": true,
+      "timestamp": "2025-07-28 02:39:11"
+    },
+    {
+      "test": "Image: /images/placeholder-shoe.jpg",
+      "status": "PASS",
+      "details": "\u2705 22938 bytes, image/jpeg",
+      "critical": true,
+      "timestamp": "2025-07-28 02:39:13"
+    },
+    {
+      "test": "Homepage - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:28"
+    },
+    {
+      "test": "Homepage - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:28"
+    },
+    {
+      "test": "Homepage - Image 2",
+      "status": "PASS",
+      "details": "Loaded: 512x768, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:28"
+    },
+    {
+      "test": "Homepage - Picture Source 1",
+      "status": "PASS",
+      "details": "Responsive image OK",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:29"
+    },
+    {
+      "test": "Homepage - Picture Source 2",
+      "status": "PASS",
+      "details": "Responsive image OK",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:31"
+    },
+    {
+      "test": "Homepage - Overall Images",
+      "status": "PASS",
+      "details": "All 4 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:31"
+    },
+    {
+      "test": "Homepage - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:31"
+    },
+    {
+      "test": "Homepage - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:31"
+    },
+    {
+      "test": "Homepage - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_homepage.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:31"
+    },
+    {
+      "test": "Shoes Browse - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:45"
+    },
+    {
+      "test": "Shoes Browse - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:45"
+    },
+    {
+      "test": "Shoes Browse - Image 2",
+      "status": "PASS",
+      "details": "Loaded: 390x567, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:45"
+    },
+    {
+      "test": "Shoes Browse - Image 3",
+      "status": "PASS",
+      "details": "Loaded: 390x567, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:45"
+    },
+    {
+      "test": "Shoes Browse - Image 4",
+      "status": "PASS",
+      "details": "Loaded: 1200x1600, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:45"
+    },
+    {
+      "test": "Shoes Browse - Image 5",
+      "status": "PASS",
+      "details": "Loaded: 1200x1600, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:46"
+    },
+    {
+      "test": "Shoes Browse - Overall Images",
+      "status": "PASS",
+      "details": "All 5 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:46"
+    },
+    {
+      "test": "Shoes Browse - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:46"
+    },
+    {
+      "test": "Shoes Browse - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:46"
+    },
+    {
+      "test": "Shoes Browse - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_shoes browse.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:46"
+    },
+    {
+      "test": "Shoe Detail - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:39:59"
+    },
+    {
+      "test": "Shoe Detail - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Shoe Detail - Image 2",
+      "status": "PASS",
+      "details": "Loaded: 1200x1600, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Shoe Detail - Image 3",
+      "status": "PASS",
+      "details": "Loaded: 1200x1600, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Shoe Detail - Overall Images",
+      "status": "PASS",
+      "details": "All 3 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Shoe Detail - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Shoe Detail - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Shoe Detail - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_shoe detail.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:00"
+    },
+    {
+      "test": "Cart - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:15"
+    },
+    {
+      "test": "Cart - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:15"
+    },
+    {
+      "test": "Cart - Overall Images",
+      "status": "PASS",
+      "details": "All 1 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:15"
+    },
+    {
+      "test": "Cart - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:15"
+    },
+    {
+      "test": "Cart - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:15"
+    },
+    {
+      "test": "Cart - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_cart.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:15"
+    },
+    {
+      "test": "Checkout - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:33"
+    },
+    {
+      "test": "Checkout - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:33"
+    },
+    {
+      "test": "Checkout - Overall Images",
+      "status": "PASS",
+      "details": "All 1 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:33"
+    },
+    {
+      "test": "Checkout - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:33"
+    },
+    {
+      "test": "Checkout - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:33"
+    },
+    {
+      "test": "Checkout - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_checkout.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:33"
+    },
+    {
+      "test": "Login - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:49"
+    },
+    {
+      "test": "Login - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:49"
+    },
+    {
+      "test": "Login - Overall Images",
+      "status": "PASS",
+      "details": "All 1 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:49"
+    },
+    {
+      "test": "Login - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:49"
+    },
+    {
+      "test": "Login - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:49"
+    },
+    {
+      "test": "Login - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_login.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:40:49"
+    },
+    {
+      "test": "Donate Shoes - Page Load",
+      "status": "PASS",
+      "details": "HTTP 200",
+      "critical": false,
+      "timestamp": "2025-07-28 02:41:04"
+    },
+    {
+      "test": "Donate Shoes - Image 1",
+      "status": "PASS",
+      "details": "Loaded: 384x384, visible: True",
+      "critical": false,
+      "timestamp": "2025-07-28 02:41:04"
+    },
+    {
+      "test": "Donate Shoes - Overall Images",
+      "status": "PASS",
+      "details": "All 1 images loaded successfully",
+      "critical": false,
+      "timestamp": "2025-07-28 02:41:04"
+    },
+    {
+      "test": "Donate Shoes - Console Errors",
+      "status": "PASS",
+      "details": "No console errors",
+      "critical": false,
+      "timestamp": "2025-07-28 02:41:04"
+    },
+    {
+      "test": "Donate Shoes - Network Failures",
+      "status": "PASS",
+      "details": "No network failures",
+      "critical": false,
+      "timestamp": "2025-07-28 02:41:04"
+    },
+    {
+      "test": "Donate Shoes - Screenshot",
+      "status": "PASS",
+      "details": "Saved to enhanced_test_donate shoes.png",
+      "critical": false,
+      "timestamp": "2025-07-28 02:41:04"
+    }
+  ]
+}

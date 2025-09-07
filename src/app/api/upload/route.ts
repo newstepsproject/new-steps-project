@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 // Upload configuration
 const UPLOAD_LIMITS = {
@@ -11,7 +12,7 @@ const UPLOAD_LIMITS = {
 
 /**
  * API endpoint for image uploads
- * Stores images locally for immediate access (S3 has permission issues)
+ * Env-toggle: local filesystem (default) or S3+CloudFront when STORAGE_PROVIDER=s3
  */
 export async function POST(req: NextRequest) {
   try {
@@ -49,40 +50,70 @@ export async function POST(req: NextRequest) {
     const extension = file.name.split('.').pop() || 'jpg';
     const filename = `${folder}-${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
     
-    // Create upload directory if it doesn't exist
+    // Convert file to buffer once
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const storageProvider = (process.env.STORAGE_PROVIDER || 'local').toLowerCase();
+
+    if (storageProvider === 's3') {
+      // Upload to S3
+      const region = process.env.S3_REGION || '';
+      const bucket = process.env.S3_BUCKET || '';
+      const prefix = process.env.S3_PREFIX || '';
+      const publicBase = process.env.S3_PUBLIC_URL || '';
+
+      if (!region || !bucket) {
+        console.warn('S3 configuration missing, falling back to local storage');
+      } else {
+        const key = [prefix, folder, filename].filter(Boolean).join('/');
+        const s3 = new S3Client({ region });
+        const putCmd = new PutObjectCommand({
+          Bucket: bucket,
+          Key: key,
+          Body: buffer,
+          ContentType: file.type,
+          ACL: 'public-read'
+        });
+        await s3.send(putCmd);
+
+        // Prefer CloudFront/public URL if provided
+        const url = publicBase
+          ? `${publicBase.replace(/\/$/, '')}/${[folder, filename].join('/')}`
+          : `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+
+        return NextResponse.json({
+          success: true,
+          url,
+          filename,
+          size: file.size,
+          type: file.type,
+          message: 'Image uploaded successfully to S3',
+          provider: 's3'
+        });
+      }
+    }
+
+    // Default: local storage
     const uploadDir = join(process.cwd(), 'public', 'images', folder);
     try {
       await mkdir(uploadDir, { recursive: true });
     } catch (error) {
-      // Directory might already exist, that's fine
-      console.log('Upload directory already exists or created');
+      // Directory might already exist
     }
 
-    // Convert file to buffer and write to filesystem
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    
     const filepath = join(uploadDir, filename);
     await writeFile(filepath, buffer);
-    
-    console.log('File uploaded successfully to:', filepath);
-
-    // Return the public URL - organized in subfolder
     const publicUrl = `/images/${folder}/${filename}`;
-    
+
     return NextResponse.json({
       success: true,
       url: publicUrl,
-      filename: filename,
+      filename,
       size: file.size,
       type: file.type,
       message: 'Image uploaded successfully to local storage',
-      limits: {
-        maxFileSize: UPLOAD_LIMITS.maxFileSize,
-        maxFileSizeMB: UPLOAD_LIMITS.maxFileSize / (1024 * 1024),
-        allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
-        maxFiles: UPLOAD_LIMITS.maxFiles,
-      }
+      provider: 'local'
     });
 
   } catch (error) {
