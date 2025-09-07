@@ -59,7 +59,12 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3000,
         NEXT_TELEMETRY_DISABLED: 1,
-        // Add other production-specific variables here
+        // Storage configuration
+        STORAGE_PROVIDER: 's3',
+        S3_REGION: 'us-west-2',
+        S3_BUCKET: 'newsteps-images',
+        S3_PREFIX: 'images',
+        S3_PUBLIC_URL: 'https://cdn.newsteps.fit'
       }
     }
   ],
