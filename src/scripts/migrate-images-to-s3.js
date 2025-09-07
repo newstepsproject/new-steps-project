@@ -67,7 +67,6 @@ async function main() {
       Key: key,
       Body: body,
       ContentType: contentType,
-      ACL: 'public-read',
     }));
 
     const url = publicBase
