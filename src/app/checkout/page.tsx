@@ -182,7 +182,7 @@ export default function CheckoutPage() {
           shippingPaymentAgreed: formData.shippingPaymentAgreed,
           items: items.map(item => ({
             shoeId: item.shoeId,
-            inventoryId: item.id, // MongoDB ObjectId
+            inventoryId: item.inventoryId, // MongoDB ObjectId - use correct field
             brand: item.brand,
             name: item.name,
             size: item.size ?? 'N/A',        // Apply nullish coalescing to handle null values
