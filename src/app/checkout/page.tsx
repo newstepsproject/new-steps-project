@@ -602,16 +602,8 @@ export default function CheckoutPage() {
                       <div className="flex-1">
                         <h4 className="text-green-900 font-medium mb-2">What happens next:</h4>
                         <p className="text-green-800 text-sm mb-2">
-                          We'll contact you within 24 hours to coordinate pickup details.
+                          You will receive an email from <strong>newstepsfit@gmail.com</strong> within 24 hours for a convenient pickup location and time that works for both parties.
                         </p>
-                        <div className="bg-green-100 rounded p-2">
-                          <p className="text-green-900 text-sm font-medium">
-                            📧 Contact: <strong>newstepsfit@gmail.com</strong>
-                          </p>
-                          <p className="text-green-800 text-xs mt-1">
-                            We'll arrange a convenient pickup location and time that works for both parties.
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </div>
