@@ -137,14 +137,18 @@ export async function POST(request: NextRequest) {
     console.log('Received shoe data:', JSON.stringify(data, null, 2));
     
     // Validate required fields
-    if (!data.brand || !data.modelName || !data.size) {
+    if (!data.brand || !data.modelName || !data.size || !data.color || !data.sport) {
       return NextResponse.json({ 
-        error: 'Missing required fields: brand, modelName, size' 
+        error: 'Missing required fields: brand, modelName, size, color, sport' 
       }, { status: 400 });
     }
 
+    // Generate SKU for the shoe
+    const sku = `${data.brand.toUpperCase().replace(/\s+/g, '')}-${data.modelName.toUpperCase().replace(/\s+/g, '')}-${data.size.replace(/\s+/g, '')}-${Date.now()}`;
+
     // Create shoe using Mongoose model (shoeId will be auto-generated)
     const newShoe = new Shoe({
+      sku: sku,
       brand: data.brand,
       modelName: data.modelName,
       gender: data.gender || 'unisex',
@@ -154,7 +158,7 @@ export async function POST(request: NextRequest) {
       condition: data.condition || 'good',
       description: data.description || '',
       features: data.features || [],
-      images: data.images || [],
+      images: data.images && data.images.length > 0 ? data.images : ['/images/placeholder-shoe.jpg'],
       status: data.status || SHOE_STATUSES.AVAILABLE,
       inventoryCount: data.inventoryCount || 1,
       inventoryNotes: data.inventoryNotes || '',
