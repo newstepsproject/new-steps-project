@@ -52,7 +52,7 @@ export function LoginForm() {
       console.log('🔍 LOGIN RESULT (detailed):', JSON.stringify(result, null, 2));
 
       // If NextAuth signIn works, proceed normally
-      if (result.ok || (result.status === 200 && result.error === 'Configuration')) {
+      if (result && (result.ok || (result.status === 200 && result.error === 'Configuration'))) {
         console.log('✅ NEXTAUTH LOGIN SUCCEEDED WITH CONFIG WARNING');
         
         // IMMEDIATE SUCCESS EVENT - Trigger Header update instantly

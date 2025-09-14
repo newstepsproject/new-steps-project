@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {success && (
-              <Alert variant="success">
+              <Alert variant="default">
                 <CheckCircle className="h-4 w-4" />
                 <AlertTitle>Success</AlertTitle>
                 <AlertDescription>{success}</AlertDescription>
