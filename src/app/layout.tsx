@@ -1,18 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Montserrat, Poppins } from "next/font/google";
+// Temporarily disabled Google Fonts due to network connectivity issues
+// import { Inter, Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 import { MobilePerformanceOptimizer } from "@/components/performance/MobilePerformanceOptimizer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
-const poppins = Poppins({ 
-  subsets: ["latin"], 
-  variable: "--font-poppins",
-  weight: ['300', '400', '500', '600', '700', '800']
-});
+// Using system fonts as fallbacks to prevent terminal errors
+const inter = { variable: "--font-inter" };
+const montserrat = { variable: "--font-montserrat" };
+const poppins = { variable: "--font-poppins" };
 
 export const metadata: Metadata = {
   title: {
