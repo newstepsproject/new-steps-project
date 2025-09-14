@@ -57,3 +57,7 @@ style_from_gpt/.env.local
 clean-ecosystem.config.js
 env.production.updated
 updated-production-env
+
+# Prevent local image storage - all images should be in S3
+public/images/shoes/
+public/images/team/
