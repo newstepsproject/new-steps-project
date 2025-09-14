@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!firstName || !lastName || !email || !phone) {
+    if (!firstName || !lastName || !email) {
       return NextResponse.json(
         { error: 'Missing required personal information' },
         { status: 400 }
