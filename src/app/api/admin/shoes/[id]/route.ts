@@ -6,7 +6,7 @@ import Shoe from '@/models/shoe';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +17,8 @@ export async function GET(
 
     await dbConnect();
     
-    const shoe = await Shoe.findById(params.id);
+    const { id } = await params;
+    const shoe = await Shoe.findById(id);
     
     if (!shoe) {
       return NextResponse.json({ error: 'Shoe not found' }, { status: 404 });
@@ -35,7 +36,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -47,9 +48,10 @@ export async function PUT(
     await dbConnect();
     
     const data = await request.json();
+    const { id } = await params;
     
     const shoe = await Shoe.findByIdAndUpdate(
-      params.id,
+      id,
       data,
       { new: true, runValidators: true }
     );

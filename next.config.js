@@ -31,6 +31,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'newsteps-images.s3.us-west-2.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'example.com',
         pathname: '/**',
       },

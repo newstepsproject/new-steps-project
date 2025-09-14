@@ -7,7 +7,7 @@ import { SessionUser } from '@/types/user';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication and authorization
@@ -30,7 +30,7 @@ export async function GET(
     }
 
     // Get the donation reference ID from the URL
-    const referenceId = params.id;
+    const { id: referenceId } = await params;
     
     if (!referenceId) {
       return NextResponse.json(
