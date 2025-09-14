@@ -10,8 +10,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCart } from '@/components/cart/CartProvider';
 import { Badge } from '@/components/ui/badge';
 
-export default function ShoeDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function ShoeDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const [id, setId] = useState<string>('');
+  
+  // Unwrap params using React.use() as required by Next.js 15
+  useEffect(() => {
+    const unwrapParams = async () => {
+      const resolvedParams = await params;
+      setId(resolvedParams.id);
+    };
+    unwrapParams();
+  }, [params]);
   const [shoe, setShoe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,6 +32,8 @@ export default function ShoeDetailPage({ params }: { params: { id: string } }) {
   
   // Fetch shoe data
   useEffect(() => {
+    if (!id) return; // Don't fetch until id is available
+    
     const fetchShoe = async () => {
       try {
         setLoading(true);

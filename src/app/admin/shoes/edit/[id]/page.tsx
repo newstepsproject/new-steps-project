@@ -65,7 +65,7 @@ const shoeSchema = z.object({
   isOffline: z.boolean().optional().default(true)
 });
 
-export default function EditShoePage({ params }: { params: { id: string } }) {
+export default function EditShoePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -76,12 +76,22 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [fromDonation, setFromDonation] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [shoeId, setShoeId] = useState<string>('');
+
+  // Unwrap params
+  useEffect(() => {
+    const unwrapParams = async () => {
+      const resolvedParams = await params;
+      setShoeId(resolvedParams.id);
+    };
+    unwrapParams();
+  }, [params]);
 
   // Setup form
   const form = useForm<z.infer<typeof shoeSchema>>({
     resolver: zodResolver(shoeSchema) as any,
     defaultValues: {
-      id: params.id,
+      id: '',
       sku: '',
       brand: '',
       modelName: '',
@@ -171,10 +181,12 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
 
   // Fetch shoe data
   useEffect(() => {
+    if (!shoeId) return; // Don't fetch until shoeId is available
+    
     const fetchShoe = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/admin/shoes/${params.id}`);
+        const response = await fetch(`/api/admin/shoes/${shoeId}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch shoe data');
@@ -191,7 +203,7 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
         
         // Reset form with fetched data
         form.reset({
-          id: params.id,
+          id: shoeId,
           sku: shoe.sku,
           brand: shoe.brand,
           modelName: shoe.modelName,
@@ -219,7 +231,7 @@ export default function EditShoePage({ params }: { params: { id: string } }) {
     };
     
     fetchShoe();
-  }, [params.id, form]);
+  }, [shoeId, form]);
 
   // Handle form submission
   const onSubmit = async (formData: z.infer<typeof shoeSchema>) => {
