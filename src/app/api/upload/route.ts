@@ -45,10 +45,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate unique filename - store in subdirectory for organization
+    // Generate unique filename with environment prefix to prevent dev/prod collisions
     const timestamp = Date.now();
     const extension = file.name.split('.').pop() || 'jpg';
-    const filename = `${folder}-${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
+    const environment = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+    const randomString = Math.random().toString(36).substring(7);
+    const filename = `${environment}-${folder}-${timestamp}-${randomString}.${extension}`;
     
     // Convert file to buffer once
     const bytes = await file.arrayBuffer();

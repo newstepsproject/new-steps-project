@@ -41,10 +41,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File size must be less than 5MB' }, { status: 400 });
     }
 
-    // Generate unique filename
+    // Generate unique filename with environment prefix to prevent dev/prod collisions
     const timestamp = Date.now();
     const fileExtension = file.name.split('.').pop();
-    const fileName = `officer-${timestamp}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
+    const environment = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+    const randomString = Math.random().toString(36).substring(2);
+    const fileName = `${environment}-officer-${timestamp}-${randomString}.${fileExtension}`;
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
