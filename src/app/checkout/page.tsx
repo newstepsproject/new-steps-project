@@ -594,7 +594,6 @@ export default function CheckoutPage() {
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
                     Local pickup is available for San Francisco Bay Area residents only.
-                    Our project organizer will contact you to coordinate pickup details.
                   </p>
                   
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
@@ -603,7 +602,7 @@ export default function CheckoutPage() {
                       <div className="flex-1">
                         <h4 className="text-green-900 font-medium mb-2">What happens next:</h4>
                         <p className="text-green-800 text-sm mb-2">
-                          After you submit your request, our project organizer will contact you within 24 hours to coordinate the pickup details.
+                          We'll contact you within 24 hours to coordinate pickup details.
                         </p>
                         <div className="bg-green-100 rounded p-2">
                           <p className="text-green-900 text-sm font-medium">
