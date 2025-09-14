@@ -132,6 +132,9 @@ export async function POST(req: NextRequest) {
  * GET endpoint to return upload configuration
  */
 export async function GET() {
+  const storageProvider = (process.env.STORAGE_PROVIDER || 'local').toLowerCase();
+  const isS3 = storageProvider === 's3';
+  
   return NextResponse.json({
     limits: {
       maxFileSize: UPLOAD_LIMITS.maxFileSize,
@@ -139,8 +142,12 @@ export async function GET() {
       allowedFileTypes: UPLOAD_LIMITS.allowedTypes,
       maxFiles: UPLOAD_LIMITS.maxFiles,
     },
-    storage: 'Local File System',
-    directory: 'public/images/[folder]/',
-    note: 'Reverted to local storage due to S3/CloudFront permission issues'
+    storage: isS3 ? 'Amazon S3 + CloudFront' : 'Local File System',
+    provider: storageProvider,
+    bucket: isS3 ? process.env.S3_BUCKET : null,
+    region: isS3 ? process.env.S3_REGION : null,
+    publicUrl: isS3 ? process.env.S3_PUBLIC_URL : null,
+    directory: isS3 ? 'S3 bucket with CloudFront CDN' : 'public/images/[folder]/',
+    note: isS3 ? 'Using S3 storage with CloudFront CDN for optimal performance' : 'Using local file system storage'
   });
 } 
