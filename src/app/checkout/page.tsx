@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -10,26 +10,16 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ShoppingCart, ChevronLeft, Package, TruckIcon, HomeIcon, CreditCard, Check, Loader2, Hash, DollarSign, Trash2 } from 'lucide-react';
+import { ShoppingCart, ChevronLeft, Package, TruckIcon, HomeIcon, Check, Loader2, Hash, DollarSign, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
-// Removed direct settings import - using API instead
 
-// PayPal payment response type
-interface PayPalPaymentResult {
-  orderID: string;
-  payerID?: string;
-  status: string;
-}
-
-// Global flag to prevent duplicate PayPal initialization
-let globalPayPalInitialized = false;
+// Manual payment coordination - no PayPal integration needed
 
 export default function CheckoutPage() {
   const { data: session, status } = useSession();
   const { items, clearCart, itemCount, removeItem } = useCart();
   const router = useRouter();
-  const paypalRef = useRef<HTMLDivElement>(null);
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -43,6 +33,7 @@ export default function CheckoutPage() {
     country: 'USA',
     deliveryMethod: 'shipping',
     notes: '',
+    shippingPaymentAgreed: false,
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -51,16 +42,8 @@ export default function CheckoutPage() {
   const [formError, setFormError] = useState('');
   const [requestId, setRequestId] = useState('');
   
-  // Payment state
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const [paymentDetails, setPaymentDetails] = useState<PayPalPaymentResult | null>(null);
-  const [paypalLoaded, setPaypalLoaded] = useState(false);
-  const [paypalButtonsInitialized, setPaypalButtonsInitialized] = useState(false);
-  const [isInitializingPaypal, setIsInitializingPaypal] = useState(false);
-  const [lastInitAttempt, setLastInitAttempt] = useState(0);
-  
-  // PayPal script ref to track script element
-  const paypalScriptRef = useRef<HTMLScriptElement | null>(null);
+  // Payment state (simplified for manual coordination)
+  // PayPal-related state removed - using manual payment coordination
   
   // Calculate order totals - SIMPLIFIED LOGIC
   const [shippingFee, setShippingFee] = useState(5); // Default value
@@ -70,423 +53,95 @@ export default function CheckoutPage() {
 
   // Load shipping fee from settings
   useEffect(() => {
-    const loadShippingFee = async () => {
+    const loadSettings = async () => {
       try {
         const response = await fetch('/api/settings');
-        if (!response.ok) {
-          throw new Error('Failed to fetch settings');
+        if (response.ok) {
+          const settings = await response.json();
+          setShippingFee(settings.shippingFee || 5);
         }
-        const settings = await response.json();
-        setShippingFee(settings.shippingFee || 5);
       } catch (error) {
-        console.error('Error loading shipping fee setting:', error);
-        setShippingFee(5); // Keep default value
+        console.error('Failed to load settings:', error);
+        // Keep default value of 5
       }
     };
     
-    loadShippingFee();
+    loadSettings();
   }, []);
 
-  // Debug shipping calculation
-  console.log('Shipping Calculation Debug:', {
-    deliveryMethod: formData.deliveryMethod,
-    shippingCost,
-    totalCost,
-    needsPayment
-  });
-
-  // Load PayPal SDK
-  useEffect(() => {
-    if (needsPayment && !paypalLoaded) {
-      // Check if we have a valid PayPal client ID
-      const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-      if (!clientId || clientId === 'test' || clientId.length < 20) {
-        console.warn('PayPal client ID missing or invalid - skipping PayPal integration');
-        setFormError('PayPal not configured. Please use "Pickup (Free)" option for testing.');
-        return;
-      }
-      
-      console.log('PayPal client ID found, loading PayPal SDK...', clientId.substring(0, 10) + '...');
-      
-      // Check if PayPal SDK is already loaded globally
-      if ((window as any).paypal) {
-        console.log('PayPal SDK already available globally');
-        setPaypalLoaded(true);
-        return;
-      }
-      
-      // Check if script is already being loaded
-      const existingScript = document.querySelector('script[src*="paypal.com/sdk/js"]');
-      if (existingScript) {
-        console.log('PayPal script already exists, waiting for load...');
-        existingScript.addEventListener('load', () => {
-          setPaypalLoaded(true);
-        });
-        return;
-      }
-      
-      const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&enable-funding=venmo&disable-funding=paylater,credit&components=buttons&intent=capture&currency=USD&locale=en_US`;
-      script.async = true;
-      script.onload = () => {
-        setPaypalLoaded(true);
-      };
-      script.onerror = () => {
-        console.error('Failed to load PayPal SDK');
-        setPaypalLoaded(false);
-        setFormError('Failed to load PayPal. Please refresh the page.');
-      };
-      
-      // Store script reference
-      paypalScriptRef.current = script;
-      document.head.appendChild(script); // Use head instead of body
-      
-      return () => {
-        // Much safer cleanup - don't remove script at all during development
-        if (paypalScriptRef.current) {
-          paypalScriptRef.current.onload = null;
-          paypalScriptRef.current.onerror = null;
-          // Don't remove script - let browser handle it naturally
-          console.debug('PayPal script cleanup - handlers cleared');
-        }
-        paypalScriptRef.current = null;
-        // Don't reset paypalLoaded here to prevent re-loading
-      };
-    }
-  }, [needsPayment, paypalLoaded]);
-
-  // Manual reset function for PayPal buttons
-  const resetPayPalButtons = () => {
-    console.log('Manually resetting PayPal buttons...');
-    setPaypalButtonsInitialized(false);
-    setIsInitializingPaypal(false);
-    setPaymentCompleted(false);
-    setPaymentDetails(null);
-    setLastInitAttempt(0); // Reset cooldown timer
-    globalPayPalInitialized = false; // Reset global flag
-    
-    // Don't clear container manually - this can cause DOM removal errors
-    // Let the useEffect handle re-initialization with proper timing
-    
-    toast({
-      title: 'Payment Buttons Reset',
-      description: 'Payment buttons have been reset. You can try again.',
-      variant: 'default',
-    });
-  };
-
-  // Initialize PayPal buttons
-  const initializePayPalButtons = () => {
-    const now = Date.now();
-    const cooldownPeriod = 2000; // 2 seconds between attempts
-    
-    console.log('Initializing PayPal buttons...', {
-      paypalRefExists: !!paypalRef.current,
-      paypalSDKLoaded: !!(window as any).paypal,
-      needsPayment,
-      totalCost,
-      alreadyInitialized: paypalButtonsInitialized,
-      isInitializing: isInitializingPaypal,
-      globalFlag: globalPayPalInitialized,
-      timeSinceLastAttempt: now - lastInitAttempt
-    });
-    
-    // Prevent duplicate initialization and add cooldown
-    if (isInitializingPaypal || paypalButtonsInitialized || globalPayPalInitialized) {
-      console.log('PayPal initialization already in progress or completed (including global check)');
-      return;
-    }
-    
-    // Cooldown period to prevent rapid re-initialization
-    if (now - lastInitAttempt < cooldownPeriod) {
-      console.log('PayPal initialization cooldown active, skipping...');
-      return;
-    }
-    
-    if (paypalRef.current && (window as any).paypal && needsPayment) {
-      // Extra check: if PayPal buttons already exist, don't initialize
-      if (paypalRef.current.innerHTML.includes('paypal-buttons') || 
-          paypalRef.current.innerHTML.includes('paypal-button') ||
-          paypalRef.current.innerHTML.includes('data-paypal-button') ||
-          paypalRef.current.childNodes.length > 0) {
-        console.log('PayPal buttons already exist in container, marking as initialized');
-        setPaypalButtonsInitialized(true);
-        setIsInitializingPaypal(false);
-        globalPayPalInitialized = true;
-        return;
-      }
-      
-      setIsInitializingPaypal(true);
-      setLastInitAttempt(now);
-      globalPayPalInitialized = true; // Set global flag
-      
-      try {
-        // Don't clear container aggressively - let PayPal handle its own cleanup
-        console.log('Initializing PayPal buttons in container...');
-        
-        (window as any).paypal.Buttons({
-          style: {
-            layout: 'vertical',
-            color: 'gold',
-            shape: 'rect',
-            height: 45,
-            tagline: false,
-            fundingicons: false
-          },
-          createOrder: (data: any, actions: any) => {
-            console.log('PayPal createOrder called', { totalCost, formData });
-            return actions.order.create({
-              purchase_units: [{
-                amount: {
-                  value: totalCost.toFixed(2),
-                  currency_code: 'USD'
-                },
-                description: `New Steps Project - Shipping Fee for ${itemCount} shoes`
-              }],
-              application_context: {
-                shipping_preference: 'NO_SHIPPING',
-                user_action: 'PAY_NOW',
-                brand_name: 'New Steps Project',
-                landing_page: 'LOGIN'
-              }
-            });
-          },
-          onApprove: (data: any, actions: any) => {
-            console.log('PayPal onApprove called', data);
-            console.log('PayPal actions available:', Object.keys(actions));
-            return actions.order.capture().then((details: any) => {
-              console.log('Payment completed successfully:', details);
-              setPaymentCompleted(true);
-              setPaymentDetails({
-                orderID: data.orderID,
-                payerID: data.payerID,
-                status: details.status
-              });
-              toast({
-                title: 'Payment Successful!',
-                description: `Payment of $${totalCost.toFixed(2)} completed. You can now submit your request.`,
-                variant: 'default',
-              });
-            }).catch((captureError: any) => {
-              console.error('Error capturing PayPal payment:', captureError);
-              toast({
-                title: 'Payment Capture Error',
-                description: 'Payment was approved but could not be completed. Please try again.',
-                variant: 'destructive',
-              });
-            });
-          },
-          onError: (err: any) => {
-            console.error('PayPal payment error details:', err);
-            console.error('Error type:', typeof err);
-            console.error('Error message:', err.message || 'No message');
-            console.error('Error stack:', err.stack || 'No stack');
-            
-            // Reset PayPal button state to allow retry after error
-            setPaypalButtonsInitialized(false);
-            setIsInitializingPaypal(false);
-            globalPayPalInitialized = false; // Reset global flag
-            
-            // Don't clear container aggressively - let PayPal handle cleanup
-            console.log('PayPal payment error - states reset');
-            
-            toast({
-              title: 'Payment Error',
-              description: `There was an error processing your payment: ${err.message || 'Unknown error'}. Please try again.`,
-              variant: 'destructive',
-            });
-          },
-          onCancel: (data: any) => {
-            console.log('PayPal payment cancelled by user:', data);
-            
-            // Reset PayPal button state to allow new attempts after a delay
-            setPaypalButtonsInitialized(false);
-            setIsInitializingPaypal(false);
-            globalPayPalInitialized = false; // Reset global flag
-            
-            // Don't clear container aggressively - this causes the DOM removal error
-            // Let PayPal handle its own cleanup naturally
-            console.log('PayPal payment cancelled - states reset');
-            
-            toast({
-              title: 'Payment Cancelled',
-              description: 'Payment was cancelled. You can try again when ready.',
-              variant: 'default',
-            });
-          }
-        }).render(paypalRef.current).then(() => {
-          setPaypalButtonsInitialized(true);
-          setIsInitializingPaypal(false);
-          console.log('PayPal buttons rendered successfully');
-          
-          // Debug: Check if buttons are actually in the DOM
-          setTimeout(() => {
-            if (paypalRef.current) {
-              console.log('PayPal container content after render:', {
-                innerHTML: paypalRef.current.innerHTML.substring(0, 200) + '...',
-                childNodes: paypalRef.current.childNodes.length,
-                hasPayPalElements: paypalRef.current.innerHTML.includes('paypal')
-              });
-            }
-          }, 500);
-        }).catch((renderError: any) => {
-          console.error('Error rendering PayPal buttons:', renderError);
-          setPaypalButtonsInitialized(false);
-          setIsInitializingPaypal(false);
-          setLastInitAttempt(0); // Reset cooldown on error
-          globalPayPalInitialized = false; // Reset global flag
-          toast({
-            title: 'PayPal Error',
-            description: 'Failed to load payment options. Please refresh the page.',
-            variant: 'destructive',
-          });
-        });
-        
-      } catch (error) {
-        console.error('Error rendering PayPal buttons:', error);
-        setPaypalButtonsInitialized(false);
-        setIsInitializingPaypal(false);
-        setLastInitAttempt(0); // Reset cooldown on error
-        globalPayPalInitialized = false; // Reset global flag
-        toast({
-          title: 'PayPal Error',
-          description: 'Failed to load payment options. Please refresh the page.',
-          variant: 'destructive',
-        });
-      }
-    } else {
-      console.log('PayPal buttons not rendered:', {
-        paypalRef: !!paypalRef.current,
-        paypalSDK: !!(window as any).paypal,
-        needsPayment,
-        isInitializing: isInitializingPaypal
-      });
-    }
-  };
+  // Manual payment coordination - no SDK loading needed
 
   // Reset payment when shipping changes
   useEffect(() => {
     if (!needsPayment) {
-      setPaymentCompleted(true); // No payment needed for free shipping
-      setPaymentDetails(null);
-      setIsInitializingPaypal(false);
-      setLastInitAttempt(0);
-      // Don't reset PayPal buttons immediately - let them clean up naturally
-    } else {
-      setPaymentCompleted(false);
-      setPaymentDetails(null);
-      setIsInitializingPaypal(false);
-      setLastInitAttempt(0);
-      // Reset buttons only when switching to payment mode
-      setPaypalButtonsInitialized(false);
+      // No payment needed for pickup
+      console.log('No payment needed - pickup selected');
     }
   }, [needsPayment]);
 
-  // Debug PayPal payment section rendering
+  // Redirect to login if not authenticated
   useEffect(() => {
-    if (needsPayment) {
-      console.log('PayPal Payment Section Rendered:', { 
-        needsPayment, 
-        totalCost, 
-        paymentCompleted,
-        paypalLoaded,
-        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.substring(0, 20) + '...'
-      });
-    }
-  }, [needsPayment, totalCost, paymentCompleted, paypalLoaded]);
-
-  // Initialize PayPal buttons when SDK loads or payment requirements change
-  useEffect(() => {
-    console.log('PayPal useEffect triggered:', {
-      paypalLoaded,
-      needsPayment,
-      paypalRefExists: !!paypalRef.current,
-      totalCost,
-      paypalButtonsInitialized,
-      isInitializingPaypal,
-      timeSinceLastAttempt: Date.now() - lastInitAttempt,
-      containerHasContent: paypalRef.current ? paypalRef.current.childNodes.length > 0 : false
-    });
+    if (status === 'loading') return; // Still loading
     
-    if (paypalLoaded && needsPayment && paypalRef.current && !paypalButtonsInitialized && !isInitializingPaypal) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        initializePayPalButtons();
-      }, 100);
-    } else {
-      console.log('PayPal initialization skipped because:', {
-        paypalLoaded: !paypalLoaded ? 'PayPal not loaded' : 'OK',
-        needsPayment: !needsPayment ? 'No payment needed' : 'OK', 
-        paypalRef: !paypalRef.current ? 'paypalRef.current is null' : 'OK',
-        alreadyInitialized: paypalButtonsInitialized ? 'Already initialized' : 'OK',
-        isInitializing: isInitializingPaypal ? 'Currently initializing' : 'OK'
-      });
+    if (status === 'unauthenticated') {
+      // Redirect to login with callback URL
+      const callbackUrl = encodeURIComponent('/checkout');
+      router.push(`/login?callbackUrl=${callbackUrl}`);
+      return;
     }
-  }, [paypalLoaded, needsPayment, paypalButtonsInitialized, isInitializingPaypal]);
+  }, [status, router]);
 
-  // Cleanup PayPal buttons when component unmounts
+  // Auto-fill form with user data when session is available
   useEffect(() => {
-    return () => {
-      // Component cleanup - avoid any DOM manipulation
-      console.log('Component unmounting - PayPal cleanup');
-      // Let React handle all DOM cleanup naturally
-      // Don't touch PayPal elements directly
-    };
-  }, []);
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        firstName: session.user.firstName || prev.firstName,
+        lastName: session.user.lastName || prev.lastName,
+        email: session.user.email || prev.email,
+        phone: session.user.phone || prev.phone,
+      }));
+    }
+  }, [session]);
 
-  // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when field is changed
+    // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
-  
-  // Handle radio button changes
-  const handleRadioChange = (value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      deliveryMethod: value
+
+  const handleDeliveryMethodChange = (value: string) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      deliveryMethod: value,
+      shippingPaymentAgreed: false // Reset agreement when method changes
     }));
   };
-  
-  // Validate form
+
+  // Form validation
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
-    // Required fields
-    const requiredFields = ['firstName', 'lastName', 'email', 'phone'];
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
     
-    // Add address fields ONLY if standard shipping is selected
+    // Only validate shipping address if shipping is selected
     if (formData.deliveryMethod === 'shipping') {
-      requiredFields.push('address', 'city', 'state', 'zipCode');
-    }
-    
-    // Check required fields
-    requiredFields.forEach(field => {
-      if (!formData[field as keyof typeof formData]) {
-        newErrors[field] = 'This field is required';
+      if (!formData.address.trim()) newErrors.address = 'Address is required for shipping';
+      if (!formData.city.trim()) newErrors.city = 'City is required for shipping';
+      if (!formData.state.trim()) newErrors.state = 'State is required for shipping';
+      if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code is required for shipping';
+      
+      // Validate shipping payment agreement
+      if (needsPayment && !formData.shippingPaymentAgreed) {
+        newErrors.shippingPaymentAgreed = 'Please agree to the shipping payment terms';
       }
-    });
-    
-    // Validate email format
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    
-    // Validate phone format
-    if (formData.phone && !/^[0-9()\-\s+]{10,15}$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
     }
     
     setErrors(newErrors);
@@ -523,6 +178,8 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           ...formData,
+          shippingPaymentMethod: needsPayment ? 'manual_coordination' : 'none',
+          shippingPaymentAgreed: formData.shippingPaymentAgreed,
           items: items.map(item => ({
             shoeId: item.shoeId,
             inventoryId: item.id, // MongoDB ObjectId
@@ -559,218 +216,191 @@ export default function CheckoutPage() {
       // Set request ID from response
       setRequestId(data.requestId || 'Unknown');
       
-      // Clear the cart and show success message
+      // Clear the cart
       clearCart();
-      setIsSubmitted(true);
       
-      // Reset form data
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: 'USA',
-        deliveryMethod: 'shipping',
-        notes: '',
-      });
+      // Mark as submitted
+      setIsSubmitted(true);
       
     } catch (error) {
       console.error('Error submitting request:', error);
-      setFormError('There was an error processing your request. Please try again.');
+      setFormError(error instanceof Error ? error.message : 'Failed to submit request. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
-  
-  // Redirect to login if not authenticated
+
+  // Show loading state while checking authentication
   if (status === 'loading') {
     return (
-      <div className="flex-1 flex items-center justify-center py-12">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-brand mb-4" />
-          <p className="text-gray-500">Loading...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Loading...</p>
         </div>
       </div>
     );
   }
-  
-  // Show sign-in prompt if not authenticated (enabled for production)
-  if (status === 'unauthenticated' && !isSubmitting && !isSubmitted) {
-    return (
-      <div className="flex-1 flex items-center justify-center py-12">
-        <div className="text-center max-w-md p-8 bg-white rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
-          <p className="text-gray-600 mb-6">
-            Please sign in to your account to request shoes. We need to verify your account 
-            to ensure fair distribution of our limited inventory.
-          </p>
-          <Button asChild>
-            <Link href={`/login?callbackUrl=${encodeURIComponent('/checkout')}`}>
-              Sign In to Continue
-            </Link>
-          </Button>
-          <div className="mt-4">
-            <p className="text-sm text-gray-500">
-              Don't have an account?{' '}
-              <Link href={`/register?callbackUrl=${encodeURIComponent('/checkout')}`} className="text-brand hover:underline">
-                Sign up here
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
-  // Show confirmation screen after successful submission
+
+  // Show success page if submitted
   if (isSubmitted) {
     return (
-      <main className="flex-1 bg-gray-50 py-12">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Check className="h-8 w-8 text-green-600" />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-2xl mx-auto px-4">
+          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <div className="mb-6">
+              <Check className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Request Submitted!</h1>
+              <p className="text-gray-600">Your shoe request has been submitted successfully.</p>
             </div>
-            <h1 className="text-2xl font-bold mb-2">Request Submitted Successfully!</h1>
-            <p className="text-gray-600 mb-6">
-              Thank you for your request. We will process it as soon as possible.
-              You will receive a confirmation email shortly.
-            </p>
-            <div className="mb-8 max-w-sm mx-auto py-4 px-6 bg-gray-50 rounded-lg">
-              <p className="font-medium mb-1">Request Reference Number:</p>
-              <p className="text-gray-700 font-mono bg-gray-100 py-1 px-2 rounded">{requestId}</p>
-              <p className="font-medium mt-4 mb-1">Delivery Method:</p>
-              <p className="text-gray-700">{formData.deliveryMethod === 'shipping' ? 'Shipping' : 'Pickup'}</p>
+            
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <p className="text-sm text-gray-600 mb-2">Request ID:</p>
+              <p className="text-lg font-mono font-semibold text-gray-900">{requestId}</p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild variant="outline">
-                <Link href="/">
-                  Return to Home
-                </Link>
+            
+            {needsPayment && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-blue-900 mb-2">Payment Coordination</h3>
+                <p className="text-sm text-blue-800">
+                  You will receive an email from <strong>newstepsfit@gmail.com</strong> within 24 hours 
+                  with instructions to coordinate your $5 shipping payment.
+                </p>
+              </div>
+            )}
+            
+            <div className="space-y-3">
+              <Button asChild className="w-full">
+                <Link href="/account">View My Requests</Link>
               </Button>
-              <Button asChild>
-                <Link href="/shoes">
-                  Browse More Shoes
-                </Link>
+              <Button variant="outline" asChild className="w-full">
+                <Link href="/shoes">Browse More Shoes</Link>
               </Button>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
-  
+
   return (
-    <main className="flex-1 bg-gray-50 py-12">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
         <div className="mb-6">
-          <Link href="/shoes" className="text-gray-500 hover:text-brand flex items-center text-sm">
+          <Link href="/cart" className="inline-flex items-center text-brand hover:text-brand-dark">
             <ChevronLeft className="h-4 w-4 mr-1" />
-            Continue Shopping
+            Back to Cart
           </Link>
         </div>
-        
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Order Summary */}
-          <div className="lg:col-span-1 order-2 lg:order-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-              <h2 className="text-xl font-bold mb-4">Your Request</h2>
-              
-              {items.length === 0 ? (
-                <div className="text-center py-8">
-                  <ShoppingCart className="h-12 w-12 mx-auto text-gray-300 mb-3" />
-                  <p className="text-gray-500 mb-4">
-                    Your cart is empty
-                  </p>
-                  <Button asChild>
-                    <Link href="/shoes">
-                      Browse Shoes
-                    </Link>
-                  </Button>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <ShoppingCart className="h-5 w-5 mr-2 text-brand" />
+              Order Summary
+            </h2>
+            
+            <div className="space-y-4 mb-6">
+              {items.map((item) => (
+                <div key={`${item.id}-${item.size}`} className="flex items-center space-x-4 p-3 border rounded-lg">
+                  <div className="relative w-16 h-16 flex-shrink-0">
+                    <Image
+                      src={item.imageUrl || '/images/placeholder-shoe.jpg'}
+                      alt={item.name}
+                      fill
+                      className="object-cover rounded"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Hash className="h-3 w-3 text-gray-400" />
+                      <span className="text-xs font-mono text-gray-500">ID: {item.shoeId}</span>
+                    </div>
+                    <h3 className="font-medium text-gray-900 truncate">{item.brand} {item.name}</h3>
+                    <p className="text-sm text-gray-600">
+                      Size {item.size} • {item.gender} • {item.sport}
+                    </p>
+                    <p className="text-xs text-gray-500 capitalize">{item.condition} condition</p>
+                  </div>
+                  <button
+                    onClick={() => removeItem(item.id, item.size)}
+                    className="text-red-500 hover:text-red-700 p-1"
+                    title="Remove item"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
-              ) : (
-                <>
-                  <div className="space-y-4 mb-6">
-                    {items.map((item) => (
-                      <div key={item.id} className="flex border-b pb-4">
-                        <div className="relative h-20 w-20 rounded-md overflow-hidden flex-shrink-0">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
-                          {/* Prominent Shoe ID Badge */}
-                          <div className="absolute top-1 left-1 bg-brand text-white px-1.5 py-0.5 rounded text-xs font-mono font-semibold">
-                            {item.shoeId}
-                          </div>
-                        </div>
-                        <div className="ml-4 flex-1">
-                          <div className="flex items-start justify-between mb-1">
-                            <h3 className="font-medium text-sm">{item.name}</h3>
-                            <div className="ml-2 text-right">
-                              <button
-                                onClick={() => removeItem(item.id)}
-                                className="text-red-600 hover:text-red-700 text-xs font-medium"
-                                type="button"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </div>
-                          <div className="text-sm text-gray-500">{item.brand}</div>
-                          <div className="flex gap-2 mt-1">
-                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                              {item.gender}
-                            </span>
-                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                              Size {item.size}
-                            </span>
-                          </div>
-                        </div>
+              ))}
+            </div>
+
+            {/* Delivery Method Selection */}
+            <div className="border-t pt-4 mb-4">
+              <h3 className="font-medium mb-3">Delivery Method</h3>
+              <RadioGroup value={formData.deliveryMethod} onValueChange={handleDeliveryMethodChange}>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                  <RadioGroupItem value="pickup" id="pickup" />
+                  <Label htmlFor="pickup" className="flex-1 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <HomeIcon className="h-4 w-4 mr-2 text-green-600" />
+                        <span>Local Pickup</span>
                       </div>
-                    ))}
-                  </div>
-                  
-                  <div className="border-t pt-4 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Shipping</span>
-                      <span>{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
+                      <span className="text-green-600 font-medium">Free</span>
                     </div>
-                    <div className="flex justify-between font-bold">
-                      <span>Total</span>
-                      <span>${totalCost.toFixed(2)}</span>
+                    <p className="text-xs text-gray-500 mt-1">Pick up from our location</p>
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                  <RadioGroupItem value="shipping" id="shipping" />
+                  <Label htmlFor="shipping" className="flex-1 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <TruckIcon className="h-4 w-4 mr-2 text-blue-600" />
+                        <span>Standard Shipping</span>
+                      </div>
+                      <span className="text-blue-600 font-medium">${shippingFee.toFixed(2)}</span>
                     </div>
-                    <div className="text-xs text-gray-500 pt-2">
-                      <p>* Shoes are provided at no cost</p>
-                      <p>* Standard shipping: ${shippingFee.toFixed(2)} flat rate</p>
-                      <p>* Free pickup in Bay Area</p>
-                    </div>
-                  </div>
-                </>
+                    <p className="text-xs text-gray-500 mt-1">Delivered to your address</p>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Order Total */}
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center text-lg font-semibold">
+                <span>Total Cost:</span>
+                <span className={totalCost > 0 ? 'text-blue-600' : 'text-green-600'}>
+                  {totalCost > 0 ? `$${totalCost.toFixed(2)}` : 'Free'}
+                </span>
+              </div>
+              {totalCost > 0 && (
+                <p className="text-sm text-gray-600 mt-1">
+                  Shipping fee: ${shippingCost.toFixed(2)}
+                </p>
               )}
             </div>
           </div>
-          
+
           {/* Checkout Form */}
-          <div className="lg:col-span-2 order-1 lg:order-2">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold mb-6">Shipping Information</h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {formError && (
-                  <div className="bg-red-50 text-red-700 p-4 rounded-md">
-                    {formError}
-                  </div>
-                )}
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-6 flex items-center">
+              <Package className="h-5 w-5 mr-2 text-brand" />
+              Request Information
+            </h2>
+
+            {formError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <p className="text-red-800 text-sm">{formError}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="font-medium mb-3">Personal Information</h3>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
                     <Input
@@ -778,13 +408,10 @@ export default function CheckoutPage() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className={errors.firstName ? 'border-red-300' : ''}
+                      className={errors.firstName ? 'border-red-500' : ''}
                     />
-                    {errors.firstName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
-                    )}
+                    {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
                   </div>
-                  
                   <div>
                     <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
                     <Input
@@ -792,15 +419,12 @@ export default function CheckoutPage() {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className={errors.lastName ? 'border-red-300' : ''}
+                      className={errors.lastName ? 'border-red-500' : ''}
                     />
-                    {errors.lastName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>
-                    )}
+                    {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                     <Input
@@ -809,82 +433,41 @@ export default function CheckoutPage() {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className={errors.email ? 'border-red-300' : ''}
+                      className={errors.email ? 'border-red-500' : ''}
                     />
-                    {errors.email && (
-                      <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-                    )}
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                   </div>
-                  
                   <div>
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone">Phone</Label>
                     <Input
                       id="phone"
                       name="phone"
+                      type="tel"
+                      placeholder="(123) 456-7890 (optional)"
                       value={formData.phone}
                       onChange={handleChange}
-                      className={errors.phone ? 'border-red-300' : ''}
                     />
-                    {errors.phone && (
-                      <p className="text-sm text-red-500 mt-1">{errors.phone}</p>
-                    )}
                   </div>
                 </div>
-                
+              </div>
+
+              {/* Shipping Address - Only show if shipping is selected */}
+              {formData.deliveryMethod === 'shipping' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">Delivery Method</h3>
-                  <RadioGroup 
-                    value={formData.deliveryMethod} 
-                    onValueChange={handleRadioChange}
-                    className="space-y-3"
-                  >
-                    <div className={`flex items-start space-x-3 border rounded-lg p-4 ${formData.deliveryMethod === 'shipping' ? 'border-brand bg-brand-50' : 'border-gray-200'}`}>
-                      <RadioGroupItem value="shipping" id="shipping" className="mt-1" />
-                      <div className="flex-1">
-                        <Label htmlFor="shipping" className="flex items-center">
-                          <TruckIcon className="h-5 w-5 mr-2 text-brand" />
-                          <span className="font-medium">Standard Shipping</span>
-                        </Label>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Flat rate shipping of ${shippingFee.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className={`flex items-start space-x-3 border rounded-lg p-4 ${formData.deliveryMethod === 'pickup' ? 'border-brand bg-brand-50' : 'border-gray-200'}`}>
-                      <RadioGroupItem value="pickup" id="pickup" className="mt-1" />
-                      <div className="flex-1">
-                        <Label htmlFor="pickup" className="flex items-center">
-                          <HomeIcon className="h-5 w-5 mr-2 text-brand" />
-                          <span className="font-medium">Pickup (Free)</span>
-                        </Label>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Free pickup in Bay Area
-                        </p>
-                      </div>
-                    </div>
-                  </RadioGroup>
-                </div>
-                
-                {formData.deliveryMethod === 'shipping' && (
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-semibold mb-3">Shipping Address</h3>
-                    
-                    <div className="mb-4">
+                  <h3 className="font-medium mb-3">Shipping Address</h3>
+                  <div className="space-y-4">
+                    <div>
                       <Label htmlFor="address">Street Address <span className="text-red-500">*</span></Label>
                       <Input
                         id="address"
                         name="address"
                         value={formData.address}
                         onChange={handleChange}
-                        className={errors.address ? 'border-red-300' : ''}
+                        className={errors.address ? 'border-red-500' : ''}
                       />
-                      {errors.address && (
-                        <p className="text-sm text-red-500 mt-1">{errors.address}</p>
-                      )}
+                      {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                         <Input
@@ -892,13 +475,10 @@ export default function CheckoutPage() {
                           name="city"
                           value={formData.city}
                           onChange={handleChange}
-                          className={errors.city ? 'border-red-300' : ''}
+                          className={errors.city ? 'border-red-500' : ''}
                         />
-                        {errors.city && (
-                          <p className="text-sm text-red-500 mt-1">{errors.city}</p>
-                        )}
+                        {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
                       </div>
-                      
                       <div>
                         <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
                         <Input
@@ -906,14 +486,11 @@ export default function CheckoutPage() {
                           name="state"
                           value={formData.state}
                           onChange={handleChange}
-                          className={errors.state ? 'border-red-300' : ''}
+                          className={errors.state ? 'border-red-500' : ''}
                         />
-                        {errors.state && (
-                          <p className="text-sm text-red-500 mt-1">{errors.state}</p>
-                        )}
+                        {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
                       </div>
                     </div>
-                    
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="zipCode">ZIP Code <span className="text-red-500">*</span></Label>
@@ -922,13 +499,10 @@ export default function CheckoutPage() {
                           name="zipCode"
                           value={formData.zipCode}
                           onChange={handleChange}
-                          className={errors.zipCode ? 'border-red-300' : ''}
+                          className={errors.zipCode ? 'border-red-500' : ''}
                         />
-                        {errors.zipCode && (
-                          <p className="text-sm text-red-500 mt-1">{errors.zipCode}</p>
-                        )}
+                        {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
                       </div>
-                      
                       <div>
                         <Label htmlFor="country">Country</Label>
                         <Input
@@ -941,129 +515,101 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
-                )}
-                
-                <div className="mb-6">
-                  <Label htmlFor="notes">Additional Notes</Label>
-                  <Textarea
-                    id="notes"
-                    name="notes"
-                    placeholder="Any special instructions or information we should know"
-                    value={formData.notes}
-                    onChange={handleChange}
-                    className="min-h-[100px]"
-                  />
                 </div>
-                
-                {/* PayPal Payment Section */}
-                {needsPayment && (
-                  <div className="border-t pt-6 mb-6">
-                    <h3 className="text-lg font-semibold mb-3 flex items-center">
-                      <CreditCard className="h-5 w-5 mr-2 text-brand" />
-                      Payment Required - ${totalCost.toFixed(2)}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      A shipping fee of ${shippingCost.toFixed(2)} is required for standard shipping.
-                      You can pay securely using PayPal or Venmo.
-                    </p>
-                    
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                      <p className="text-sm text-blue-800">
-                        <strong>For athletes under 18:</strong> Please ask a parent or guardian to complete the payment.
-                        PayPal requires users to be 18+ for account creation, but parents can pay on behalf of minors.
+              )}
+
+              {/* Notes */}
+              <div>
+                <Label htmlFor="notes">Additional Notes</Label>
+                <Textarea
+                  id="notes"
+                  name="notes"
+                  placeholder="Any special instructions or information we should know"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  className="min-h-[100px]"
+                />
+              </div>
+              
+              {/* Shipping Payment Agreement Section */}
+              {needsPayment && (
+                <div className="border-t pt-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center">
+                    <DollarSign className="h-5 w-5 mr-2 text-brand" />
+                    Shipping Payment - ${totalCost.toFixed(2)}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    A shipping fee of ${shippingCost.toFixed(2)} is required for standard shipping.
+                    You will be contacted by our team to coordinate payment.
+                  </p>
+                  
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-start">
+                      <input
+                        type="checkbox"
+                        id="shippingPaymentAgreed"
+                        checked={formData.shippingPaymentAgreed}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          shippingPaymentAgreed: e.target.checked
+                        }))}
+                        className="mt-1 mr-3 h-4 w-4 text-brand border-gray-300 rounded focus:ring-brand"
+                      />
+                      <div className="flex-1">
+                        <label htmlFor="shippingPaymentAgreed" className="text-sm font-medium text-blue-900 cursor-pointer">
+                          I agree to coordinate the $5 shipping payment with the New Steps team
+                        </label>
+                        <p className="text-xs text-blue-700 mt-1">
+                          You will receive an email from <strong>newstepsfit@gmail.com</strong> within 24 hours with payment instructions. 
+                          We accept Venmo, Zelle, PayPal, or check payments.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {formData.shippingPaymentAgreed && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center">
+                        <Check className="h-5 w-5 text-green-600 mr-2" />
+                        <span className="text-green-800 font-medium">Payment Agreement Confirmed</span>
+                      </div>
+                      <p className="text-sm text-green-700 mt-1">
+                        You can now complete your shoe request. We'll contact you about payment coordination.
                       </p>
                     </div>
-                    
-                    {!paymentCompleted ? (
-                      <div>
-                        <div 
-                          ref={(el) => {
-                            if (el) {
-                              // Use the callback ref properly
-                              Object.defineProperty(paypalRef, 'current', {
-                                value: el,
-                                writable: true
-                              });
-                              console.log('PayPal div ref set:', {
-                                element: !!el,
-                                paypalLoaded,
-                                needsPayment,
-                                paymentCompleted
-                              });
-                              
-                              // Try to initialize PayPal buttons if everything is ready
-                              if (paypalLoaded && needsPayment && !paymentCompleted) {
-                                console.log('Triggering PayPal initialization from ref callback...');
-                                setTimeout(() => {
-                                  initializePayPalButtons();
-                                }, 100);
-                              }
-                            }
-                          }}
-                          className="mb-4 min-h-[60px] border border-gray-200 rounded-lg p-2"
-                        >
-                          {!paypalLoaded && (
-                            <div className="text-center py-4">
-                              <Loader2 className="h-4 w-4 animate-spin mx-auto text-brand mb-2" />
-                              <p className="text-sm text-gray-500">Loading PayPal...</p>
-                            </div>
-                          )}
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          After completing payment, you'll be able to submit your shoe request.
-                        </p>
-                        <div className="mt-3 text-center">
-                          <button
-                            type="button"
-                            onClick={resetPayPalButtons}
-                            className="text-xs text-gray-500 hover:text-brand underline"
-                          >
-                            Reset Payment Buttons
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <div className="flex items-center">
-                          <Check className="h-5 w-5 text-green-600 mr-2" />
-                          <span className="font-medium text-green-800">Payment Completed</span>
-                        </div>
-                        {paymentDetails && (
-                          <p className="text-sm text-green-700 mt-1">
-                            Order ID: {paymentDetails.orderID}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                <div className="mt-8">
-                  <Button 
-                    type="submit" 
-                    className="w-full py-6 text-lg" 
-                    disabled={isSubmitting || items.length === 0 || (needsPayment && !paymentCompleted)}
-                  >
-                    {isSubmitting ? (
-                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                    ) : (
-                      <Package className="h-5 w-5 mr-2" />
-                    )}
-                    {isSubmitting ? 'Processing...' : 
-                     needsPayment && !paymentCompleted ? 'Complete Payment First' : 
-                     'Complete Request'}
-                  </Button>
-                  {needsPayment && !paymentCompleted && (
-                    <p className="text-sm text-gray-500 text-center mt-2">
-                      Please complete payment above to enable request submission
-                    </p>
+                  )}
+                  
+                  {errors.shippingPaymentAgreed && (
+                    <p className="text-red-500 text-sm mt-2">{errors.shippingPaymentAgreed}</p>
                   )}
                 </div>
-              </form>
-            </div>
+              )}
+              
+              <div className="mt-8">
+                <Button 
+                  type="submit" 
+                  className="w-full py-6 text-lg" 
+                  disabled={isSubmitting || items.length === 0 || (needsPayment && !formData.shippingPaymentAgreed)}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  ) : (
+                    <Package className="h-5 w-5 mr-2" />
+                  )}
+                  {isSubmitting ? 'Processing...' : 
+                   needsPayment && !formData.shippingPaymentAgreed ? 'Please Agree to Payment Terms' : 
+                   'Complete Request'}
+                </Button>
+                {needsPayment && !formData.shippingPaymentAgreed && (
+                  <p className="text-sm text-gray-500 text-center mt-2">
+                    Please agree to the shipping payment terms above to complete your request
+                  </p>
+                )}
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
-} 
+}

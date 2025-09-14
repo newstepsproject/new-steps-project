@@ -72,7 +72,8 @@ export async function POST(req: NextRequest) {
           Bucket: bucket,
           Key: key,
           Body: buffer,
-          ContentType: file.type
+          ContentType: file.type,
+          ACL: 'public-read'
         });
         await s3.send(putCmd);
 

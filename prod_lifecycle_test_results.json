@@ -1,0 +1,62 @@
+{
+  "timestamp": "2025-09-07T16:50:59.167207",
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "errors": 0,
+    "success_rate": 100.0
+  },
+  "results": [
+    {
+      "test": "Shoe Donation",
+      "status": "PASS",
+      "details": "Donation submitted successfully"
+    },
+    {
+      "test": "Admin Access",
+      "status": "PASS",
+      "details": "Admin login successful"
+    },
+    {
+      "test": "Admin Donations View",
+      "status": "PASS",
+      "details": "Found 16 donations"
+    },
+    {
+      "test": "Admin Inventory",
+      "status": "PASS",
+      "details": "Inventory page accessible with 1 elements"
+    },
+    {
+      "test": "Public Shoes Browse",
+      "status": "PASS",
+      "details": "Found 108 elements on shoes page"
+    },
+    {
+      "test": "User Registration Form",
+      "status": "PASS",
+      "details": "Registration form has 6 input fields"
+    },
+    {
+      "test": "Homepage",
+      "status": "PASS",
+      "details": "HTTP 200"
+    },
+    {
+      "test": "About Page",
+      "status": "PASS",
+      "details": "HTTP 200"
+    },
+    {
+      "test": "Contact Page",
+      "status": "PASS",
+      "details": "HTTP 200"
+    },
+    {
+      "test": "Get Involved Page",
+      "status": "PASS",
+      "details": "HTTP 200"
+    }
+  ]
+}

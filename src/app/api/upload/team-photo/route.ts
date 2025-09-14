@@ -64,7 +64,8 @@ export async function POST(request: NextRequest) {
           Bucket: bucket,
           Key: key,
           Body: buffer,
-          ContentType: file.type
+          ContentType: file.type,
+          ACL: 'public-read'
         }));
         const url = publicBase
           ? `${publicBase.replace(/\/$/, '')}/team/${fileName}`

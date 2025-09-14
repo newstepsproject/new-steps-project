@@ -1,0 +1,18 @@
+# Gmail SMTP Configuration for Production
+# Add these to your .env.production file on the server
+
+EMAIL_FROM=newstepsfit@gmail.com
+EMAIL_FROM_NAME=New Steps Project
+EMAIL_SERVER=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USERNAME=newstepsfit@gmail.com
+EMAIL_PASSWORD=hmur irbk apou eftc
+EMAIL_SECURE=false
+EMAIL_TLS=true
+
+# Remove any existing AWS SES settings:
+# EMAIL_SERVER=email-smtp.us-west-2.amazonaws.com
+# EMAIL_USERNAME=AKIAVGC5FGUXXR25IM73
+# EMAIL_PASSWORD=BC6CJveZEhsn1g7sZma0ybKiW5/WgwJdEf8mVfpqaw5E
+
+
