@@ -633,11 +633,6 @@ export default function CheckoutPage() {
                    needsPayment && !formData.shippingPaymentAgreed ? 'Please Agree to Payment Terms' : 
                    'Complete Request'}
                 </Button>
-                {needsPayment && !formData.shippingPaymentAgreed && (
-                  <p className="text-sm text-gray-500 text-center mt-2">
-                    Please agree to the shipping payment terms above to complete your request
-                  </p>
-                )}
               </div>
             </form>
           </div>
