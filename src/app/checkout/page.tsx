@@ -348,7 +348,7 @@ export default function CheckoutPage() {
                       </div>
                       <span className="text-green-600 font-medium">Free</span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Pick up from our location</p>
+                    <p className="text-xs text-gray-500 mt-1">Our project organizer will contact you at <strong>newstepsfit@gmail.com</strong> to coordinate pickup location and time</p>
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2 p-3 border rounded-lg">
@@ -366,6 +366,29 @@ export default function CheckoutPage() {
                 </div>
               </RadioGroup>
             </div>
+
+            {/* Pickup Coordination Information */}
+            {formData.deliveryMethod === 'pickup' && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                <div className="flex items-start">
+                  <HomeIcon className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <h4 className="text-green-900 font-medium mb-2">Pickup Coordination</h4>
+                    <p className="text-green-800 text-sm mb-2">
+                      After you submit your request, our project organizer will contact you within 24 hours to coordinate the pickup details.
+                    </p>
+                    <div className="bg-green-100 rounded p-2">
+                      <p className="text-green-900 text-sm font-medium">
+                        📧 Contact: <strong>newstepsfit@gmail.com</strong>
+                      </p>
+                      <p className="text-green-800 text-xs mt-1">
+                        We'll arrange a convenient pickup location and time that works for both parties.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Order Total */}
             <div className="border-t pt-4">
