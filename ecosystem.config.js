@@ -59,12 +59,35 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3000,
         NEXT_TELEMETRY_DISABLED: 1,
+        
+        // Authentication
+        NEXTAUTH_URL: 'https://newsteps.fit',
+        NEXTAUTH_SECRET: 'bQ/YbG8jW/yYTRiDEvZD8wsvULUlMU2nRMx77m6xuqw=',
+        NEXT_PUBLIC_NEXTAUTH_URL: 'https://newsteps.fit',
+        
+        // Production MongoDB Atlas Cluster
+        MONGODB_URI: 'mongodb+srv://newstepsfit:pAGHNe3%21BKCLdt6@prod-newsteps.mitvzgd.mongodb.net/newsteps?retryWrites=true&w=majority&appName=prod-newsteps',
+        
+        // Google OAuth Configuration  
+        GOOGLE_CLIENT_ID: '196920789704-mpp72ggol9nkteq3lbvf5caq88masqja.apps.googleusercontent.com',
+        GOOGLE_CLIENT_SECRET: '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',
+        
+        // Gmail SMTP Configuration (Production)
+        EMAIL_FROM: 'newstepsfit@gmail.com',
+        EMAIL_SERVER: 'smtp.gmail.com',
+        EMAIL_PORT: '587',
+        EMAIL_USERNAME: 'newstepsfit@gmail.com',
+        EMAIL_PASSWORD: 'hmur irbk apou eftc',
+        
         // Storage configuration
         STORAGE_PROVIDER: 's3',
         S3_REGION: 'us-west-2',
         S3_BUCKET: 'newsteps-images',
         S3_PREFIX: 'images',
-        S3_PUBLIC_URL: 'https://cdn.newsteps.fit'
+        S3_PUBLIC_URL: 'https://d2xvhw0k6zd8h8.cloudfront.net',
+        
+        // PayPal Configuration (Sandbox for now)
+        NEXT_PUBLIC_PAYPAL_CLIENT_ID: 'Adzl4TZylaGjEPVH0DvoRQd5oagR6lAThSrk7nMgSSZv9nOKVUJcYmF_DdcB_sN8a0m1mu4ophu_07D6'
       }
     }
   ],
