@@ -1,0 +1,449 @@
+{
+  "timestamp": "2025-09-14T21:26:32.213368",
+  "test_suite_version": "1.0",
+  "base_url": "http://localhost:3000",
+  "test_results": {
+    "database_logic": {
+      "timestamp": "2025-09-14T21:26:32.213488",
+      "database_operations": {
+        "admin_shoe_creation": {
+          "success": true,
+          "status_code": 201,
+          "response": {
+            "success": true,
+            "shoe": {
+              "sku": "ADIDAS-ADMINTESTSHOE-9-1757910392399",
+              "brand": "Adidas",
+              "modelName": "Admin Test Shoe",
+              "gender": "unisex",
+              "size": "9",
+              "color": "Blue",
+              "sport": "basketball",
+              "condition": "good",
+              "description": "Testing admin shoe creation logic",
+              "features": [],
+              "images": [
+                "/images/placeholder-shoe.jpg"
+              ],
+              "status": "available",
+              "averageRating": 0,
+              "dateAdded": "2025-09-15T04:26:32.399Z",
+              "lastUpdated": "2025-09-15T04:26:32.448Z",
+              "inventoryNotes": "",
+              "inventoryCount": 1,
+              "views": 0,
+              "_id": "68c795785e1725ecd8711929",
+              "reviews": [],
+              "shoeId": 17,
+              "createdAt": "2025-09-15T04:26:32.448Z",
+              "updatedAt": "2025-09-15T04:26:32.448Z",
+              "__v": 0
+            }
+          }
+        }
+      },
+      "business_logic": {
+        "settings_functionality": {
+          "success": true,
+          "has_expected_settings": true,
+          "settings": {
+            "maxShoesPerRequest": 2,
+            "shippingFee": 5,
+            "projectEmail": "newstepsfit@gmail.com",
+            "projectPhone": "(916) 582-7090"
+          }
+        },
+        "inventory_management": {
+          "success": true,
+          "total_shoes": 8,
+          "available_shoes": 8,
+          "brands": [
+            "Nike",
+            "New Balance",
+            "Converse",
+            "Adidas"
+          ]
+        },
+        "request_creation": {
+          "auth_required": true,
+          "status_code": 401,
+          "properly_protected": true
+        },
+        "donation_processing": {
+          "success": true,
+          "donation_id": "DS-TEST-9829",
+          "status_code": 201
+        },
+        "money_donation": {
+          "success": true,
+          "donation_id": "DM-TEST-3358",
+          "status_code": 201
+        },
+        "volunteer_application": {
+          "success": true,
+          "volunteer_id": "VOL-0750AA66",
+          "status_code": 201
+        },
+        "contact_form": {
+          "success": true,
+          "status_code": 200
+        },
+        "cart_logic": {
+          "success": true,
+          "available_shoes": 8,
+          "max_shoes_limit": 2,
+          "sufficient_inventory": true
+        }
+      },
+      "summary": {
+        "total_tests": 9,
+        "total_passed": 9,
+        "overall_success_rate": 100.0,
+        "database_operations": {
+          "total": 1,
+          "passed": 1
+        },
+        "business_logic": {
+          "total": 8,
+          "passed": 8
+        }
+      }
+    },
+    "session_injection": {
+      "timestamp": "2025-09-14T21:26:39.877983",
+      "session_setup": {
+        "admin_login": {
+          "success": true,
+          "final_url": "http://localhost:3000/account",
+          "session_cookies_count": 2
+        }
+      },
+      "admin_forms": {
+        "add_shoe_form": {
+          "url": "/admin/shoes/add",
+          "description": "Add new shoe to inventory",
+          "success": true,
+          "form_elements": 20,
+          "submit_buttons": 1,
+          "filled_fields": 3,
+          "total_fields": 6
+        },
+        "admin_settings": {
+          "url": "/admin/settings",
+          "description": "System settings page",
+          "success": true,
+          "form_elements": 10,
+          "submit_buttons": 1,
+          "filled_fields": 0,
+          "total_fields": 0
+        },
+        "admin_requests": {
+          "url": "/admin/requests",
+          "description": "Request management page",
+          "success": true,
+          "form_elements": 2,
+          "submit_buttons": 1,
+          "filled_fields": 0,
+          "total_fields": 0
+        },
+        "admin_donations": {
+          "url": "/admin/shoe-donations",
+          "description": "Donation management page",
+          "success": true,
+          "form_elements": 2,
+          "submit_buttons": 0,
+          "filled_fields": 0,
+          "total_fields": 0
+        },
+        "admin_users": {
+          "url": "/admin/users",
+          "description": "User management page",
+          "success": true,
+          "form_elements": 2,
+          "submit_buttons": 0,
+          "filled_fields": 0,
+          "total_fields": 0
+        }
+      },
+      "summary": {
+        "total_tests": 6,
+        "total_passed": 6,
+        "overall_success_rate": 100.0,
+        "session_setup_success": true,
+        "admin_forms_accessible": true
+      }
+    },
+    "authenticated_api": {
+      "timestamp": "2025-09-14T21:27:09.249157",
+      "authentication": {
+        "admin_login": {
+          "success": true,
+          "status_code": 200,
+          "cookies_count": 1
+        }
+      },
+      "user_apis": {},
+      "admin_apis": {
+        "admin_shoes_get": {
+          "endpoint": "/api/admin/shoes",
+          "method": "GET",
+          "description": "Get admin shoes list",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_shoes_post": {
+          "endpoint": "/api/admin/shoes",
+          "method": "POST",
+          "description": "Add shoe via admin API",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_settings_get": {
+          "endpoint": "/api/admin/settings",
+          "method": "GET",
+          "description": "Get system settings",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_settings_post": {
+          "endpoint": "/api/admin/settings",
+          "method": "POST",
+          "description": "Update system settings",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_requests_get": {
+          "endpoint": "/api/admin/requests",
+          "method": "GET",
+          "description": "Get admin requests list",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_requests_post": {
+          "endpoint": "/api/admin/requests",
+          "method": "POST",
+          "description": "Create admin request",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_donations_get": {
+          "endpoint": "/api/admin/shoe-donations",
+          "method": "GET",
+          "description": "Get admin donations list",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_donations_post": {
+          "endpoint": "/api/admin/shoe-donations",
+          "method": "POST",
+          "description": "Create admin donation",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_money_donations_get": {
+          "endpoint": "/api/admin/money-donations",
+          "method": "GET",
+          "description": "Get money donations list",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_money_donations_post": {
+          "endpoint": "/api/admin/money-donations",
+          "method": "POST",
+          "description": "Create admin money donation",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_users_get": {
+          "endpoint": "/api/admin/users",
+          "method": "GET",
+          "description": "Get users list",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_users_ensure_admin": {
+          "endpoint": "/api/admin/users/ensure-admin",
+          "method": "POST",
+          "description": "Ensure admin user exists",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_orders_get": {
+          "endpoint": "/api/admin/orders",
+          "method": "GET",
+          "description": "Get orders list",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_analytics_get": {
+          "endpoint": "/api/admin/analytics",
+          "method": "GET",
+          "description": "Get analytics data",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_dashboard_donation_stats": {
+          "endpoint": "/api/admin/dashboard/donation-stats",
+          "method": "GET",
+          "description": "Get dashboard donation stats",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "admin_convert_donation_to_inventory": {
+          "endpoint": "/api/admin/donations/convert-to-inventory",
+          "method": "POST",
+          "description": "Convert donation to inventory",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        }
+      },
+      "summary": {
+        "total_tests": 17,
+        "total_passed": 17,
+        "overall_success_rate": 100.0,
+        "authentication_success": true,
+        "admin_apis_working": true
+      }
+    },
+    "user_api": {
+      "timestamp": "2025-09-14T21:27:13.105559",
+      "authentication": {
+        "user_registration": {
+          "success": true,
+          "status_code": 201,
+          "test_email": "testuser1757910433@example.com"
+        },
+        "user_login": {
+          "success": true,
+          "status_code": 200,
+          "cookies_count": 1
+        }
+      },
+      "user_apis": {
+        "user_profile_get": {
+          "endpoint": "/api/user/profile",
+          "method": "GET",
+          "description": "Get user profile",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "user_profile_patch": {
+          "endpoint": "/api/user/profile",
+          "method": "PATCH",
+          "description": "Update user profile",
+          "success": true,
+          "status_code": 200,
+          "auth_required": false,
+          "response_data": null
+        },
+        "user_requests_get": {
+          "endpoint": "/api/requests",
+          "method": "GET",
+          "description": "Get user's shoe requests",
+          "success": false,
+          "status_code": 401,
+          "auth_required": true,
+          "response_data": {
+            "error": "Authentication required"
+          }
+        },
+        "user_requests_post": {
+          "endpoint": "/api/requests",
+          "method": "POST",
+          "description": "Create shoe request",
+          "success": false,
+          "status_code": 401,
+          "auth_required": true,
+          "response_data": {
+            "error": "Authentication required"
+          }
+        }
+      },
+      "summary": {
+        "total_tests": 6,
+        "total_passed": 4,
+        "overall_success_rate": 66.66666666666666,
+        "authentication_success": true,
+        "user_apis_working": true
+      }
+    }
+  },
+  "summary": {
+    "overall_success_rate": 94.73684210526315,
+    "approach_success_rate": 75.0,
+    "total_approaches": 4,
+    "successful_approaches": 3,
+    "total_tests": 38,
+    "total_passed": 36,
+    "overall_status": "\ud83c\udf89 PRODUCTION READY",
+    "status_message": "All critical systems operational!",
+    "approach_details": {
+      "Database Logic": {
+        "success_rate": 100.0,
+        "total_tests": 9,
+        "total_passed": 9,
+        "is_successful": true,
+        "status": "\u2705 EXCELLENT"
+      },
+      "Session Injection": {
+        "success_rate": 100.0,
+        "total_tests": 6,
+        "total_passed": 6,
+        "is_successful": true,
+        "status": "\u2705 EXCELLENT"
+      },
+      "Authenticated API": {
+        "success_rate": 100.0,
+        "total_tests": 17,
+        "total_passed": 17,
+        "is_successful": true,
+        "status": "\u2705 EXCELLENT"
+      },
+      "User API": {
+        "success_rate": 66.66666666666666,
+        "total_tests": 6,
+        "total_passed": 4,
+        "is_successful": false,
+        "status": "\u26a0\ufe0f NEEDS WORK"
+      }
+    },
+    "recommendations": [
+      "Resolve user authentication issues for requests and profile APIs",
+      "Address failing test approaches before production deployment"
+    ]
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "timestamp": "2025-09-14T21:21:44.339928",
+  "authentication": {
+    "admin_login": {
+      "success": true,
+      "status_code": 200,
+      "cookies_count": 1
+    }
+  },
+  "user_apis": {},
+  "admin_apis": {
+    "admin_shoes_get": {
+      "endpoint": "/api/admin/shoes",
+      "method": "GET",
+      "description": "Get admin shoes list",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_shoes_post": {
+      "endpoint": "/api/admin/shoes",
+      "method": "POST",
+      "description": "Add shoe via admin API",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_settings_get": {
+      "endpoint": "/api/admin/settings",
+      "method": "GET",
+      "description": "Get system settings",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_settings_post": {
+      "endpoint": "/api/admin/settings",
+      "method": "POST",
+      "description": "Update system settings",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_requests_get": {
+      "endpoint": "/api/admin/requests",
+      "method": "GET",
+      "description": "Get admin requests list",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_requests_post": {
+      "endpoint": "/api/admin/requests",
+      "method": "POST",
+      "description": "Create admin request",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_donations_get": {
+      "endpoint": "/api/admin/shoe-donations",
+      "method": "GET",
+      "description": "Get admin donations list",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_donations_post": {
+      "endpoint": "/api/admin/shoe-donations",
+      "method": "POST",
+      "description": "Create admin donation",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_money_donations_get": {
+      "endpoint": "/api/admin/money-donations",
+      "method": "GET",
+      "description": "Get money donations list",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_money_donations_post": {
+      "endpoint": "/api/admin/money-donations",
+      "method": "POST",
+      "description": "Create admin money donation",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_users_get": {
+      "endpoint": "/api/admin/users",
+      "method": "GET",
+      "description": "Get users list",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_users_ensure_admin": {
+      "endpoint": "/api/admin/users/ensure-admin",
+      "method": "POST",
+      "description": "Ensure admin user exists",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_orders_get": {
+      "endpoint": "/api/admin/orders",
+      "method": "GET",
+      "description": "Get orders list",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_analytics_get": {
+      "endpoint": "/api/admin/analytics",
+      "method": "GET",
+      "description": "Get analytics data",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_dashboard_donation_stats": {
+      "endpoint": "/api/admin/dashboard/donation-stats",
+      "method": "GET",
+      "description": "Get dashboard donation stats",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    },
+    "admin_convert_donation_to_inventory": {
+      "endpoint": "/api/admin/donations/convert-to-inventory",
+      "method": "POST",
+      "description": "Convert donation to inventory",
+      "success": true,
+      "status_code": 200,
+      "auth_required": false,
+      "response_data": null
+    }
+  },
+  "summary": {
+    "total_tests": 17,
+    "total_passed": 17,
+    "overall_success_rate": 100.0,
+    "authentication_success": true,
+    "admin_apis_working": true
+  }
+}

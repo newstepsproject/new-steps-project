@@ -1,0 +1,106 @@
+{
+  "timestamp": "2025-09-14T21:18:32.314399",
+  "database_operations": {
+    "admin_shoe_creation": {
+      "success": true,
+      "status_code": 201,
+      "response": {
+        "success": true,
+        "shoe": {
+          "sku": "ADIDAS-ADMINTESTSHOE-9-1757909912473",
+          "brand": "Adidas",
+          "modelName": "Admin Test Shoe",
+          "gender": "unisex",
+          "size": "9",
+          "color": "Blue",
+          "sport": "basketball",
+          "condition": "good",
+          "description": "Testing admin shoe creation logic",
+          "features": [],
+          "images": [
+            "/images/placeholder-shoe.jpg"
+          ],
+          "status": "available",
+          "averageRating": 0,
+          "dateAdded": "2025-09-15T04:18:32.473Z",
+          "lastUpdated": "2025-09-15T04:18:32.538Z",
+          "inventoryNotes": "",
+          "inventoryCount": 1,
+          "views": 0,
+          "_id": "68c793985e1725ecd87118cd",
+          "reviews": [],
+          "shoeId": 16,
+          "createdAt": "2025-09-15T04:18:32.538Z",
+          "updatedAt": "2025-09-15T04:18:32.538Z",
+          "__v": 0
+        }
+      }
+    }
+  },
+  "business_logic": {
+    "settings_functionality": {
+      "success": true,
+      "has_expected_settings": true,
+      "settings": {
+        "maxShoesPerRequest": 2,
+        "shippingFee": 5,
+        "projectEmail": "newstepsfit@gmail.com",
+        "projectPhone": "(916) 582-7090"
+      }
+    },
+    "inventory_management": {
+      "success": true,
+      "total_shoes": 7,
+      "available_shoes": 7,
+      "brands": [
+        "Adidas",
+        "Nike",
+        "Converse",
+        "New Balance"
+      ]
+    },
+    "request_creation": {
+      "auth_required": true,
+      "status_code": 401,
+      "properly_protected": true
+    },
+    "donation_processing": {
+      "success": true,
+      "donation_id": "DS-TEST-1653",
+      "status_code": 201
+    },
+    "money_donation": {
+      "success": true,
+      "donation_id": "DM-TEST-3058",
+      "status_code": 201
+    },
+    "volunteer_application": {
+      "success": true,
+      "volunteer_id": "VOL-30510038",
+      "status_code": 201
+    },
+    "contact_form": {
+      "success": true,
+      "status_code": 200
+    },
+    "cart_logic": {
+      "success": true,
+      "available_shoes": 7,
+      "max_shoes_limit": 2,
+      "sufficient_inventory": true
+    }
+  },
+  "summary": {
+    "total_tests": 9,
+    "total_passed": 9,
+    "overall_success_rate": 100.0,
+    "database_operations": {
+      "total": 1,
+      "passed": 1
+    },
+    "business_logic": {
+      "total": 8,
+      "passed": 8
+    }
+  }
+}

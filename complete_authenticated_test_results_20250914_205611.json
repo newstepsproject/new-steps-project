@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-09-14T20:55:34.271203",
+  "base_url": "http://localhost:3000",
+  "authentication": {
+    "user_error": "'coroutine' object has no attribute 'lower'",
+    "admin_error": "Page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"input[name=\\\"email\\\"]\")\n"
+  },
+  "user_forms": {},
+  "admin_forms": {},
+  "summary": {
+    "total_tests": 2,
+    "total_passed": 0,
+    "total_failed": 2,
+    "overall_success_rate": 0.0,
+    "authentication": {
+      "total": 2,
+      "passed": 0,
+      "success_rate": 0.0
+    },
+    "user_forms": {
+      "total": 0,
+      "passed": 0,
+      "success_rate": 0
+    },
+    "admin_forms": {
+      "total": 0,
+      "passed": 0,
+      "success_rate": 0
+    }
+  }
+}

@@ -122,13 +122,31 @@ function DonationFormContent() {
         throw new Error(`Validation failed: ${errorMessages}`);
       }
       
+      // Transform form data to match API expectations
+      const apiData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        donationDescription: data.donationDescription,
+        numberOfShoes: data.numberOfShoes,
+        isBayArea: data.isBayArea,
+        address: {
+          street: data.street,
+          city: data.city,
+          state: data.state,
+          zipCode: data.zipCode,
+          country: data.country
+        }
+      };
+
       // Submit to the real API endpoint instead of the test one
       const response = await fetch('/api/donations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(apiData),
       });
 
       console.log('Response status:', response.status);

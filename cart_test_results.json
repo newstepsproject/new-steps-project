@@ -1,0 +1,81 @@
+{
+  "layer1_api": {
+    "settings": {
+      "status": 200,
+      "success": true,
+      "maxShoesPerRequest": 2
+    },
+    "shoes": {
+      "status": 200,
+      "success": true,
+      "shoeCount": 6,
+      "sampleShoe": {
+        "_id": "68c754955e1725ecd8711831",
+        "sku": "CONVERSE-CHUCKTAYLOR-9-1757893781538",
+        "brand": "Converse",
+        "modelName": "Chuck Taylor",
+        "gender": "unisex",
+        "size": "9",
+        "color": "Red",
+        "sport": "casual",
+        "condition": "good",
+        "description": "Classic Converse",
+        "features": [],
+        "images": [
+          "/images/placeholder-shoe.jpg"
+        ],
+        "status": "available",
+        "averageRating": 0,
+        "dateAdded": "2025-09-14T23:49:41.538Z",
+        "lastUpdated": "2025-09-14T23:49:41.576Z",
+        "inventoryNotes": "",
+        "inventoryCount": 1,
+        "views": 0,
+        "reviews": [],
+        "shoeId": 12,
+        "createdAt": "2025-09-14T23:49:41.576Z",
+        "updatedAt": "2025-09-14T23:49:41.576Z"
+      }
+    }
+  },
+  "layer2_forms": {},
+  "layer3_interactive": {
+    "cart_icon_display": {
+      "success": true
+    },
+    "add_to_cart_list": {
+      "success": true
+    },
+    "cart_limit": {
+      "success": true
+    },
+    "cart_count": {
+      "success": true,
+      "count": "2"
+    },
+    "cart_dropdown": {
+      "success": true,
+      "itemCount": 2
+    },
+    "remove_from_cart": {
+      "success": true,
+      "remainingItems": 1
+    },
+    "cross_page_consistency": {
+      "success": false,
+      "error": "Detail page add failed"
+    }
+  },
+  "layer4_workflows": {
+    "complete_flow": {
+      "success": false,
+      "error": "Not enough shoes"
+    }
+  },
+  "summary": {
+    "total_tests": 10,
+    "passed_tests": 8,
+    "failed_tests": 2,
+    "success_rate": 80.0
+  }
+}

@@ -50,7 +50,7 @@ import { usePagination } from '@/hooks/usePagination';
 
 export default function ShoesPage() {
   // Cart functionality
-  const { addItem, isInCart } = useCart();
+  const { addItem, isInCart, canAddMore, itemCount, maxItems } = useCart();
   
   // State for shoes data
   const [shoes, setShoes] = useState([]);
@@ -362,6 +362,7 @@ export default function ShoesPage() {
                                 onClick={(e) => {
                                   e.preventDefault();
                                   const success = addItem({
+                                    id: shoe._id, // Missing required field!
                                     shoeId: shoe.shoeId,
                                     inventoryId: shoe._id,
                                     name: shoe.modelName,
@@ -374,13 +375,12 @@ export default function ShoesPage() {
                                     gender: shoe.gender ?? 'unisex',
                                     image: shoe.images[0] || '/images/placeholder-shoe.jpg',
                                     quantity: 1,
-                                    price: 0, // Shoes are free
                                     notes: ''
                                   });
                                   if (!success) {
                                     toast({
                                       title: "Cart Limit Reached",
-                                      description: "You can only request up to 2 shoes at a time.",
+                                      description: `You can only request up to ${maxItems} shoes at a time.`,
                                       variant: "destructive",
                                     });
                                   } else {
@@ -390,9 +390,13 @@ export default function ShoesPage() {
                                     });
                                   }
                                 }}
-                                disabled={isInCart(shoe._id)}
+                                disabled={isInCart(shoe._id) || (!isInCart(shoe._id) && !canAddMore)}
                               >
-                                {isInCart(shoe._id) ? 'In Cart' : 'Add to Cart'}
+                                {isInCart(shoe._id) 
+                                  ? 'In Cart' 
+                                  : !canAddMore 
+                                    ? 'Cart Limit Reached' 
+                                    : 'Add to Cart'}
                               </Button>
                             </div>
                           </div>

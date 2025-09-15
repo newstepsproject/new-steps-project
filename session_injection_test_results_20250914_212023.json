@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-09-14T21:19:56.683936",
+  "session_setup": {
+    "admin_login": {
+      "success": true,
+      "final_url": "http://localhost:3000/account",
+      "session_cookies_count": 2
+    }
+  },
+  "admin_forms": {
+    "add_shoe_form": {
+      "url": "/admin/shoes/add",
+      "description": "Add new shoe to inventory",
+      "success": true,
+      "form_elements": 20,
+      "submit_buttons": 1,
+      "filled_fields": 3,
+      "total_fields": 6
+    },
+    "admin_settings": {
+      "url": "/admin/settings",
+      "description": "System settings page",
+      "success": true,
+      "form_elements": 10,
+      "submit_buttons": 1,
+      "filled_fields": 0,
+      "total_fields": 0
+    },
+    "admin_requests": {
+      "url": "/admin/requests",
+      "description": "Request management page",
+      "success": true,
+      "form_elements": 2,
+      "submit_buttons": 1,
+      "filled_fields": 0,
+      "total_fields": 0
+    },
+    "admin_donations": {
+      "url": "/admin/shoe-donations",
+      "description": "Donation management page",
+      "success": true,
+      "form_elements": 2,
+      "submit_buttons": 0,
+      "filled_fields": 0,
+      "total_fields": 0
+    },
+    "admin_users": {
+      "url": "/admin/users",
+      "description": "User management page",
+      "success": true,
+      "form_elements": 2,
+      "submit_buttons": 0,
+      "filled_fields": 0,
+      "total_fields": 0
+    }
+  },
+  "summary": {
+    "total_tests": 6,
+    "total_passed": 6,
+    "overall_success_rate": 100.0,
+    "session_setup_success": true,
+    "admin_forms_accessible": true
+  }
+}

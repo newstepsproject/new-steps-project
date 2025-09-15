@@ -24,15 +24,8 @@ type VolunteerFormData = {
 
 export async function POST(request: NextRequest) {
   try {
-    // Get the current user session
+    // Get the current user session (optional for volunteer applications)
     const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, message: 'You must be logged in to submit a volunteer application' },
-        { status: 401 }
-      );
-    }
 
     // Parse the request body
     const data: VolunteerFormData = await request.json();
@@ -51,22 +44,15 @@ export async function POST(request: NextRequest) {
     // Connect to the database
     await connectToDatabase();
 
-    // Find user by ID - add type safety
-    const userId = (session.user as SessionUser).id;
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID not found in session' },
-        { status: 400 }
-      );
-    }
+    // Get user ID if authenticated, otherwise null for anonymous volunteers
+    const userId = session?.user ? (session.user as SessionUser).id : null;
     
     // Generate a unique volunteer ID
     const volunteerId = `VOL-${uuid().substring(0, 8).toUpperCase()}`;
     
     // Create a new volunteer record
-    const newVolunteer = new Volunteer({
+    const volunteerData: any = {
       volunteerId,
-      userId: new mongoose.Types.ObjectId(userId),
       firstName: data.firstName,
       lastName: data.lastName,
       name: fullName,
@@ -80,7 +66,14 @@ export async function POST(request: NextRequest) {
       message: data.message,
       submittedAt: new Date(),
       status: 'pending'
-    });
+    };
+    
+    // Add userId only if user is authenticated
+    if (userId) {
+      volunteerData.userId = new mongoose.Types.ObjectId(userId);
+    }
+    
+    const newVolunteer = new Volunteer(volunteerData);
     
     // Save the volunteer record
     const savedVolunteer = await newVolunteer.save();

@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-09-14T21:59:13.423405",
+  "workflows": {
+    "workflow_1": {
+      "name": "Donation Visibility Cycle",
+      "steps": {
+        "donation_creation": {
+          "success": true,
+          "donation_id": "DS-WORK-9725"
+        },
+        "admin_login": {
+          "success": true
+        },
+        "admin_sees_donation": {
+          "success": true
+        },
+        "admin_can_interact": {
+          "success": true
+        }
+      },
+      "success": true
+    },
+    "workflow_2": {
+      "name": "Inventory Public Visibility",
+      "steps": {
+        "public_inventory_visible": {
+          "success": true,
+          "shoe_count": 9
+        },
+        "admin_sees_inventory": {
+          "success": true
+        },
+        "admin_can_manage": {
+          "success": true
+        },
+        "admin_add_form_accessible": {
+          "success": true
+        }
+      },
+      "success": true
+    },
+    "workflow_3": {
+      "name": "Request Admin Cycle",
+      "steps": {
+        "user_can_browse": {
+          "success": true,
+          "request_options": 9
+        },
+        "admin_requests_accessible": {
+          "success": false
+        }
+      },
+      "success": false
+    }
+  },
+  "summary": {
+    "total_workflows": 3,
+    "successful_workflows": 2,
+    "overall_success_rate": 66.66666666666666,
+    "overall_status": "\u2705 GOOD",
+    "status_message": "Most critical interactions functional"
+  }
+}
