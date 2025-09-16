@@ -136,10 +136,17 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
         newUrls.push(compressedDataURL);
         
         // Convert compressed data URL back to File for upload
-        const response = await fetch(compressedDataURL);
-        const blob = await response.blob();
-        const compressedFile = new File([blob], file.name, { type: file.type });
-        newFiles.push(compressedFile);
+        let compressedFile: File;
+        try {
+          const response = await fetch(compressedDataURL);
+          const blob = await response.blob();
+          compressedFile = new File([blob], file.name, { type: file.type });
+          console.log(`📁 Converted ${file.name}: ${file.size} bytes → ${compressedFile.size} bytes`);
+          newFiles.push(compressedFile);
+        } catch (error) {
+          console.error(`❌ Failed to convert ${file.name}:`, error);
+          throw new Error(`Failed to process image ${file.name}: ${error instanceof Error ? error.message : String(error)}`);
+        }
         
         totalCompressedSize += compressedFile.size;
       }
@@ -274,22 +281,39 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
       const shoeImages: string[] = [];
       
       if (imageFiles && imageFiles.length > 0) {
-        for (const file of imageFiles) {
-          const formData = new FormData();
-          formData.append('file', file);
+        console.log(`🔄 Uploading ${imageFiles.length} images...`);
+        
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          console.log(`📤 Uploading image ${i + 1}/${imageFiles.length}: ${file.name} (${file.size} bytes)`);
           
-          const uploadResponse = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-          });
-          
-          if (!uploadResponse.ok) {
-            throw new Error(`Failed to upload image`);
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folder', 'shoes');
+            
+            const uploadResponse = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData,
+            });
+            
+            if (!uploadResponse.ok) {
+              const errorText = await uploadResponse.text();
+              console.error(`❌ Upload failed for image ${i + 1}:`, errorText);
+              throw new Error(`Failed to upload image ${i + 1}: ${errorText}`);
+            }
+            
+            const uploadResult = await uploadResponse.json();
+            console.log(`✅ Image ${i + 1} uploaded successfully:`, uploadResult.url);
+            shoeImages.push(uploadResult.url);
+            
+          } catch (error) {
+            console.error(`❌ Error uploading image ${i + 1}:`, error);
+            throw new Error(`Failed to upload image ${i + 1}: ${error instanceof Error ? error.message : String(error)}`);
           }
-          
-          const uploadResult = await uploadResponse.json();
-          shoeImages.push(uploadResult.url);
         }
+        
+        console.log(`🎉 All ${imageFiles.length} images uploaded successfully`);
       }
       
       // Create a single shoe object
