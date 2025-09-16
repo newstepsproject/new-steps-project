@@ -98,27 +98,27 @@
   }
 
   h1 {
-    @apply text-4xl font-bold tracking-tight font-display text-gpt-text;
+    @apply text-3xl font-bold tracking-tight font-display text-gpt-text;
   }
 
   h2 {
-    @apply text-3xl font-semibold tracking-tight font-display text-gpt-text;
-  }
-
-  h3 {
     @apply text-2xl font-semibold tracking-tight font-display text-gpt-text;
   }
 
-  h4 {
+  h3 {
     @apply text-xl font-semibold tracking-tight font-display text-gpt-text;
   }
 
-  h5 {
+  h4 {
     @apply text-lg font-semibold tracking-tight font-display text-gpt-text;
   }
 
-  h6 {
+  h5 {
     @apply text-base font-semibold tracking-tight font-display text-gpt-text;
+  }
+
+  h6 {
+    @apply text-sm font-semibold tracking-tight font-display text-gpt-text;
   }
 }
 

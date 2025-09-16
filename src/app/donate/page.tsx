@@ -127,7 +127,7 @@ export default function DonateShoesPage() {
       {/* What We Accept */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">What Shoes Do We Accept?</h2>
+          <h2 className="text-2xl font-bold text-center mb-12">What Shoes Do We Accept?</h2>
           
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
