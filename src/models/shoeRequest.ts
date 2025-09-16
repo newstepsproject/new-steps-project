@@ -198,7 +198,7 @@ ShoeRequestSchema.pre('validate', function(next) {
   if (!this.isOffline && this.shippingInfo) {
     const shipping = this.shippingInfo;
     if (!shipping.street || !shipping.city || !shipping.state || !shipping.zipCode) {
-      return next(new Error('Complete shipping address is required for online requests'));
+      return next(new Error('Complete shipping address is required for shipping delivery method'));
     }
   }
   

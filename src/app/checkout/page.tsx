@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     state: '',
     zipCode: '',
     country: 'USA',
-    deliveryMethod: 'shipping',
+    deliveryMethod: 'pickup',
     notes: '',
     shippingPaymentAgreed: false,
   });
@@ -171,6 +171,18 @@ export default function CheckoutPage() {
       console.log('Submitting shoe request with data:', { ...formData, items });
       
       // Submit to the proper authenticated API endpoint
+      // Debug: Log the form data being sent
+      console.log('🔍 DEBUG: Form data being sent:', {
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+        deliveryMethod: formData.deliveryMethod,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email
+      });
+
       const response = await fetch('/api/requests', {
         method: 'POST',
         headers: {

@@ -22,6 +22,8 @@ export async function POST(req: NextRequest) {
 
     // Parse request body
     const requestData = await req.json();
+    console.log('🔍 DEBUG: Full request data received:', requestData);
+    
     const { 
       items, // Array of shoe items from cart
       firstName,
@@ -36,6 +38,15 @@ export async function POST(req: NextRequest) {
       deliveryMethod,
       notes
     } = requestData;
+
+    // DEBUG: Log the extracted shipping address fields
+    console.log('🔍 DEBUG: Extracted shipping fields:', {
+      address,
+      city,
+      state,
+      zipCode,
+      deliveryMethod
+    });
 
     // Validate required fields
     if (!items || !items.length) {
@@ -142,6 +153,15 @@ export async function POST(req: NextRequest) {
     const shippingFee = deliveryMethod === 'pickup' ? 0 : settings.shippingFee;
     const totalCost = shippingFee;
 
+    // Create shipping info only if delivery method is shipping
+    const shippingInfo = deliveryMethod === 'shipping' ? {
+      street: address,
+      city,
+      state,
+      zipCode,
+      country: country || 'USA'
+    } : undefined;
+
     // Create the shoe request
     const shoeRequest = new ShoeRequest({
       requestId,
@@ -152,13 +172,7 @@ export async function POST(req: NextRequest) {
         phone
       },
       items: processedItems,
-      shippingInfo: {
-        street: address,
-        city,
-        state,
-        zipCode,
-        country: country || 'USA'
-      },
+      shippingInfo,
       notes,
       statusHistory: [{
         status: ShoeRequestStatus.SUBMITTED,
