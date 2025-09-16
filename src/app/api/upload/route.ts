@@ -107,10 +107,15 @@ export async function POST(req: NextRequest) {
           await s3.send(putCmd);
           console.log('✅ S3 upload successful');
 
-          // Prefer CloudFront/public URL if provided
-          const url = publicBase
+          // Use direct S3 URL instead of CloudFront (CloudFront domain not resolving)
+          const url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+          
+          // Log both URLs for debugging
+          const cloudFrontUrl = publicBase
             ? `${publicBase.replace(/\/$/, '')}/${[folder, filename].join('/')}`
-            : `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+            : 'N/A';
+          console.log(`🌐 CloudFront URL (not used): ${cloudFrontUrl}`);
+          console.log(`🌐 Direct S3 URL (using): ${url}`);
 
           console.log(`🌐 Generated URL: ${url}`);
 
