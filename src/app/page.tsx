@@ -99,11 +99,11 @@ export default async function Home() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
             <div className="lg:w-1/2 text-center lg:text-left animate-fade-in">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gpt-text mb-4 font-display">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gpt-text mb-4 font-display">
                 Give New Life<br />
                 to Old Kicks
               </h1>
-              <p className="text-base md:text-xl text-gpt-text/80 mb-6 max-w-lg mx-auto lg:mx-0 font-body leading-relaxed">
+              <p className="text-sm md:text-base lg:text-lg text-gpt-text/80 mb-6 max-w-lg mx-auto lg:mx-0 font-body leading-relaxed">
                 Your shoes can get back on the courts, fields, and tracks — helping young athletes today.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
@@ -149,7 +149,7 @@ export default async function Home() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gpt-text font-display">How It Works</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gpt-text font-display">How It Works</h2>
             <p className="text-gpt-text/70 max-w-2xl mx-auto font-body leading-relaxed">
               It's simple and impactful. Donate or get shoes in a few steps.
             </p>

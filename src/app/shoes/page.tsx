@@ -320,12 +320,6 @@ export default function ShoesPage() {
                               alt={`${shoe.brand} ${shoe.modelName}`}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
-                            {/* Free Badge */}
-                            <div className="absolute top-2 left-2 z-10">
-                              <div className="bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm">
-                                Free
-                              </div>
-                            </div>
                             {/* Prominent Shoe ID Badge */}
                             <div className="absolute top-2 right-2 z-10">
                               <div className="bg-brand text-white px-2 py-1 rounded text-xs font-mono font-bold">
