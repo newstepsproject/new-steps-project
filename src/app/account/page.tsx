@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { User, Package, Gift, Settings, LogOut, AlertTriangle, CheckCircle, Clock, CheckSquare, Truck } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
 import { AdminDashboardLink } from '@/components/admin/AdminDashboardLink';
@@ -16,7 +15,6 @@ import { AdminDashboardLink } from '@/components/admin/AdminDashboardLink';
 export default function AccountPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [verificationMessage, setVerificationMessage] = useState('');
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -24,6 +22,10 @@ export default function AccountPage() {
   const [requests, setRequests] = useState([]);
   const [loadingRequests, setLoadingRequests] = useState(true);
   const [requestError, setRequestError] = useState('');
+  const [donations, setDonations] = useState([]);
+  const [moneyDonations, setMoneyDonations] = useState([]);
+  const [loadingDonations, setLoadingDonations] = useState(true);
+  const [donationError, setDonationError] = useState('');
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -69,8 +71,54 @@ export default function AccountPage() {
     fetchRequests();
   }, [session]);
 
-  // Helper function to get status badge
-  const getStatusBadge = (status: string) => {
+  // Fetch user's donations when session is available
+  useEffect(() => {
+    const fetchDonations = async () => {
+      if (!session?.user) return;
+      
+      setLoadingDonations(true);
+      setDonationError('');
+      
+      try {
+        // Fetch shoe donations and money donations in parallel
+        const [shoeDonationsResponse, moneyDonationsResponse] = await Promise.all([
+          fetch('/api/user/donations'),
+          fetch('/api/user/money-donations')
+        ]);
+        
+        const shoeDonationsData = await shoeDonationsResponse.json();
+        const moneyDonationsData = await moneyDonationsResponse.json();
+        
+        if (shoeDonationsResponse.ok) {
+          setDonations(shoeDonationsData.donations || []);
+        } else {
+          console.error('Error fetching shoe donations:', shoeDonationsData.error);
+        }
+        
+        if (moneyDonationsResponse.ok) {
+          setMoneyDonations(moneyDonationsData.moneyDonations || []);
+        } else {
+          console.error('Error fetching money donations:', moneyDonationsData.error);
+        }
+        
+        // Set error only if both requests failed
+        if (!shoeDonationsResponse.ok && !moneyDonationsResponse.ok) {
+          setDonationError('Failed to load donations');
+        }
+        
+      } catch (error) {
+        console.error('Error fetching donations:', error);
+        setDonationError('An error occurred while loading donations');
+      } finally {
+        setLoadingDonations(false);
+      }
+    };
+
+    fetchDonations();
+  }, [session]);
+
+  // Helper function to get status badge for requests
+  const getRequestStatusBadge = (status: string) => {
     const statusConfig = {
       submitted: { label: 'Submitted', color: 'bg-blue-100 text-blue-800', icon: Clock },
       approved: { label: 'Approved', color: 'bg-green-100 text-green-800', icon: CheckSquare },
@@ -89,9 +137,28 @@ export default function AccountPage() {
     );
   };
 
-  const handleSignOut = async () => {
-    setIsLoading(true);
-    await signOut({ callbackUrl: '/' });
+  // Helper function to get status badge for donations
+  const getDonationStatusBadge = (status: string) => {
+    const statusConfig = {
+      submitted: { label: 'Submitted', color: 'bg-blue-100 text-blue-800', icon: Clock },
+      received: { label: 'Received', color: 'bg-yellow-100 text-yellow-800', icon: Package },
+      processed: { label: 'Processed', color: 'bg-green-100 text-green-800', icon: CheckCircle },
+      cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-800', icon: AlertTriangle },
+    };
+    
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.submitted;
+    const IconComponent = config.icon;
+    
+    return (
+      <Badge className={`${config.color} flex items-center gap-1`}>
+        <IconComponent size={12} />
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const handleSignOut = () => {
+    router.push('/auth/signout');
   };
 
   const handleResendVerification = async () => {
@@ -201,10 +268,9 @@ export default function AccountPage() {
                   variant="outline" 
                   className="w-full h-12 flex items-center gap-2 text-red-500 hover:text-red-600 touch-manipulation"
                   onClick={handleSignOut}
-                  disabled={isLoading}
                 >
                   <LogOut size={16} />
-                  {isLoading ? 'Signing out...' : 'Sign Out'}
+                  Sign Out
                 </Button>
               </div>
             </CardContent>
@@ -274,7 +340,7 @@ export default function AccountPage() {
                                     Submitted on {new Date(request.createdAt).toLocaleDateString()}
                                   </p>
                                 </div>
-                                {getStatusBadge(request.currentStatus)}
+                                {getRequestStatusBadge(request.currentStatus)}
                               </div>
                               
                               <div className="space-y-2">
@@ -312,17 +378,122 @@ export default function AccountPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle>My Donations</CardTitle>
-                    <CardDescription>Track and manage your shoe donations</CardDescription>
+                    <CardDescription>Track and manage your donations (shoes and money)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                      <Gift className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium mb-2">No Donations Yet</h3>
-                      <p className="text-gray-600 mb-6 px-4">You haven't donated any shoes yet.</p>
-                      <Button asChild size="lg" className="h-12 touch-manipulation">
-                        <Link href="/donate/shoes">Donate Shoes</Link>
-                      </Button>
-                    </div>
+                    {loadingDonations ? (
+                      <div className="text-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto mb-4"></div>
+                        <p className="text-gray-600">Loading your donations...</p>
+                      </div>
+                    ) : donationError ? (
+                      <div className="text-center py-12 border-2 border-dashed border-red-200 rounded-lg">
+                        <AlertTriangle className="mx-auto h-16 w-16 text-red-400 mb-4" />
+                        <h3 className="text-lg font-medium mb-2 text-red-600">Error Loading Donations</h3>
+                        <p className="text-red-500 mb-6 px-4">{donationError}</p>
+                        <Button 
+                          onClick={() => window.location.reload()} 
+                          variant="outline" 
+                          className="h-12 touch-manipulation"
+                        >
+                          Try Again
+                        </Button>
+                      </div>
+                    ) : donations.length === 0 && moneyDonations.length === 0 ? (
+                      <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                        <Gift className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                        <h3 className="text-lg font-medium mb-2">No Donations Yet</h3>
+                        <p className="text-gray-600 mb-6 px-4">You haven't made any donations yet.</p>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                          <Button asChild size="lg" className="h-12 touch-manipulation">
+                            <Link href="/donate/shoes">Donate Shoes</Link>
+                          </Button>
+                          <Button asChild variant="outline" size="lg" className="h-12 touch-manipulation">
+                            <Link href="/get-involved">Donate Money</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                        {/* Money Donations Section */}
+                        {moneyDonations.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-lg mb-4 text-gray-900">Money Donations</h4>
+                            <div className="grid gap-4">
+                              {moneyDonations.map((donation: any) => (
+                                <Card key={donation._id} className="border border-gray-200">
+                                  <CardContent className="p-4">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+                                      <div>
+                                        <h3 className="font-semibold text-lg">Donation {donation.donationId}</h3>
+                                        <p className="text-sm text-gray-600">
+                                          Submitted on {new Date(donation.createdAt).toLocaleDateString()}
+                                        </p>
+                                      </div>
+                                      {getDonationStatusBadge(donation.status)}
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                      <p className="text-sm text-gray-700">
+                                        <strong>Amount:</strong> ${donation.amount.toFixed(2)}
+                                      </p>
+                                      {donation.checkNumber && (
+                                        <p className="text-sm text-gray-700">
+                                          <strong>Check Number:</strong> {donation.checkNumber}
+                                        </p>
+                                      )}
+                                      {donation.notes && (
+                                        <p className="text-sm text-gray-700">
+                                          <strong>Notes:</strong> {donation.notes}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Shoe Donations Section */}
+                        {donations.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-lg mb-4 text-gray-900">Shoe Donations</h4>
+                            <div className="grid gap-4">
+                              {donations.map((donation: any) => (
+                                <Card key={donation._id} className="border border-gray-200">
+                                  <CardContent className="p-4">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+                                      <div>
+                                        <h3 className="font-semibold text-lg">Donation {donation.donationId}</h3>
+                                        <p className="text-sm text-gray-600">
+                                          Submitted on {new Date(donation.createdAt).toLocaleDateString()}
+                                        </p>
+                                      </div>
+                                      {getDonationStatusBadge(donation.status)}
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                      <p className="text-sm text-gray-700">
+                                        <strong>Shoes:</strong> {donation.numberOfShoes} pair{donation.numberOfShoes !== 1 ? 's' : ''}
+                                      </p>
+                                      <p className="text-sm text-gray-700">
+                                        <strong>Description:</strong> {donation.donationDescription || 'No description provided'}
+                                      </p>
+                                      {donation.notes && (
+                                        <p className="text-sm text-gray-700">
+                                          <strong>Notes:</strong> {donation.notes}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>

@@ -607,7 +607,15 @@ class MultiUserWorkflowTester:
 
 async def main():
     """Main function to run multi-user workflow testing"""
-    tester = MultiUserWorkflowTester()
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Multi-User Workflow Testing')
+    parser.add_argument('--base-url', default='http://localhost:3000',
+                       help='Base URL to test (default: http://localhost:3000)')
+    
+    args = parser.parse_args()
+    
+    tester = MultiUserWorkflowTester(base_url=args.base_url)
     await tester.run_all_workflows()
 
 if __name__ == "__main__":

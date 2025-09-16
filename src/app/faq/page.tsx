@@ -50,9 +50,8 @@ export default function FAQPage() {
             <AccordionItem value="item-4">
               <AccordionTrigger>Is there a cost for requesting shoes?</AccordionTrigger>
               <AccordionContent>
-                The shoes themselves are completely free! However, if you live outside the Bay Area, 
-                there may be a small shipping fee (typically $5) to help cover packaging and delivery costs. 
-                Bay Area residents can often arrange for free pickup or drop-off.
+                Shoes are free. Shipping may apply outside the Bay Area. 
+                Bay Area residents can arrange for free pickup.
               </AccordionContent>
             </AccordionItem>
 

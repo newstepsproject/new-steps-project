@@ -22,47 +22,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { label: 'Settings', href: '/admin/settings', icon: <Settings className="mr-2 h-4 w-4" /> },
   ];
 
-  const handleLogout = async () => {
-    try {
-      console.log('🔄 LOGOUT ATTEMPT - Environment:', process.env.NODE_ENV);
-      console.log('🔄 LOGOUT ATTEMPT - Domain:', window.location.hostname);
-      
-      // IMMEDIATE UI FEEDBACK - Hide admin interface immediately
-      const event = new Event('admin-logout');
-      window.dispatchEvent(event);
-      
-      // Import signOut dynamically
-      const { signOut } = await import('next-auth/react');
-      
-      console.log('🚀 STARTING LOGOUT PROCESS...');
-      const result = await signOut({
-        callbackUrl: '/login?message=admin-logout',
-        redirect: false  // Prevent automatic redirect to have more control
-      });
-      
-      console.log('✅ SIGNOUT RESULT:', result);
-      
-      // AGGRESSIVE SESSION CLEARING
-      // Clear all cookies
-      document.cookie.split(";").forEach(function(c) { 
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-      
-      // Clear session storage
-      sessionStorage.clear();
-      localStorage.removeItem('nextauth.message');
-      
-      console.log('🍪 CHECKING COOKIES AFTER LOGOUT:', document.cookie);
-      
-      // IMMEDIATE REDIRECT - Don't wait for NextAuth
-      console.log('🔄 FORCING IMMEDIATE REDIRECT...');
-      window.location.href = '/login?message=admin-logout';
-      
-    } catch (error) {
-      console.error('❌ LOGOUT ERROR:', error);
-      // Force redirect even on error
-      window.location.href = '/login?message=admin-logout';
-    }
+  const handleLogout = () => {
+    window.location.href = '/auth/signout?callbackUrl=/login';
   };
 
   return (

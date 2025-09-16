@@ -135,27 +135,9 @@ export default function MobileNav() {
                         Website
                       </Link>
                       <button
-                        onClick={async () => {
+                        onClick={() => {
                           setSheetOpen(false);
-                          try {
-                            // Clear NextAuth session and force redirect
-                            await signOut({ 
-                              callbackUrl: '/login?message=admin-logout',
-                              redirect: false 
-                            });
-                            
-                            // Clear browser storage and force refresh
-                            if (typeof window !== 'undefined') {
-                              localStorage.clear();
-                              sessionStorage.clear();
-                              // Force redirect to clear all caches
-                              window.location.href = '/login?message=admin-logout';
-                            }
-                          } catch (error) {
-                            console.error('Logout error:', error);
-                            // Fallback - force redirect
-                            window.location.href = '/login';
-                          }
+                          window.location.href = '/auth/signout?callbackUrl=/login';
                         }}
                         className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-red-600 hover:bg-gray-100"
                       >

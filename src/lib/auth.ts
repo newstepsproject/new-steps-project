@@ -112,7 +112,8 @@ export const authOptions: NextAuthOptions = {
           sameSite: 'lax',
           path: '/',
           secure: false, // HTTP for localhost
-          domain: 'localhost' // Explicit domain for localhost
+          // Remove explicit domain to let browser handle it
+          // domain: 'localhost' // This might be causing issues
         }
       },
       callbackUrl: {
@@ -137,6 +138,7 @@ export const authOptions: NextAuthOptions = {
   }),
   pages: {
     signIn: '/login',
+    signOut: '/auth/signout',
     error: '/login',
   },
   callbacks: {

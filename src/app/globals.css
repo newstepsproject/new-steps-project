@@ -148,6 +148,37 @@
     @apply py-12 md:py-16 lg:py-20 bg-gpt-bg;
   }
 
+  /* Enhanced typography */
+  .leading-relaxed {
+    line-height: 1.65;
+  }
+
+  /* Better button spacing on mobile */
+  .button-stack {
+    @apply flex flex-col sm:flex-row gap-4 justify-center;
+  }
+
+  @media (max-width: 640px) {
+    .button-stack {
+      gap: 0.75rem;
+    }
+  }
+
+  /* Enhanced link styles */
+  .prose a:hover {
+    text-decoration: underline;
+  }
+
+  /* Better contrast for outline buttons */
+  .btn-outline {
+    border-width: 2px;
+    border-opacity: 0.8;
+  }
+
+  .btn-outline:hover {
+    border-opacity: 1;
+  }
+
   .card-highlight {
     @apply transition-all duration-300 hover:shadow-card hover:-translate-y-1 bg-white;
   }
@@ -161,7 +192,7 @@
   }
 
   .btn-outline {
-    @apply border-2 border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
+    @apply border-2 border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide focus:ring-2 focus:ring-gpt-highlight focus:ring-offset-2;
   }
 
   .btn-success {

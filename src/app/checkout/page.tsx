@@ -176,6 +176,7 @@ export default function CheckoutPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include session cookies for authentication
         body: JSON.stringify({
           ...formData,
           shippingPaymentMethod: needsPayment ? 'manual_coordination' : 'none',
@@ -262,9 +263,8 @@ export default function CheckoutPage() {
             {needsPayment && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <h3 className="font-semibold text-blue-900 mb-2">Payment Coordination</h3>
-                <p className="text-sm text-blue-800">
-                  You will receive an email from <strong>newstepsfit@gmail.com</strong> within 24 hours 
-                  with instructions to coordinate your $5 shipping payment.
+                  <p className="text-sm text-blue-800">
+                  We'll email you within 24 hours to confirm details.
                 </p>
               </div>
             )}
@@ -325,7 +325,7 @@ export default function CheckoutPage() {
                   </div>
                   <button
                     onClick={() => removeItem(item.id, item.size)}
-                    className="text-red-500 hover:text-red-700 p-1"
+                    className="text-red-500 hover:text-red-500 p-1"
                     title="Remove item"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -392,7 +392,7 @@ export default function CheckoutPage() {
 
             {formError && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <p className="text-red-800 text-sm">{formError}</p>
+                <p className="text-red-500 text-sm">{formError}</p>
               </div>
             )}
 

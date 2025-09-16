@@ -6,13 +6,13 @@ import { ensureDbConnected } from '@/lib/db-utils';
 import MoneyDonation from '@/models/MoneyDonation';
 import { SessionUser } from '@/types/user';
 import User from '@/models/user';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, sendCustomEmail } from '@/lib/email';
 import { generateDonationId, generateMoneyDonationReferenceNumber } from '@/lib/utils';
 import { MoneyDonationStatus } from '@/types/common';
 
 // Define valid money donation statuses
 const MONEY_DONATION_STATUSES = {
-  SUBMIT: 'submit',
+  SUBMITTED: 'submitted',
   RECEIVED: 'received',
   PROCESSED: 'processed',
   CANCELLED: 'cancelled'
@@ -139,7 +139,7 @@ export async function PATCH(request: NextRequest) {
     }
     
     // Validate status
-    const validStatuses = ['submit', 'received', 'processed', 'cancelled'];
+    const validStatuses = ['submitted', 'received', 'processed', 'cancelled'];
     if (status && !validStatuses.includes(status)) {
       return NextResponse.json(
         { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
@@ -158,6 +158,9 @@ export async function PATCH(request: NextRequest) {
     }
     
     console.log('[PATCH] Found money donation:', donation._id.toString(), 'current status:', donation.status);
+    
+    // Store the original status for email comparison
+    const originalStatus = donation.status;
 
     // Prepare update data
     const updateData: any = {
@@ -229,6 +232,89 @@ export async function PATCH(request: NextRequest) {
       
       console.log('[PATCH] Money donation updated successfully. New status:', updatedDonation.status);
       
+      // Send email notification to donor if email exists and status changed
+      if (updatedDonation.email && status && originalStatus !== status) {
+        try {
+          const donorName = updatedDonation.name || `${updatedDonation.firstName} ${updatedDonation.lastName}`.trim();
+          let subject = '';
+          let content = '';
+
+          switch (status) {
+            case 'received':
+              subject = 'Your donation has been received - New Steps Project';
+              content = `
+                <h2>Donation Received</h2>
+                <p>Dear ${donorName},</p>
+                <p>We have received your generous monetary donation. Thank you for supporting the New Steps Project!</p>
+                
+                <h3>Donation Details:</h3>
+                <p><strong>Donation ID:</strong> ${updatedDonation.donationId}</p>
+                <p><strong>Amount:</strong> $${updatedDonation.amount.toFixed(2)}</p>
+                ${updatedDonation.checkNumber ? `<p><strong>Check Number:</strong> ${updatedDonation.checkNumber}</p>` : ''}
+                <p><strong>Status:</strong> Received</p>
+                
+                <p>Your donation is now being processed and will help young athletes in need get the sports shoes they require.</p>
+                
+                <p>Best regards,<br>The New Steps Project Team</p>
+              `;
+              break;
+              
+            case 'processed':
+              subject = 'Thank you - your donation has been processed - New Steps Project';
+              content = `
+                <h2>Donation Processed</h2>
+                <p>Dear ${donorName},</p>
+                <p>Your monetary donation has been successfully processed. Thank you for your generous contribution to the New Steps Project!</p>
+                
+                <h3>Donation Details:</h3>
+                <p><strong>Donation ID:</strong> ${updatedDonation.donationId}</p>
+                <p><strong>Amount:</strong> $${updatedDonation.amount.toFixed(2)}</p>
+                ${updatedDonation.checkNumber ? `<p><strong>Check Number:</strong> ${updatedDonation.checkNumber}</p>` : ''}
+                <p><strong>Status:</strong> Processed</p>
+                ${updatedDonation.receiptDate ? `<p><strong>Processed Date:</strong> ${new Date(updatedDonation.receiptDate).toLocaleDateString()}</p>` : ''}
+                
+                <p>Your donation is now helping young athletes in need get the sports shoes they require. Thank you for making a difference in their lives!</p>
+                
+                <p>If you need a receipt for tax purposes, please contact us at newstepsfit@gmail.com.</p>
+                
+                <p>Best regards,<br>The New Steps Project Team</p>
+              `;
+              break;
+              
+            case 'cancelled':
+              subject = 'Update on your donation - New Steps Project';
+              content = `
+                <h2>Donation Update</h2>
+                <p>Dear ${donorName},</p>
+                <p>We regret to inform you that your monetary donation could not be processed at this time.</p>
+                
+                <h3>Donation Details:</h3>
+                <p><strong>Donation ID:</strong> ${updatedDonation.donationId}</p>
+                <p><strong>Amount:</strong> $${updatedDonation.amount.toFixed(2)}</p>
+                ${updatedDonation.checkNumber ? `<p><strong>Check Number:</strong> ${updatedDonation.checkNumber}</p>` : ''}
+                <p><strong>Status:</strong> Cancelled</p>
+                
+                ${notes ? `<p><strong>Reason:</strong> ${notes}</p>` : ''}
+                
+                <p>If you have any questions about this update, please feel free to contact us at newstepsfit@gmail.com.</p>
+                
+                <p>Thank you for your understanding and continued support.</p>
+                
+                <p>Best regards,<br>The New Steps Project Team</p>
+              `;
+              break;
+          }
+
+          if (subject && content) {
+            await sendCustomEmail(updatedDonation.email, subject, content);
+            console.log(`[EMAIL] Sent ${status} notification to ${updatedDonation.email} for donation ${donationId}`);
+          }
+        } catch (emailError) {
+          console.error('[EMAIL] Failed to send money donation status notification:', emailError);
+          // Don't fail the status update if email fails
+        }
+      }
+      
       return NextResponse.json({
         success: true,
         message: 'Money donation status updated successfully',
@@ -278,7 +364,7 @@ export async function POST(request: NextRequest) {
     const { donorInfo, amount, checkNumber, notes, isOffline, status, createdBy } = data;
     
     // Validate status
-    const validStatuses = ['submit', 'received', 'processed', 'cancelled'];
+    const validStatuses = ['submitted', 'received', 'processed', 'cancelled'];
     const donationStatus = status && validStatuses.includes(status) ? status : 'processed';
     
     console.log(`[Admin Money Donation API] Creating donation with status: ${donationStatus}`);

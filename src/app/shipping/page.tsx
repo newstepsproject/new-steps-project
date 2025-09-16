@@ -30,7 +30,7 @@ export default function ShippingPage() {
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-gray-900 mb-2">Bay Area Residents (Free)</h3>
+                  <h3 className="font-medium text-gray-900 mb-2">Free Bay Area Pickup</h3>
                   <p className="text-gray-600 text-sm">
                     Free pickup or drop-off available throughout the San Francisco Bay Area. 
                     We'll coordinate convenient pickup locations or arrange delivery.
@@ -38,10 +38,10 @@ export default function ShippingPage() {
                 </div>
                 
                 <div>
-                  <h3 className="font-medium text-gray-900 mb-2">Outside Bay Area ($5 Shipping)</h3>
+                  <h3 className="font-medium text-gray-900 mb-2">Flat Shipping Elsewhere</h3>
                   <p className="text-gray-600 text-sm">
-                    $5 shipping fee to help cover packaging and delivery costs. 
-                    Payment processed securely through PayPal or Venmo.
+                    Flat shipping may apply to help cover packaging and delivery costs. 
+                    We'll coordinate payment details with you.
                   </p>
                 </div>
                 

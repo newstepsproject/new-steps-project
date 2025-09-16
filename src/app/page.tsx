@@ -6,8 +6,8 @@ import { getAppSettings, getActiveSocialPlatforms } from '@/lib/settings';
 import { Instagram, Twitter, Facebook, Youtube, Linkedin, Globe } from 'lucide-react';
 
 export const metadata = {
-  title: 'Give New Life to Old Kicks | Donate & Request Sports Shoes',
-  description: 'Connect donated sports shoes with young athletes in need. Donate your gently used athletic footwear or request quality sports shoes at no cost. Join our mission to make sports accessible for everyone.',
+  title: 'Give New Life to Old Kicks | Donate & Request Free Sports Shoes',
+  description: 'Connect donated sports shoes with young athletes in need. Donate your gently used athletic footwear or request quality sports shoes completely free. Join our mission to make sports accessible for everyone.',
   keywords: 'donate sports shoes, free athletic shoes, youth athletes, sports equipment donation, community sports support',
   openGraph: {
     title: 'New Steps Project | Give New Life to Old Kicks',
@@ -103,9 +103,8 @@ export default async function Home() {
                 Give New Life<br />
                 to Old Kicks
               </h1>
-              <p className="text-base md:text-lg text-gpt-text/80 mb-6 max-w-lg mx-auto lg:mx-0 font-body">
-                Your cherished sports shoes can continue their journey 
-                with young athletes who need them, returning to the courts, fields, and tracks where they belong.
+              <p className="text-base md:text-xl text-gpt-text/80 mb-6 max-w-lg mx-auto lg:mx-0 font-body leading-relaxed">
+                Your shoes can get back on the courts, fields, and tracks — helping young athletes today.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <Button asChild size="lg" className="bg-gpt-primary hover:bg-gpt-primary/90 text-white rounded-full px-6 py-3 font-semibold transition-all duration-300 transform hover:scale-105">
@@ -115,7 +114,7 @@ export default async function Home() {
                 </Button>
                 <Button asChild variant="outline" size="lg" className="border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white rounded-full px-6 py-3 font-semibold transition-all duration-300">
                   <Link href="/shoes">
-                    Find Your Perfect Pair <ShoppingBag className="ml-2 h-4 w-4" />
+                    Get Free Shoes <ShoppingBag className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
@@ -151,9 +150,8 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gpt-text font-display">How It Works</h2>
-            <p className="text-gpt-text/70 max-w-2xl mx-auto font-body">
-              Your beloved sports shoes deserve to keep playing! Connect your cherished kicks with young athletes
-              who will give them new life on the fields, courts, and tracks. Every pair has more games to play.
+            <p className="text-gpt-text/70 max-w-2xl mx-auto font-body leading-relaxed">
+              It's simple and impactful. Donate or get shoes in a few steps.
             </p>
           </div>
 
@@ -178,10 +176,9 @@ export default async function Home() {
               <div className="w-16 h-16 rounded-full bg-gpt-highlight/10 text-gpt-highlight flex items-center justify-center mx-auto mb-4">
                 <ShoppingBag className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Request Shoes</h3>
-              <p className="text-gpt-text/70 font-body">
-                Find quality sports shoes that fit your needs. Browse our collection of donated athletic footwear 
-                and request what you need - completely free with affordable shipping options.
+              <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Get Free Shoes</h3>
+              <p className="text-gpt-text/70 font-body leading-relaxed">
+                Browse quality donated shoes and get what you need — completely free.
               </p>
               <Link href="/shoes" className="text-gpt-highlight font-semibold inline-flex items-center mt-4 hover:text-gpt-highlight/80 transition-colors">
                 Browse shoes <ArrowRight className="ml-1 h-4 w-4" />

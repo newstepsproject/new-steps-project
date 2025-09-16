@@ -46,7 +46,7 @@ export const config = {
     '/api/user/:path*',
     '/api/orders/:path*',
     '/admin/:path*',  // Add admin routes to middleware
-    '/api/admin/:path*',  // Add admin API routes to middleware
+    '/api/admin/:path*',  // Add admin API routes to middleware (re-enabled)
     '/login',  // Add login route for cache control
     '/api/auth/:path*',  // Add auth routes for cache control
     // Note: /api/donations removed to allow public shoe donations without authentication

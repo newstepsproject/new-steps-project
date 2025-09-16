@@ -296,10 +296,9 @@ export default function ShoeDetailPage({ params }: { params: Promise<{ id: strin
               <div className="mt-8">
                 <div className="bg-gray-50 p-4 rounded-lg mb-4 flex items-start">
                   <Info className="h-5 w-5 text-brand mr-3 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">
-                    Shoes are available at no cost. You may need to pay for shipping 
-                    if you're outside the Bay Area. Please create an account or sign in
-                    to request this item.
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    These shoes are completely free. If you're outside the Bay Area, shipping may apply. 
+                    Please create an account or sign in to get this item.
                   </p>
                 </div>
                 
@@ -330,7 +329,7 @@ export default function ShoeDetailPage({ params }: { params: Promise<{ id: strin
                     ? 'Added to Cart' 
                     : !canAddMore 
                       ? 'Cart Limit Reached' 
-                      : 'Request These Shoes'}
+                      : 'Get These Free Shoes'}
                 </Button>
               </div>
             </div>
@@ -376,17 +375,17 @@ export default function ShoeDetailPage({ params }: { params: Promise<{ id: strin
                   <ImageIcon className="h-8 w-8 text-brand flex-shrink-0" />
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Shipping Information</h3>
-                    <p className="text-gray-700 mb-4">
-                      We ship throughout the United States. There is a flat shipping fee per order. 
+                    <p className="text-gray-700 mb-4 leading-relaxed">
+                      We ship throughout the United States. Flat shipping may apply outside the Bay Area. 
                       If you're in the San Francisco Bay Area, you may qualify for free pickup from
                       our San Ramon location.
                     </p>
                     
                     <h4 className="font-medium mb-2">Shipping Timeline:</h4>
                     <ul className="space-y-2 text-gray-700">
-                      <li>Order processing: 1-2 business days</li>
-                      <li>Standard shipping: 3-5 business days</li>
-                      <li>Bay Area pickup: Available within 24 hours of confirmation</li>
+                      <li>Processing: 1–2 days</li>
+                      <li>Shipping: 3–5 days</li>
+                      <li>Bay Area pickup: within 24 hours</li>
                     </ul>
                   </div>
                 </div>

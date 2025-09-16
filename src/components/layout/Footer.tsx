@@ -90,7 +90,7 @@ const Footer = async () => {
               <Link href="/" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">Home</Link>
               <Link href="/about" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">About Us</Link>
               <Link href="/donate" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">Donate Shoes</Link>
-              <Link href="/shoes" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">Request Shoes</Link>
+              <Link href="/shoes" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">Get Free Shoes</Link>
               <Link href="/get-involved" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">Get Involved</Link>
               <Link href="/contact" className="text-gray-300 hover:text-white transition-colors hover:translate-x-1 inline-block duration-200">Contact</Link>
             </nav>

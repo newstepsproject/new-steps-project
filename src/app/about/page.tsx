@@ -188,10 +188,10 @@ export default async function AboutPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-white hover:bg-gray-100 text-brand hover:text-brand-600 border-white shadow-soft">
-              <Link href="/donate">Donate Shoes</Link>
+              <Link href="/donate">Send Your Shoes Back to Action</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="border-white hover:bg-white/10 shadow-soft">
-              <Link href="/get-involved">Volunteer With Us</Link>
+              <Link href="/get-involved">Get Involved</Link>
             </Button>
           </div>
         </div>

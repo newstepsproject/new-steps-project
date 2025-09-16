@@ -422,6 +422,86 @@ export async function PATCH(request: NextRequest) {
       
       console.log('[PATCH] Donation updated successfully');
       
+      // Send email notification to donor if email exists and status changed
+      if (updatedDonation.donorInfo?.email && status && donation.status !== status) {
+        try {
+          const donorName = updatedDonation.donorInfo.name || 
+                           `${updatedDonation.donorInfo.firstName} ${updatedDonation.donorInfo.lastName}`.trim() ||
+                           'Donor';
+          let subject = '';
+          let content = '';
+
+          switch (status) {
+            case 'received':
+              subject = 'Your shoe donation has been received - New Steps Project';
+              content = `
+                <h2>Donation Received</h2>
+                <p>Dear ${donorName},</p>
+                <p>We have received your generous shoe donation. Thank you for supporting the New Steps Project!</p>
+
+                <h3>Donation Details:</h3>
+                <p><strong>Donation ID:</strong> ${updatedDonation.donationId}</p>
+                <p><strong>Number of Shoes:</strong> ${updatedDonation.numberOfShoes || 'Not specified'}</p>
+                <p><strong>Status:</strong> Received</p>
+
+                <p>Your donation is now being processed and will help young athletes in need get the sports shoes they require.</p>
+
+                <p>Best regards,<br>The New Steps Project Team</p>
+              `;
+              break;
+
+            case 'processed':
+              subject = 'Thank you - your shoe donation has been processed - New Steps Project';
+              content = `
+                <h2>Donation Processed</h2>
+                <p>Dear ${donorName},</p>
+                <p>Your shoe donation has been successfully processed and added to our inventory. Thank you for your generous contribution to the New Steps Project!</p>
+
+                <h3>Donation Details:</h3>
+                <p><strong>Donation ID:</strong> ${updatedDonation.donationId}</p>
+                <p><strong>Number of Shoes:</strong> ${updatedDonation.numberOfShoes || 'Not specified'}</p>
+                <p><strong>Status:</strong> Processed</p>
+                ${updatedDonation.processingDate ? `<p><strong>Processed Date:</strong> ${new Date(updatedDonation.processingDate).toLocaleDateString()}</p>` : ''}
+
+                <p>Your donated shoes are now available to help young athletes in need. Thank you for making a difference in their lives!</p>
+
+                <p>Best regards,<br>The New Steps Project Team</p>
+              `;
+              break;
+
+            case 'cancelled':
+              subject = 'Update on your shoe donation - New Steps Project';
+              content = `
+                <h2>Donation Update</h2>
+                <p>Dear ${donorName},</p>
+                <p>We regret to inform you that your shoe donation could not be processed at this time.</p>
+
+                <h3>Donation Details:</h3>
+                <p><strong>Donation ID:</strong> ${updatedDonation.donationId}</p>
+                <p><strong>Number of Shoes:</strong> ${updatedDonation.numberOfShoes || 'Not specified'}</p>
+                <p><strong>Status:</strong> Cancelled</p>
+
+                ${note ? `<p><strong>Reason:</strong> ${note}</p>` : ''}
+
+                <p>If you have any questions about this update, please feel free to contact us at newstepsfit@gmail.com.</p>
+
+                <p>Thank you for your understanding and continued support.</p>
+
+                <p>Best regards,<br>The New Steps Project Team</p>
+              `;
+              break;
+          }
+
+          if (subject && content) {
+            const { sendCustomEmail } = await import('@/lib/email');
+            await sendCustomEmail(updatedDonation.donorInfo.email, subject, content);
+            console.log(`[EMAIL] Sent ${status} notification to ${updatedDonation.donorInfo.email} for donation ${updatedDonation.donationId}`);
+          }
+        } catch (emailError) {
+          console.error('[EMAIL] Failed to send shoe donation status notification:', emailError);
+        }
+      }
+      
       return NextResponse.json({
         success: true,
         message: 'Donation updated successfully',

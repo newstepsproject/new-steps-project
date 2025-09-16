@@ -700,7 +700,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     name="brand"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Brand</FormLabel>
+                        <FormLabel>Brand <span className="text-red-500">*</span></FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -726,7 +726,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     name="modelName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Model Name</FormLabel>
+                        <FormLabel>Model Name <span className="text-red-500">*</span></FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="e.g., Air Max 90" className="h-12" />
                         </FormControl>
@@ -770,7 +770,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     name="size"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Size</FormLabel>
+                        <FormLabel>Size <span className="text-red-500">*</span></FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="e.g., 10.5" className="h-12" />
                         </FormControl>
@@ -784,7 +784,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     name="color"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Color</FormLabel>
+                        <FormLabel>Color <span className="text-red-500">*</span></FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="e.g., Black/White" className="h-12" />
                         </FormControl>
@@ -798,7 +798,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     name="sport"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Sport</FormLabel>
+                        <FormLabel>Sport <span className="text-red-500">*</span></FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -826,7 +826,7 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                     name="condition"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Condition</FormLabel>
+                        <FormLabel>Condition <span className="text-red-500">*</span></FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -838,8 +838,8 @@ export function UnifiedShoeForm({ onSubmit }: UnifiedShoeFormProps) {
                           </FormControl>
                           <SelectContent>
                             {Object.entries(SHOE_CONDITIONS).map(([key, condition]) => (
-                              <SelectItem key={key} value={key}>
-                                {condition}
+                              <SelectItem key={key} value={condition}>
+                                {condition.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                               </SelectItem>
                             ))}
                           </SelectContent>

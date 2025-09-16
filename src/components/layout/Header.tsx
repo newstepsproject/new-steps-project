@@ -63,7 +63,7 @@ const Header = () => {
     { href: '/', label: 'Home', activeOn: ['/'] },
     { href: '/about', label: 'About Us', activeOn: ['/about'] },
     { href: '/donate', label: 'Donate Shoes', activeOn: ['/donate', '/donate/shoes'] },
-    { href: '/shoes', label: 'Request Shoes', activeOn: ['/shoes', '/shoes/[id]'] },
+    { href: '/shoes', label: 'Get Free Shoes', activeOn: ['/shoes', '/shoes/[id]'] },
     { href: '/get-involved', label: 'Get Involved', activeOn: ['/get-involved'] },
     { href: '/contact', label: 'Contact', activeOn: ['/contact'] },
   ];
@@ -143,7 +143,7 @@ const Header = () => {
                           Admin Dashboard
                         </Link>
                       )}
-                      <Link href="/api/auth/signout" className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                      <Link href="/auth/signout" className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
                         Sign out
                       </Link>
                     </div>

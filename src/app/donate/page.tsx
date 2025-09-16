@@ -194,10 +194,9 @@ export default function DonateShoesPage() {
             
             <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Condition Guidelines</h3>
-              <p className="text-gray-700">
-                We accept shoes in "Fair" to "Like New" condition. Shoes that are useful are good enough - they should be clean, 
-                have functional soles, and show reasonable wear. If you're unsure about your 
-                shoes' condition, feel free to submit the donation form and we'll help assess.
+              <p className="text-gray-700 leading-relaxed">
+                If they're clean with solid soles and reasonable wear, they're perfect. 
+                If you're unsure about your shoes' condition, feel free to submit the donation form and we'll help assess.
               </p>
             </div>
           </div>
@@ -214,7 +213,7 @@ export default function DonateShoesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="outline" className="bg-white hover:bg-gray-100 text-brand border-white" asChild>
-              <Link href="/donate/shoes">Donate Shoes Now</Link>
+              <Link href="/donate/shoes">Send Your Shoes Back to Action</Link>
             </Button>
             <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-brand transition-colors" asChild>
               <Link href="/get-involved">Other Ways to Help</Link>

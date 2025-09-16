@@ -480,8 +480,8 @@ function DonationFormContent() {
                 
                 {Object.keys(errors).length > 0 && (
                   <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <h4 className="text-red-800 font-medium mb-2">Please fix the following errors:</h4>
-                    <ul className="list-disc list-inside text-red-700">
+                    <h4 className="text-red-500 font-medium mb-2">Please fix the following errors:</h4>
+                    <ul className="list-disc list-inside text-red-500">
                       {Object.entries(errors).map(([field, error]) => {
                         if (field === 'root') {
                           return (

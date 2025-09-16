@@ -189,10 +189,10 @@ export default function ShoesPage() {
       {/* Hero Section */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-brand-50 to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Find Shoes Ready to Return to Action</h1>
-          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-6">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Get Free Sports Shoes Ready to Play Again</h1>
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-6 leading-relaxed">
             Browse quality sports shoes from fellow athletes who want their beloved kicks to continue playing.
-            From basketball to running shoes - find your perfect pair and make them yours completely free.
+            From basketball to running shoes — find your perfect pair and get them <span className="font-semibold text-green-600">completely free</span>.
           </p>
           <div className="relative max-w-md mx-auto">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -200,7 +200,7 @@ export default function ShoesPage() {
             </div>
             <Input
               type="text"
-              placeholder="Search by ID, name, brand, or sport..."
+              placeholder="Search free shoes by ID, brand, sport, size…"
               className="pl-10 pr-16"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -320,6 +320,12 @@ export default function ShoesPage() {
                               alt={`${shoe.brand} ${shoe.modelName}`}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
+                            {/* Free Badge */}
+                            <div className="absolute top-2 left-2 z-10">
+                              <div className="bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm">
+                                Free
+                              </div>
+                            </div>
                             {/* Prominent Shoe ID Badge */}
                             <div className="absolute top-2 right-2 z-10">
                               <div className="bg-brand text-white px-2 py-1 rounded text-xs font-mono font-bold">

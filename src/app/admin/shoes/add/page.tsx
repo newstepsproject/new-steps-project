@@ -13,13 +13,31 @@ export default function AddShoesPage() {
 
   const handleSubmit = async (formData: any, submittedShoes: any[]) => {
     try {
-      // Call the shoe donations API
-      const response = await fetch('/api/admin/shoe-donations', {
+      // Extract shoe data from the form data structure
+      const shoeData = formData.shoes && formData.shoes[0] ? formData.shoes[0] : {
+        brand: formData.brand,
+        modelName: formData.modelName,
+        gender: formData.gender,
+        size: formData.size,
+        color: formData.color,
+        sport: formData.sport,
+        condition: formData.condition,
+        description: formData.description || formData.notes || '',
+        inventoryCount: formData.inventoryCount || formData.quantity || 1,
+        inventoryNotes: formData.inventoryNotes || '',
+        images: formData.images || [],
+        status: formData.status || 'available'
+      };
+
+      console.log('Sending shoe data to API:', JSON.stringify(shoeData, null, 2));
+
+      // Call the admin shoes API directly for inventory addition
+      const response = await fetch('/api/admin/shoes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(shoeData),
         credentials: 'include',
       });
 
@@ -31,8 +49,11 @@ export default function AddShoesPage() {
       const result = await response.json();
       console.log('API result:', result);
       
-      // Return the result for the form to display
-      return result;
+      // Return the result in the format expected by UnifiedShoeForm
+      return {
+        success: true,
+        shoes: result.shoe ? [result.shoe] : []
+      };
     } catch (error) {
       console.error('Error adding shoe:', error);
       toast({
