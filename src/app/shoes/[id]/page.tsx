@@ -84,7 +84,7 @@ export default function ShoeDetailPage({ params }: { params: Promise<{ id: strin
       sport: shoe.sport,
       condition: shoe.condition,
       gender: shoe.gender ?? 'unisex',
-      image: shoe.images[0] || '/images/placeholder-shoe.jpg',
+      image: shoe.images[0] || '/images/shoes/placeholder-shoe.jpg',
       quantity: 1,
       price: 0, // Shoes are free
       notes: ''
@@ -167,7 +167,7 @@ export default function ShoeDetailPage({ params }: { params: Promise<{ id: strin
             <div className="bg-white p-2 sm:p-4 rounded-lg shadow-sm mb-4">
               <div className="relative aspect-square overflow-hidden rounded-md">
                 <img
-                  src={shoe.images?.[activeImage] || '/images/placeholder-shoe.jpg'}
+                  src={shoe.images?.[activeImage] || '/images/shoes/placeholder-shoe.jpg'}
                   alt={shoe.modelName}
                   className="w-full h-full object-cover"
                 />
@@ -404,7 +404,7 @@ export default function ShoeDetailPage({ params }: { params: Promise<{ id: strin
                   <Link href={`/shoes/${relatedShoe._id}`} className="block">
                     <div className="relative aspect-square">
                       <img
-                        src={relatedShoe.images?.[0] || '/images/placeholder-shoe.jpg'}
+                        src={relatedShoe.images?.[0] || '/images/shoes/placeholder-shoe.jpg'}
                         alt={relatedShoe.modelName || 'Shoe'}
                         className="w-full h-full object-cover"
                       />

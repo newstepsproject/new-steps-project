@@ -16,12 +16,22 @@ const UPLOAD_LIMITS = {
  */
 export async function POST(req: NextRequest) {
   try {
+    console.log('🔄 Upload API called');
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const folder = formData.get('folder') as string || 'shoes'; // Changed from 'general' to 'shoes'
 
+    console.log('📋 Upload request details:', {
+      hasFile: !!file,
+      fileName: file?.name,
+      fileSize: file?.size,
+      fileType: file?.type,
+      folder: folder
+    });
+
     // Validate file exists
     if (!file) {
+      console.error('❌ No file provided');
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
@@ -31,6 +41,7 @@ export async function POST(req: NextRequest) {
     // Validate file size
     if (file.size > UPLOAD_LIMITS.maxFileSize) {
       const maxMB = UPLOAD_LIMITS.maxFileSize / (1024 * 1024);
+      console.error(`❌ File too large: ${file.size} bytes > ${UPLOAD_LIMITS.maxFileSize} bytes`);
       return NextResponse.json(
         { error: `File too large. Maximum size is ${maxMB}MB` },
         { status: 400 }
@@ -39,11 +50,14 @@ export async function POST(req: NextRequest) {
 
     // Validate file type
     if (!UPLOAD_LIMITS.allowedTypes.includes(file.type)) {
+      console.error(`❌ Invalid file type: ${file.type}. Allowed: ${UPLOAD_LIMITS.allowedTypes.join(', ')}`);
       return NextResponse.json(
         { error: `Invalid file type. Allowed types: ${UPLOAD_LIMITS.allowedTypes.join(', ')}` },
         { status: 400 }
       );
     }
+
+    console.log('✅ File validation passed');
 
     // Generate unique filename with environment prefix to prevent dev/prod collisions
     const timestamp = Date.now();
@@ -59,40 +73,60 @@ export async function POST(req: NextRequest) {
     const storageProvider = (process.env.STORAGE_PROVIDER || 'local').toLowerCase();
 
     if (storageProvider === 's3') {
+      console.log('📤 Attempting S3 upload...');
       // Upload to S3
       const region = process.env.S3_REGION || '';
       const bucket = process.env.S3_BUCKET || '';
       const prefix = process.env.S3_PREFIX || '';
       const publicBase = process.env.S3_PUBLIC_URL || '';
 
+      console.log('🔧 S3 Configuration:', {
+        region,
+        bucket,
+        prefix,
+        publicBase: publicBase ? 'configured' : 'missing'
+      });
+
       if (!region || !bucket) {
-        console.warn('S3 configuration missing, falling back to local storage');
+        console.warn('❌ S3 configuration missing, falling back to local storage');
       } else {
-        const key = [prefix, folder, filename].filter(Boolean).join('/');
-        const s3 = new S3Client({ region });
-        const putCmd = new PutObjectCommand({
-          Bucket: bucket,
-          Key: key,
-          Body: buffer,
-          ContentType: file.type
-          // ACL removed - bucket uses bucket policy for public access
-        });
-        await s3.send(putCmd);
+        try {
+          const key = [prefix, folder, filename].filter(Boolean).join('/');
+          console.log(`📁 S3 Key: ${key}`);
+          
+          const s3 = new S3Client({ region });
+          const putCmd = new PutObjectCommand({
+            Bucket: bucket,
+            Key: key,
+            Body: buffer,
+            ContentType: file.type
+            // ACL removed - bucket uses bucket policy for public access
+          });
+          
+          console.log('⬆️ Sending to S3...');
+          await s3.send(putCmd);
+          console.log('✅ S3 upload successful');
 
-        // Prefer CloudFront/public URL if provided
-        const url = publicBase
-          ? `${publicBase.replace(/\/$/, '')}/${[folder, filename].join('/')}`
-          : `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+          // Prefer CloudFront/public URL if provided
+          const url = publicBase
+            ? `${publicBase.replace(/\/$/, '')}/${[folder, filename].join('/')}`
+            : `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 
-        return NextResponse.json({
-          success: true,
-          url,
-          filename,
-          size: file.size,
-          type: file.type,
-          message: 'Image uploaded successfully to S3',
-          provider: 's3'
-        });
+          console.log(`🌐 Generated URL: ${url}`);
+
+          return NextResponse.json({
+            success: true,
+            url,
+            filename,
+            size: file.size,
+            type: file.type,
+            message: 'Image uploaded successfully to S3',
+            provider: 's3'
+          });
+        } catch (s3Error) {
+          console.error('❌ S3 upload failed:', s3Error);
+          throw s3Error; // This will be caught by the outer try-catch
+        }
       }
     }
 

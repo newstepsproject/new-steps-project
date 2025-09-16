@@ -316,7 +316,7 @@ export default function ShoesPage() {
                         <Link href={`/shoes/${shoe._id}`}>
                           <div className="relative aspect-square">
                             <img
-                              src={shoe.images?.[0] || '/images/placeholder-shoe.jpg'}
+                              src={shoe.images?.[0] || '/images/shoes/placeholder-shoe.jpg'}
                               alt={`${shoe.brand} ${shoe.modelName}`}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
@@ -373,7 +373,7 @@ export default function ShoesPage() {
                                     sport: shoe.sport,
                                     condition: shoe.condition,
                                     gender: shoe.gender ?? 'unisex',
-                                    image: shoe.images[0] || '/images/placeholder-shoe.jpg',
+                                    image: shoe.images[0] || '/images/shoes/placeholder-shoe.jpg',
                                     quantity: 1,
                                     notes: ''
                                   });
