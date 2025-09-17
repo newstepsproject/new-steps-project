@@ -5,6 +5,9 @@ import { Check } from 'lucide-react';
 import { getAppSettings, getActiveProjectOfficers, getOurStoryTimeline } from '@/lib/settings';
 import { ResponsiveImage } from '@/components/ui/responsive-image';
 
+// Force dynamic rendering to ensure settings are fetched at runtime
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'About Us | Our Mission to Connect Athletes with Sports Shoes',
   description: 'Discover how New Steps Project started and our mission to make sports accessible for everyone by connecting donated athletic footwear with young athletes in need. Meet our team and learn our story.',

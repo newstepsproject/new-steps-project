@@ -140,15 +140,15 @@ let lastCacheCleared = 0; // Global cache clear timestamp
  * Returns cached settings if available and not expired
  */
 export async function getAppSettings(): Promise<AppSettings> {
-  // TEMPORARY: Disable cache completely to debug production issue
-  console.log('🔍 [DEBUG] getAppSettings called, cache disabled for debugging');
-  
   // Return cached settings if valid and not cleared
-  // if (settingsCache && 
-  //     Date.now() < settingsCache.expiry && 
-  //     settingsCache.lastCleared >= lastCacheCleared) {
-  //   return settingsCache.data;
-  // }
+  if (settingsCache && 
+      Date.now() < settingsCache.expiry && 
+      settingsCache.lastCleared >= lastCacheCleared) {
+    console.log('🔍 [CACHE] Returning cached settings');
+    return settingsCache.data;
+  }
+
+  console.log('🔍 [CACHE] Fetching fresh settings from database');
 
   try {
     await connectToDatabase();
