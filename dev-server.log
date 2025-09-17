@@ -53,3 +53,125 @@ Using existing database connection
 🔍 [DEBUG] ourStory from DB: 4
 🔍 [DEBUG] Final settings ourStory length: 4
  GET /api/settings 200 in 281ms
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/api/health/[__metadata_id__]/route/app-paths-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/api/health/[__metadata_id__]/route/app-paths-manifest.json'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1223ms
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.31m1rjx52b4'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.31m1rjx52b4'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/api/health/[__metadata_id__]/route/app-paths-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/api/health/[__metadata_id__]/route/app-paths-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.kj84yfxzjue'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.kj84yfxzjue'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.7f9ye8ooeje'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.7f9ye8ooeje'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/page/app-build-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/page/app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.eys4ejvp5nv'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.eys4ejvp5nv'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/page/app-build-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/page/app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.jy4y3244uk'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.jy4y3244uk'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.flgowgpcvac'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.flgowgpcvac'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/about/page/app-build-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/about/page/app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.05u6ugxklob9'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.05u6ugxklob9'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/about/page/app-build-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/about/page/app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.4m8k5xxk8sc'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.4m8k5xxk8sc'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.dz3t8qh8wiu'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.dz3t8qh8wiu'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/shoes/page/app-build-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/shoes/page/app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.9t89zv18s1q'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.9t89zv18s1q'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/shoes/page/app-build-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/shoes/page/app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.h7zhw2dtabo'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.h7zhw2dtabo'
+}
+[Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.a8v0v9ueaoc'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.a8v0v9ueaoc'
+}
