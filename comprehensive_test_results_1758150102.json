@@ -1,0 +1,178 @@
+{
+  "timestamp": "2025-09-17T16:01:33.199140",
+  "base_url": "http://localhost:3000",
+  "total_tests": 19,
+  "passed_tests": 14,
+  "failed_tests": 5,
+  "test_details": [
+    {
+      "test_name": "User Registration",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User registered successfully: testuser_1758150093@example.com",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:34.968434"
+    },
+    {
+      "test_name": "User Login",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User logged in successfully: testuser_1758150093@example.com",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:35.210448"
+    },
+    {
+      "test_name": "Admin Login",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Admin logged in successfully",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:35.706325"
+    },
+    {
+      "test_name": "Protected Endpoint: User Requests List",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly protected (401 Unauthorized)",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:35.765252"
+    },
+    {
+      "test_name": "Protected Endpoint: User Donations List",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly protected (401 Unauthorized)",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:35.814715"
+    },
+    {
+      "test_name": "Protected Endpoint: User Volunteer Applications",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly protected (401 Unauthorized)",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:35.853825"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Shoes Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T16:01:35.989562"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Requests Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T16:01:36.112183"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Donations Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T16:01:36.268915"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Users Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T16:01:36.391275"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Settings Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T16:01:36.522637"
+    },
+    {
+      "test_name": "Shoe Request Workflow - Get Shoes",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Found 3 available shoes",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:36.656360"
+    },
+    {
+      "test_name": "Shoe Request Workflow - Create Request",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly requires authentication (401)",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:36.715251"
+    },
+    {
+      "test_name": "Donation Workflow",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Donation created: Unknown ID",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:38.198458"
+    },
+    {
+      "test_name": "Volunteer Application Workflow",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Volunteer application submitted successfully",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:39.586270"
+    },
+    {
+      "test_name": "Contact Form Workflow",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Contact form submitted successfully",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:42.586786"
+    },
+    {
+      "test_name": "Account Page - Session Check",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Session Check accessible",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:42.647996"
+    },
+    {
+      "test_name": "Account Page - User Requests",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User Requests properly protected",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:42.697080"
+    },
+    {
+      "test_name": "Account Page - User Donations",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User Donations properly protected",
+      "error": null,
+      "timestamp": "2025-09-17T16:01:42.745101"
+    }
+  ],
+  "authentication": {
+    "user_session": {
+      "user": {
+        "id": "68cb3dcdf8f1547dab3ea1d4",
+        "email": "testuser_1758150093@example.com",
+        "name": "Test User",
+        "role": "user"
+      }
+    },
+    "admin_session": {
+      "user": {
+        "id": "68ca13ea10d232be27bb1e79",
+        "email": "admin@newsteps.fit",
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "timestamp": "2025-09-17T16:01:23.597776",
+  "base_url": "--env",
+  "total_tests": 16,
+  "passed_tests": 0,
+  "failed_tests": 16,
+  "test_details": [
+    {
+      "test_name": "User Registration",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Registration request failed",
+      "error": "Invalid URL '--env/api/auth/register': No scheme supplied. Perhaps you meant https://--env/api/auth/register?",
+      "timestamp": "2025-09-17T16:01:23.598796"
+    },
+    {
+      "test_name": "User Login",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Login request failed",
+      "error": "Invalid URL '--env/api/auth/test-login': No scheme supplied. Perhaps you meant https://--env/api/auth/test-login?",
+      "timestamp": "2025-09-17T16:01:23.598918"
+    },
+    {
+      "test_name": "Admin Login",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Admin login request failed",
+      "error": "Invalid URL '--env/api/auth/test-login': No scheme supplied. Perhaps you meant https://--env/api/auth/test-login?",
+      "timestamp": "2025-09-17T16:01:23.599022"
+    },
+    {
+      "test_name": "Protected Endpoint: User Requests List",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/requests': No scheme supplied. Perhaps you meant https://--env/api/requests?",
+      "timestamp": "2025-09-17T16:01:23.599123"
+    },
+    {
+      "test_name": "Protected Endpoint: User Donations List",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/donations': No scheme supplied. Perhaps you meant https://--env/api/donations?",
+      "timestamp": "2025-09-17T16:01:23.599214"
+    },
+    {
+      "test_name": "Protected Endpoint: User Volunteer Applications",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/volunteer': No scheme supplied. Perhaps you meant https://--env/api/volunteer?",
+      "timestamp": "2025-09-17T16:01:23.599304"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Shoes Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/admin/shoes': No scheme supplied. Perhaps you meant https://--env/api/admin/shoes?",
+      "timestamp": "2025-09-17T16:01:23.599392"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Requests Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/admin/requests': No scheme supplied. Perhaps you meant https://--env/api/admin/requests?",
+      "timestamp": "2025-09-17T16:01:23.599481"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Donations Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/admin/donations': No scheme supplied. Perhaps you meant https://--env/api/admin/donations?",
+      "timestamp": "2025-09-17T16:01:23.599568"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Users Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/admin/users': No scheme supplied. Perhaps you meant https://--env/api/admin/users?",
+      "timestamp": "2025-09-17T16:01:23.599650"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Settings Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Invalid URL '--env/api/admin/settings': No scheme supplied. Perhaps you meant https://--env/api/admin/settings?",
+      "timestamp": "2025-09-17T16:01:23.599732"
+    },
+    {
+      "test_name": "Shoe Request Workflow",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Workflow test failed",
+      "error": "Invalid URL '--env/api/shoes': No scheme supplied. Perhaps you meant https://--env/api/shoes?",
+      "timestamp": "2025-09-17T16:01:23.599817"
+    },
+    {
+      "test_name": "Donation Workflow",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Donation workflow failed",
+      "error": "Invalid URL '--env/api/donations': No scheme supplied. Perhaps you meant https://--env/api/donations?",
+      "timestamp": "2025-09-17T16:01:23.599901"
+    },
+    {
+      "test_name": "Volunteer Application Workflow",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Volunteer workflow failed",
+      "error": "Invalid URL '--env/api/volunteer': No scheme supplied. Perhaps you meant https://--env/api/volunteer?",
+      "timestamp": "2025-09-17T16:01:23.599984"
+    },
+    {
+      "test_name": "Contact Form Workflow",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Contact form workflow failed",
+      "error": "Invalid URL '--env/api/contact': No scheme supplied. Perhaps you meant https://--env/api/contact?",
+      "timestamp": "2025-09-17T16:01:23.600066"
+    },
+    {
+      "test_name": "Account Page Access",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Account page test failed",
+      "error": "Invalid URL '--env/api/auth/session': No scheme supplied. Perhaps you meant https://--env/api/auth/session?",
+      "timestamp": "2025-09-17T16:01:23.600149"
+    }
+  ],
+  "authentication": {
+    "user_session": null,
+    "admin_session": null
+  }
+}

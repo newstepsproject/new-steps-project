@@ -40,15 +40,14 @@ export async function POST(request: NextRequest) {
     
     if (!user) {
       // User not logged in or not found - use provided donor information
-      donorName = data.firstName && data.lastName 
-        ? `${data.firstName} ${data.lastName}`
-        : data.name || 'Anonymous Donor';
-      
-      if (!donorName || donorName === 'Anonymous Donor') {
-        return NextResponse.json(
-          { error: 'Donor name is required for shoe donations' },
-          { status: 400 }
-        );
+      if (data.donorInfo && (data.donorInfo.firstName || data.donorInfo.lastName)) {
+        donorName = `${data.donorInfo.firstName || ''} ${data.donorInfo.lastName || ''}`.trim();
+      } else if (data.firstName && data.lastName) {
+        donorName = `${data.firstName} ${data.lastName}`;
+      } else if (data.name) {
+        donorName = data.name;
+      } else {
+        donorName = 'Anonymous Donor';
       }
       
       donationId = generateId('DON', donorName);
@@ -148,6 +147,52 @@ export async function POST(request: NextRequest) {
         error: 'Failed to submit donation', 
         details: error instanceof Error ? error.message : String(error) 
       },
+      { status: 500 }
+    );
+  }
+}
+
+// GET user's donations (requires authentication)
+export async function GET(request: NextRequest) {
+  try {
+    // Check if user is authenticated
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // Connect to database
+    await connectToDatabase();
+    
+    // Get user information
+    const user = await User.findOne({ email: session.user?.email });
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    // Fetch user's shoe donations
+    const donations = await Donation.find({
+      $or: [
+        { userId: user._id },
+        { 'donorInfo.email': user.email }
+      ]
+    }).sort({ createdAt: -1 });
+
+    return NextResponse.json({
+      success: true,
+      donations
+    });
+    
+  } catch (error) {
+    console.error('Error fetching user donations:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch donations' },
       { status: 500 }
     );
   }

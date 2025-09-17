@@ -1,0 +1,165 @@
+{
+  "timestamp": "2025-09-17T15:53:57.461956",
+  "base_url": "http://localhost:3000",
+  "total_tests": 19,
+  "passed_tests": 10,
+  "failed_tests": 9,
+  "test_details": [
+    {
+      "test_name": "User Registration",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User registered successfully: testuser_1758149637@example.com",
+      "error": null,
+      "timestamp": "2025-09-17T15:53:59.193377"
+    },
+    {
+      "test_name": "User Login",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Login failed - could not establish session",
+      "error": "Session not found after login attempt",
+      "timestamp": "2025-09-17T15:53:59.495750"
+    },
+    {
+      "test_name": "Admin Login",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Admin login failed - could not establish admin session",
+      "error": "Admin session not found after login attempt",
+      "timestamp": "2025-09-17T15:53:59.797948"
+    },
+    {
+      "test_name": "Protected Endpoint: User Requests List",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly protected (401 Unauthorized)",
+      "error": null,
+      "timestamp": "2025-09-17T15:53:59.851452"
+    },
+    {
+      "test_name": "Protected Endpoint: User Donations List",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly protected (401 Unauthorized)",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:00.109900"
+    },
+    {
+      "test_name": "Protected Endpoint: User Volunteer Applications",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly protected (401 Unauthorized)",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:00.316122"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Shoes Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T15:54:00.455059"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Requests Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T15:54:00.592567"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Donations Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T15:54:00.728700"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Users Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T15:54:00.858287"
+    },
+    {
+      "test_name": "Admin Endpoint: Admin Settings Management",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Request failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "timestamp": "2025-09-17T15:54:00.989051"
+    },
+    {
+      "test_name": "Shoe Request Workflow - Get Shoes",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Found 3 available shoes",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:01.120461"
+    },
+    {
+      "test_name": "Shoe Request Workflow - Create Request",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Properly requires authentication (401)",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:01.218847"
+    },
+    {
+      "test_name": "Donation Workflow",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Donation failed with status 500",
+      "error": "{\"error\":\"Failed to submit donation\",\"details\":\"Donation validation failed: donationDescription: Path `donationDescription` is required., donorInfo.firstName: Path `firstName` is required., donorInfo.lastName: Path `lastName` is required.\"}",
+      "timestamp": "2025-09-17T15:54:01.731309"
+    },
+    {
+      "test_name": "Volunteer Application Workflow",
+      "status": "\u274c FAIL",
+      "success": false,
+      "details": "Application failed with status 500",
+      "error": "{\"success\":false,\"message\":\"Failed to submit volunteer application\",\"error\":\"Volunteer validation failed: city: Path `city` is required., state: Path `state` is required.\"}",
+      "timestamp": "2025-09-17T15:54:02.180858"
+    },
+    {
+      "test_name": "Contact Form Workflow",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Contact form submitted successfully",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:04.770142"
+    },
+    {
+      "test_name": "Account Page - Session Check",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "Session Check accessible",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:04.828935"
+    },
+    {
+      "test_name": "Account Page - User Requests",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User Requests properly protected",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:04.867138"
+    },
+    {
+      "test_name": "Account Page - User Donations",
+      "status": "\u2705 PASS",
+      "success": true,
+      "details": "User Donations properly protected",
+      "error": null,
+      "timestamp": "2025-09-17T15:54:04.919433"
+    }
+  ],
+  "authentication": {
+    "user_session": null,
+    "admin_session": null
+  }
+}

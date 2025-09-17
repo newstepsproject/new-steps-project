@@ -14,12 +14,15 @@ type VolunteerFormData = {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
-  state: string;
+  location?: string;
+  city?: string;
+  state?: string;
   availability: string;
+  interests?: string[];
   skills?: string;
   experience?: string;
   motivation?: string;
+  message?: string;
 };
 
 export async function POST(request: NextRequest) {
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
     const fullName = `${data.firstName} ${data.lastName}`.trim();
     
     // Validate required fields
-    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.city || !data.state || !data.availability) {
+    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.availability) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields' },
         { status: 400 }
@@ -58,13 +61,14 @@ export async function POST(request: NextRequest) {
       name: fullName,
       email: data.email,
       phone: data.phone,
+      location: data.location || `${data.city || ''}, ${data.state || ''}`.trim().replace(/^,\s*|,\s*$/g, ''),
       city: data.city,
       state: data.state,
       availability: data.availability,
-      interests: ['general'], // Default interest
+      interests: data.interests || ['general'], // Default interest
       skills: data.skills,
       experience: data.experience,
-      motivation: data.motivation,
+      motivation: data.motivation || data.message,
       submittedAt: new Date(),
       status: 'pending'
     };
@@ -114,6 +118,44 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(
       { success: false, message: 'Failed to submit volunteer application', error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
+
+// GET user's volunteer applications (requires authentication)
+export async function GET(request: NextRequest) {
+  try {
+    // Check if user is authenticated
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // Connect to database
+    await connectToDatabase();
+    
+    // Get user's volunteer applications
+    const userId = (session.user as SessionUser).id;
+    const volunteers = await Volunteer.find({
+      $or: [
+        { userId: new mongoose.Types.ObjectId(userId) },
+        { email: session.user?.email }
+      ]
+    }).sort({ submittedAt: -1 });
+
+    return NextResponse.json({
+      success: true,
+      volunteers
+    });
+    
+  } catch (error) {
+    console.error('Error fetching volunteer applications:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch volunteer applications' },
       { status: 500 }
     );
   }
