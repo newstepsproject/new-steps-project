@@ -87,3 +87,4 @@ async function fixCloudFrontUrls() {
 
 // Run the script
 fixCloudFrontUrls();
+
