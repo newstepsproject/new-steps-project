@@ -1,0 +1,136 @@
+
+> new-steps@0.1.0 build
+> next build
+
+DEBUG: NEXTAUTH_URL at build time: http://localhost:3000
+   ▲ Next.js 15.4.2
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 10.0s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+DEBUG: NEXTAUTH_URL at API route: http://localhost:3000
+   Generating static pages (0/70) ...
+   Generating static pages (17/70) 
+   Generating static pages (34/70) 
+   Generating static pages (52/70) 
+🔍 [CACHE] Fetching fresh settings from database
+Connecting to MongoDB: PRODUCTION MODE 
+MongoDB URI: mongodb+srv://n...
+Connected to MongoDB successfully
+🔍 [DEBUG] Found settings records: 2
+🔍 [DEBUG] Processing setting: projectOfficers = object (2 items)
+🔍 [DEBUG] Processing setting: ourStory = object (4 items)
+🔍 [DEBUG] DB Settings keys: [ 'projectOfficers', 'ourStory' ]
+🔍 [DEBUG] ourStory from DB: 4
+🔍 [DEBUG] Final settings ourStory length: 4
+🔍 [CACHE] Returning cached settings
+ ✓ Generating static pages (70/70)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                       Size  First Load JS
+┌ ○ /                                            121 B         309 kB
+├ ○ /_not-found                                  121 B         309 kB
+├ ƒ /about                                       746 B         310 kB
+├ ○ /account                                   3.32 kB         312 kB
+├ ƒ /admin                                       121 B         309 kB
+├ ○ /admin/analytics                           1.48 kB         310 kB
+├ ○ /admin/money-donations                     4.55 kB         313 kB
+├ ○ /admin/money-donations/add                 2.09 kB         311 kB
+├ ○ /admin/orders                               2.5 kB         311 kB
+├ ○ /admin/requests                            6.29 kB         315 kB
+├ ○ /admin/requests/add                        2.93 kB         312 kB
+├ ○ /admin/settings                             6.3 kB         315 kB
+├ ○ /admin/shoe-donations                      5.15 kB         314 kB
+├ ○ /admin/shoe-donations/add                    916 B         310 kB
+├ ○ /admin/shoes                               3.32 kB         312 kB
+├ ○ /admin/shoes/add                           1.05 kB         310 kB
+├ ƒ /admin/shoes/edit/[id]                     3.68 kB         312 kB
+├ ○ /admin/users                               4.54 kB         313 kB
+├ ○ /admin/volunteers                          2.87 kB         312 kB
+├ ƒ /api/admin/analytics                         120 B         309 kB
+├ ƒ /api/admin/dashboard/donation-stats          119 B         309 kB
+├ ƒ /api/admin/donations/convert-to-inventory    121 B         309 kB
+├ ƒ /api/admin/donations/search                  121 B         309 kB
+├ ƒ /api/admin/money-donations                   121 B         309 kB
+├ ƒ /api/admin/orders                            120 B         309 kB
+├ ƒ /api/admin/requests                          121 B         309 kB
+├ ƒ /api/admin/settings                          121 B         309 kB
+├ ƒ /api/admin/shoe-donations                    121 B         309 kB
+├ ƒ /api/admin/shoe-donations/reference/[id]     121 B         309 kB
+├ ƒ /api/admin/shoes                             121 B         309 kB
+├ ƒ /api/admin/shoes/[id]                        121 B         309 kB
+├ ƒ /api/admin/users                             121 B         309 kB
+├ ƒ /api/admin/users/ensure-admin                121 B         309 kB
+├ ƒ /api/admin/users/reset-admin-password        121 B         309 kB
+├ ƒ /api/admin/users/reset-password              121 B         309 kB
+├ ƒ /api/admin/volunteers                        121 B         309 kB
+├ ƒ /api/auth/[...nextauth]                      121 B         309 kB
+├ ƒ /api/auth/register                           121 B         309 kB
+├ ƒ /api/auth/resend-verification                121 B         309 kB
+├ ƒ /api/auth/reset-password                     121 B         309 kB
+├ ƒ /api/auth/verify                             121 B         309 kB
+├ ƒ /api/client-errors                           121 B         309 kB
+├ ƒ /api/contact                                 121 B         309 kB
+├ ƒ /api/debug/checkout-issues                   121 B         309 kB
+├ ƒ /api/debug/fix-inventory                     121 B         309 kB
+├ ƒ /api/debug/inventory-paypal                  121 B         309 kB
+├ ƒ /api/donations                               121 B         309 kB
+├ ƒ /api/donations/money                         121 B         309 kB
+├ ƒ /api/health                                  121 B         309 kB
+├ ƒ /api/health/database                         121 B         309 kB
+├ ƒ /api/partnerships                            121 B         309 kB
+├ ƒ /api/requests                                121 B         309 kB
+├ ƒ /api/settings                                121 B         309 kB
+├ ƒ /api/shoes                                   118 B         309 kB
+├ ƒ /api/shoes/[id]                              121 B         309 kB
+├ ƒ /api/test-email                              121 B         309 kB
+├ ƒ /api/test/donations                          121 B         309 kB
+├ ƒ /api/test/donations/money                    121 B         309 kB
+├ ƒ /api/test/requests                           121 B         309 kB
+├ ƒ /api/test/shoes                              121 B         309 kB
+├ ƒ /api/test/upload                             121 B         309 kB
+├ ƒ /api/upload                                  121 B         309 kB
+├ ƒ /api/upload/team-photo                       121 B         309 kB
+├ ƒ /api/user/donations                          121 B         309 kB
+├ ƒ /api/user/money-donations                    121 B         309 kB
+├ ƒ /api/user/profile                            120 B         309 kB
+├ ƒ /api/volunteer                               121 B         309 kB
+├ ƒ /api/volunteers                              121 B         309 kB
+├ ○ /auth/signout                                735 B         310 kB
+├ ○ /cart                                      1.66 kB         310 kB
+├ ○ /checkout                                  4.83 kB         314 kB
+├ ○ /contact                                   1.65 kB         310 kB
+├ ○ /donate                                      120 B         309 kB
+├ ○ /donate/money                                177 B         309 kB
+├ ○ /donate/shoes                              3.82 kB         313 kB
+├ ƒ /faq                                         161 B         309 kB
+├ ○ /forgot-password                           1.19 kB         310 kB
+├ ○ /get-involved                              5.37 kB         314 kB
+├ ○ /login                                     2.39 kB         311 kB
+├ ƒ /privacy                                     121 B         309 kB
+├ ○ /register                                  2.13 kB         311 kB
+├ ○ /resend-verification                       1.32 kB         310 kB
+├ ○ /reset-password                            1.58 kB         310 kB
+├ ƒ /shipping                                    121 B         309 kB
+├ ○ /shoes                                     4.13 kB         313 kB
+├ ƒ /shoes/[id]                                3.77 kB         313 kB
+├ ƒ /terms                                       121 B         309 kB
+├ ○ /verify-email                              1.17 kB         310 kB
+└ ○ /volunteer                                 2.24 kB         311 kB
++ First Load JS shared by all                   309 kB
+  ├ chunks/common-4b0d1013b8b3490d.js           118 kB
+  └ chunks/vendors-74c8b0a63e18e7d5.js          189 kB
+  └ other shared chunks (total)                1.93 kB
+
+
+ƒ Middleware                                   60.6 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
