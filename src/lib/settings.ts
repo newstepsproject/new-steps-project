@@ -131,16 +131,19 @@ const defaultSettings: AppSettings = {
 };
 
 // Cache settings for 5 minutes to avoid repeated database calls
-let settingsCache: { data: AppSettings; expiry: number } | null = null;
+let settingsCache: { data: AppSettings; expiry: number; lastCleared: number } | null = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+let lastCacheCleared = 0; // Global cache clear timestamp
 
 /**
  * Fetch application settings from the database
  * Returns cached settings if available and not expired
  */
 export async function getAppSettings(): Promise<AppSettings> {
-  // Return cached settings if valid
-  if (settingsCache && Date.now() < settingsCache.expiry) {
+  // Return cached settings if valid and not cleared
+  if (settingsCache && 
+      Date.now() < settingsCache.expiry && 
+      settingsCache.lastCleared >= lastCacheCleared) {
     return settingsCache.data;
   }
 
@@ -163,6 +166,7 @@ export async function getAppSettings(): Promise<AppSettings> {
     settingsCache = {
       data: settings,
       expiry: Date.now() + CACHE_DURATION,
+      lastCleared: Date.now(),
     };
     
     return settings;
@@ -186,7 +190,9 @@ export async function getSetting<K extends keyof AppSettings>(key: K): Promise<A
  * Clear settings cache (useful after settings update)
  */
 export function clearSettingsCache(): void {
+  lastCacheCleared = Date.now();
   settingsCache = null;
+  console.log('🔄 Settings cache cleared at:', new Date().toISOString());
 }
 
 /**
