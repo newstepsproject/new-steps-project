@@ -612,6 +612,29 @@ export default function RequestDetailsDialog({
 
           <Separator />
 
+          {/* Admin Notes Section */}
+          <div>
+            <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Admin Notes
+            </h3>
+            <div className="space-y-2">
+              <Label htmlFor="requestNotes">Internal Notes</Label>
+              <Textarea
+                id="requestNotes"
+                value={requestNotes}
+                onChange={(e) => setRequestNotes(e.target.value)}
+                placeholder="Add internal notes about this request..."
+                className="min-h-[100px] resize-none"
+              />
+              <p className="text-xs text-gray-500">
+                These notes are for internal use only and will not be visible to the requestor.
+              </p>
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Shipping Label Section */}
           <div>
             <h3 className="font-semibold mb-3 flex items-center gap-2">

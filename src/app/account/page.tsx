@@ -335,10 +335,20 @@ export default function AccountPage() {
                             <CardContent className="p-4">
                               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
                                 <div>
-                                  <h3 className="font-semibold text-lg">Request {request.requestId}</h3>
+                                  <h3 className="font-semibold text-lg">
+                                    {request.referenceId ? `Shoe Request ${request.referenceId}` : `Request ${request.requestId || request._id}`}
+                                  </h3>
                                   <p className="text-sm text-gray-600">
                                     Submitted on {new Date(request.createdAt).toLocaleDateString()}
                                   </p>
+                                  {request.referenceId && (
+                                    <div className="flex items-center mt-1">
+                                      <Package className="h-4 w-4 text-brand mr-1" />
+                                      <span className="text-xs font-mono text-brand font-semibold">
+                                        Track: {request.referenceId}
+                                      </span>
+                                    </div>
+                                  )}
                                 </div>
                                 {getRequestStatusBadge(request.currentStatus)}
                               </div>
@@ -425,10 +435,20 @@ export default function AccountPage() {
                                   <CardContent className="p-4">
                                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
                                       <div>
-                                        <h3 className="font-semibold text-lg">Donation {donation.donationId}</h3>
+                                        <h3 className="font-semibold text-lg">
+                                          {donation.referenceId ? `Money Donation ${donation.referenceId}` : `Donation ${donation.donationId || donation._id}`}
+                                        </h3>
                                         <p className="text-sm text-gray-600">
                                           Submitted on {new Date(donation.createdAt).toLocaleDateString()}
                                         </p>
+                                        {donation.referenceId && (
+                                          <div className="flex items-center mt-1">
+                                            <Package className="h-4 w-4 text-brand mr-1" />
+                                            <span className="text-xs font-mono text-brand font-semibold">
+                                              Track: {donation.referenceId}
+                                            </span>
+                                          </div>
+                                        )}
                                       </div>
                                       {getDonationStatusBadge(donation.status)}
                                     </div>
@@ -465,10 +485,20 @@ export default function AccountPage() {
                                   <CardContent className="p-4">
                                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
                                       <div>
-                                        <h3 className="font-semibold text-lg">Donation {donation.donationId}</h3>
+                                        <h3 className="font-semibold text-lg">
+                                          {donation.referenceId ? `Shoe Donation ${donation.referenceId}` : `Donation ${donation.donationId || donation._id}`}
+                                        </h3>
                                         <p className="text-sm text-gray-600">
                                           Submitted on {new Date(donation.createdAt).toLocaleDateString()}
                                         </p>
+                                        {donation.referenceId && (
+                                          <div className="flex items-center mt-1">
+                                            <Package className="h-4 w-4 text-brand mr-1" />
+                                            <span className="text-xs font-mono text-brand font-semibold">
+                                              Track: {donation.referenceId}
+                                            </span>
+                                          </div>
+                                        )}
                                       </div>
                                       {getDonationStatusBadge(donation.status)}
                                     </div>

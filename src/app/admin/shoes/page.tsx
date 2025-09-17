@@ -46,9 +46,13 @@ interface Shoe {
   inventoryCount: number;
   status: string;
   donationId?: string;
-  donorName?: string;
+  // Updated donor information fields
+  donorFirstName?: string;
+  donorLastName?: string;
   donorEmail?: string;
+  donorName?: string; // Legacy field for backward compatibility
   referenceNumber?: string;
+  adminNotes?: string;
 }
 
 export default function InventoryPage() {
@@ -427,18 +431,33 @@ export default function InventoryPage() {
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              {shoe.donorName ? (
+                              {(shoe.donorFirstName && shoe.donorLastName) ? (
                                 <div className="flex flex-col">
-                                  <span>{shoe.donorName}</span>
+                                  <span className="font-medium">
+                                    {shoe.donorFirstName} {shoe.donorLastName}
+                                  </span>
+                                  {shoe.donorEmail && (
+                                    <span className="text-xs text-gray-500 truncate max-w-[120px]" title={shoe.donorEmail}>
+                                      {shoe.donorEmail}
+                                    </span>
+                                  )}
+                                  <Badge variant="outline" className="mt-1 w-fit flex items-center gap-1 whitespace-nowrap">
+                                    <Gift className="h-3 w-3" />
+                                    <span>Donated</span>
+                                  </Badge>
+                                </div>
+                              ) : shoe.donorName ? (
+                                <div className="flex flex-col">
+                                  <span className="font-medium">{shoe.donorName}</span>
                                   <Badge variant="outline" className="mt-1 w-fit flex items-center gap-1 whitespace-nowrap">
                                     <Globe className="h-3 w-3" />
-                                    <span>Online</span>
+                                    <span>Legacy</span>
                                   </Badge>
                                 </div>
                               ) : (
                                 <Badge variant="outline" className="flex items-center gap-1 whitespace-nowrap">
                                   <Store className="h-3 w-3" />
-                                  <span>Offline</span>
+                                  <span>Direct Entry</span>
                                 </Badge>
                               )}
                             </TableCell>
