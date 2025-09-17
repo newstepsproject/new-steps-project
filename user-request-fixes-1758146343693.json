@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-09-17T21:59:03.406Z",
+  "fixesApplied": [
+    {
+      "fix": "User-Request Relationship Fix",
+      "collection": "shoerequests",
+      "documentsAffected": 0,
+      "unmatchedDocuments": 1,
+      "description": "Added userId to shoe requests by matching email addresses"
+    },
+    {
+      "fix": "Request Schema Standardization",
+      "collection": "shoerequests",
+      "documentsAffected": 9,
+      "description": "Added missing paymentInfo and adminNotes fields to requests"
+    },
+    {
+      "fix": "Relationship Integrity Validation",
+      "collection": "shoerequests",
+      "totalRequests": 9,
+      "linkedRequests": 8,
+      "integrityPercentage": 88.88888888888889,
+      "description": "Validated user-request relationship integrity"
+    }
+  ],
+  "errors": []
+}
