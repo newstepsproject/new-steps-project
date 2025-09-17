@@ -140,27 +140,36 @@ let lastCacheCleared = 0; // Global cache clear timestamp
  * Returns cached settings if available and not expired
  */
 export async function getAppSettings(): Promise<AppSettings> {
+  // TEMPORARY: Disable cache completely to debug production issue
+  console.log('🔍 [DEBUG] getAppSettings called, cache disabled for debugging');
+  
   // Return cached settings if valid and not cleared
-  if (settingsCache && 
-      Date.now() < settingsCache.expiry && 
-      settingsCache.lastCleared >= lastCacheCleared) {
-    return settingsCache.data;
-  }
+  // if (settingsCache && 
+  //     Date.now() < settingsCache.expiry && 
+  //     settingsCache.lastCleared >= lastCacheCleared) {
+  //   return settingsCache.data;
+  // }
 
   try {
     await connectToDatabase();
     
     // Fetch all settings from database
     const settingsRecords = await SettingsModel.find({}).lean();
+    console.log('🔍 [DEBUG] Found settings records:', settingsRecords.length);
     
     // Transform to key-value object
     const dbSettings: Record<string, any> = {};
     settingsRecords.forEach(record => {
+      console.log(`🔍 [DEBUG] Processing setting: ${record.key} = ${typeof record.value} (${Array.isArray(record.value) ? record.value.length + ' items' : 'single value'})`);
       dbSettings[record.key] = record.value;
     });
 
+    console.log('🔍 [DEBUG] DB Settings keys:', Object.keys(dbSettings));
+    console.log('🔍 [DEBUG] ourStory from DB:', dbSettings.ourStory?.length || 'undefined');
+
     // Merge with defaults
     const settings: AppSettings = { ...defaultSettings, ...dbSettings };
+    console.log('🔍 [DEBUG] Final settings ourStory length:', settings.ourStory?.length || 'undefined');
     
     // Cache the settings
     settingsCache = {
