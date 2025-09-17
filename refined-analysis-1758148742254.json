@@ -1,0 +1,3012 @@
+{
+  "timestamp": "2025-09-17T22:39:00.670Z",
+  "databaseAnalysis": {
+    "collections": {
+      "volunteers": {
+        "documentCount": 0,
+        "sampleSize": 0,
+        "fields": {},
+        "fieldStats": {},
+        "dataQuality": {},
+        "businessRelevance": "HIGH"
+      },
+      "users": {
+        "documentCount": 2,
+        "sampleSize": 2,
+        "fields": {
+          "_id": {
+            "type": "object",
+            "examples": [
+              "68ca13ea10d232be27bb1e79",
+              "68ca13ea10d232be27bb1e7b"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "_id.buffer": {
+            "type": "object",
+            "examples": [
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  234,
+                  16,
+                  210,
+                  50,
+                  190,
+                  39,
+                  187,
+                  30,
+                  121
+                ]
+              },
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  234,
+                  16,
+                  210,
+                  50,
+                  190,
+                  39,
+                  187,
+                  30,
+                  123
+                ]
+              }
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.0": {
+            "type": "number",
+            "examples": [
+              104,
+              104
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.1": {
+            "type": "number",
+            "examples": [
+              202,
+              202
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.2": {
+            "type": "number",
+            "examples": [
+              19,
+              19
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.3": {
+            "type": "number",
+            "examples": [
+              234,
+              234
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.4": {
+            "type": "number",
+            "examples": [
+              16,
+              16
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.5": {
+            "type": "number",
+            "examples": [
+              210,
+              210
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.6": {
+            "type": "number",
+            "examples": [
+              50,
+              50
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.7": {
+            "type": "number",
+            "examples": [
+              190,
+              190
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.8": {
+            "type": "number",
+            "examples": [
+              39,
+              39
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.9": {
+            "type": "number",
+            "examples": [
+              187,
+              187
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.10": {
+            "type": "number",
+            "examples": [
+              30,
+              30
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.11": {
+            "type": "number",
+            "examples": [
+              121,
+              123
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "firstName": {
+            "type": "string",
+            "examples": [
+              "Admin",
+              "Xinwen"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "lastName": {
+            "type": "string",
+            "examples": [
+              "User",
+              "Zhang"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "email": {
+            "type": "string",
+            "examples": [
+              "admin@newsteps.fit",
+              "xinwenzhang@gmail.com"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "password": {
+            "type": "string",
+            "examples": [
+              "$2b$12$hWaMM66mptydXf6iGnnAlej6fnmsbRnc1i7y.tPXzYtj1/gGQZfzq"
+            ],
+            "nullCount": 0,
+            "populatedCount": 1,
+            "isNested": false
+          },
+          "role": {
+            "type": "string",
+            "examples": [
+              "admin",
+              "user"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "examples": [
+              true,
+              true
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "__v": {
+            "type": "number",
+            "examples": [
+              0,
+              0
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          }
+        },
+        "fieldStats": {
+          "_id": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.0": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.1": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.2": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.3": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.4": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.5": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.6": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.7": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.8": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.9": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.10": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.11": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "firstName": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "CRITICAL"
+          },
+          "lastName": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "CRITICAL"
+          },
+          "email": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "CRITICAL"
+          },
+          "password": {
+            "populationRate": "50.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "role": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "emailVerified": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "CRITICAL"
+          },
+          "__v": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          }
+        },
+        "dataQuality": {},
+        "businessRelevance": "HIGH"
+      },
+      "counters": {
+        "documentCount": 1,
+        "sampleSize": 1,
+        "fields": {
+          "_id": {
+            "type": "string",
+            "examples": [
+              "shoeId"
+            ],
+            "nullCount": 0,
+            "populatedCount": 1,
+            "isNested": false
+          },
+          "__v": {
+            "type": "number",
+            "examples": [
+              0
+            ],
+            "nullCount": 0,
+            "populatedCount": 1,
+            "isNested": false
+          },
+          "seq": {
+            "type": "number",
+            "examples": [
+              1
+            ],
+            "nullCount": 0,
+            "populatedCount": 1,
+            "isNested": false
+          }
+        },
+        "fieldStats": {
+          "_id": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "__v": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "seq": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          }
+        },
+        "dataQuality": {},
+        "businessRelevance": "MEDIUM"
+      },
+      "shoerequests": {
+        "documentCount": 0,
+        "sampleSize": 0,
+        "fields": {},
+        "fieldStats": {},
+        "dataQuality": {},
+        "businessRelevance": "HIGH"
+      },
+      "verificationtokens": {
+        "documentCount": 0,
+        "sampleSize": 0,
+        "fields": {},
+        "fieldStats": {},
+        "dataQuality": {},
+        "businessRelevance": "LOW"
+      },
+      "shoes": {
+        "documentCount": 3,
+        "sampleSize": 3,
+        "fields": {
+          "_id": {
+            "type": "object",
+            "examples": [
+              "68ca13ea10d232be27bb1e7d",
+              "68ca13ea10d232be27bb1e7f",
+              "68ca13ea10d232be27bb1e81"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "_id.buffer": {
+            "type": "object",
+            "examples": [
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  234,
+                  16,
+                  210,
+                  50,
+                  190,
+                  39,
+                  187,
+                  30,
+                  125
+                ]
+              },
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  234,
+                  16,
+                  210,
+                  50,
+                  190,
+                  39,
+                  187,
+                  30,
+                  127
+                ]
+              },
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  234,
+                  16,
+                  210,
+                  50,
+                  190,
+                  39,
+                  187,
+                  30,
+                  129
+                ]
+              }
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.0": {
+            "type": "number",
+            "examples": [
+              104,
+              104,
+              104
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.1": {
+            "type": "number",
+            "examples": [
+              202,
+              202,
+              202
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.2": {
+            "type": "number",
+            "examples": [
+              19,
+              19,
+              19
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.3": {
+            "type": "number",
+            "examples": [
+              234,
+              234,
+              234
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.4": {
+            "type": "number",
+            "examples": [
+              16,
+              16,
+              16
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.5": {
+            "type": "number",
+            "examples": [
+              210,
+              210,
+              210
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.6": {
+            "type": "number",
+            "examples": [
+              50,
+              50,
+              50
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.7": {
+            "type": "number",
+            "examples": [
+              190,
+              190,
+              190
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.8": {
+            "type": "number",
+            "examples": [
+              39,
+              39,
+              39
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.9": {
+            "type": "number",
+            "examples": [
+              187,
+              187,
+              187
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.10": {
+            "type": "number",
+            "examples": [
+              30,
+              30,
+              30
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "_id.buffer.11": {
+            "type": "number",
+            "examples": [
+              125,
+              127,
+              129
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": true
+          },
+          "shoeId": {
+            "type": "number",
+            "examples": [
+              101,
+              102,
+              103
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "brand": {
+            "type": "string",
+            "examples": [
+              "Nike",
+              "Adidas",
+              "Converse"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "modelName": {
+            "type": "string",
+            "examples": [
+              "Air Max 90",
+              "Ultraboost 22",
+              "Chuck Taylor All Star"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "gender": {
+            "type": "string",
+            "examples": [
+              "men",
+              "women",
+              "unisex"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "size": {
+            "type": "string",
+            "examples": [
+              "10",
+              "8",
+              "9"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "color": {
+            "type": "string",
+            "examples": [
+              "White/Black",
+              "Black/White",
+              "Red"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "sport": {
+            "type": "string",
+            "examples": [
+              "running",
+              "running",
+              "casual"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "condition": {
+            "type": "string",
+            "examples": [
+              "good",
+              "excellent",
+              "good"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "description": {
+            "type": "string",
+            "examples": [
+              "Classic Nike Air Max in great condition",
+              "Comfortable Adidas running shoes",
+              "Classic Converse sneakers"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "inventoryCount": {
+            "type": "number",
+            "examples": [
+              1,
+              1,
+              1
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "status": {
+            "type": "string",
+            "examples": [
+              "available",
+              "available",
+              "available"
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "images": {
+            "type": "array",
+            "examples": [
+              [
+                "/images/shoes/placeholder-shoe.jpg"
+              ],
+              [
+                "/images/shoes/placeholder-shoe.jpg"
+              ],
+              [
+                "/images/shoes/placeholder-shoe.jpg"
+              ]
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          },
+          "__v": {
+            "type": "number",
+            "examples": [
+              0,
+              0,
+              0
+            ],
+            "nullCount": 0,
+            "populatedCount": 3,
+            "isNested": false
+          }
+        },
+        "fieldStats": {
+          "_id": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.0": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.1": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.2": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.3": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.4": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.5": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.6": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.7": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.8": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.9": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.10": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.11": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "shoeId": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "brand": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "modelName": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "CRITICAL"
+          },
+          "gender": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "size": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "color": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "sport": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "condition": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "description": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "inventoryCount": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "status": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "CRITICAL"
+          },
+          "images": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "__v": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          }
+        },
+        "dataQuality": {},
+        "businessRelevance": "HIGH"
+      },
+      "moneydonations": {
+        "documentCount": 0,
+        "sampleSize": 0,
+        "fields": {},
+        "fieldStats": {},
+        "dataQuality": {},
+        "businessRelevance": "HIGH"
+      },
+      "settings": {
+        "documentCount": 2,
+        "sampleSize": 2,
+        "fields": {
+          "_id": {
+            "type": "object",
+            "examples": [
+              "68ca131d9f0eebb558fde123",
+              "68ca13389f0eebb558fde124"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "_id.buffer": {
+            "type": "object",
+            "examples": [
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  29,
+                  159,
+                  14,
+                  235,
+                  181,
+                  88,
+                  253,
+                  225,
+                  35
+                ]
+              },
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  202,
+                  19,
+                  56,
+                  159,
+                  14,
+                  235,
+                  181,
+                  88,
+                  253,
+                  225,
+                  36
+                ]
+              }
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.0": {
+            "type": "number",
+            "examples": [
+              104,
+              104
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.1": {
+            "type": "number",
+            "examples": [
+              202,
+              202
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.2": {
+            "type": "number",
+            "examples": [
+              19,
+              19
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.3": {
+            "type": "number",
+            "examples": [
+              29,
+              56
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.4": {
+            "type": "number",
+            "examples": [
+              159,
+              159
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.5": {
+            "type": "number",
+            "examples": [
+              14,
+              14
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.6": {
+            "type": "number",
+            "examples": [
+              235,
+              235
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.7": {
+            "type": "number",
+            "examples": [
+              181,
+              181
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.8": {
+            "type": "number",
+            "examples": [
+              88,
+              88
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.9": {
+            "type": "number",
+            "examples": [
+              253,
+              253
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.10": {
+            "type": "number",
+            "examples": [
+              225,
+              225
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "_id.buffer.11": {
+            "type": "number",
+            "examples": [
+              35,
+              36
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "key": {
+            "type": "string",
+            "examples": [
+              "projectOfficers",
+              "ourStory"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "__v": {
+            "type": "number",
+            "examples": [
+              0,
+              0
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "lastUpdated": {
+            "type": "object",
+            "examples": [
+              "2025-09-17T01:47:09.602Z",
+              "2025-09-17T01:57:11.119Z"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "updatedBy": {
+            "type": "object",
+            "examples": [
+              "68c9e8e6cdcb1c1fdd78f52a",
+              "68c9e8e6cdcb1c1fdd78f52a"
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          },
+          "updatedBy.buffer": {
+            "type": "object",
+            "examples": [
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  201,
+                  232,
+                  230,
+                  205,
+                  203,
+                  28,
+                  31,
+                  221,
+                  120,
+                  245,
+                  42
+                ]
+              },
+              {
+                "type": "Buffer",
+                "data": [
+                  104,
+                  201,
+                  232,
+                  230,
+                  205,
+                  203,
+                  28,
+                  31,
+                  221,
+                  120,
+                  245,
+                  42
+                ]
+              }
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.0": {
+            "type": "number",
+            "examples": [
+              104,
+              104
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.1": {
+            "type": "number",
+            "examples": [
+              201,
+              201
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.2": {
+            "type": "number",
+            "examples": [
+              232,
+              232
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.3": {
+            "type": "number",
+            "examples": [
+              230,
+              230
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.4": {
+            "type": "number",
+            "examples": [
+              205,
+              205
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.5": {
+            "type": "number",
+            "examples": [
+              203,
+              203
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.6": {
+            "type": "number",
+            "examples": [
+              28,
+              28
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.7": {
+            "type": "number",
+            "examples": [
+              31,
+              31
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.8": {
+            "type": "number",
+            "examples": [
+              221,
+              221
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.9": {
+            "type": "number",
+            "examples": [
+              120,
+              120
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.10": {
+            "type": "number",
+            "examples": [
+              245,
+              245
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "updatedBy.buffer.11": {
+            "type": "number",
+            "examples": [
+              42,
+              42
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": true
+          },
+          "value": {
+            "type": "array",
+            "examples": [
+              [
+                {
+                  "id": "founder-director",
+                  "role": "Founder & Director",
+                  "firstName": "Walter",
+                  "lastName": "Zhang",
+                  "name": "Walter Zhang",
+                  "duty": "Providing visionary leadership, setting strategic direction, making key decisions, and ensuring the mission of connecting athletes with quality sports shoes remains at the heart of every initiative",
+                  "bio": "9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.",
+                  "photo": "",
+                  "canRemove": false
+                },
+                {
+                  "id": "operation-manager",
+                  "role": "Operation Manager",
+                  "firstName": "Winston",
+                  "lastName": "Zhang",
+                  "name": "Winston Zhang",
+                  "duty": "Overseeing daily operations, managing inventory systems, coordinating donation logistics, processing shoe requests, and ensuring efficient workflows from donation intake to delivery",
+                  "bio": "my bio",
+                  "photo": "",
+                  "canRemove": true
+                }
+              ],
+              [
+                {
+                  "id": "timeline-1",
+                  "title": "The Beginning (2023)",
+                  "description": "New Steps was founded by Walter Zhang after noticing the large number of perfectly usable sports shoes being discarded while many student athletes couldn't afford the equipment they needed. What started as a small community initiative in San Ramon quickly grew into something bigger.",
+                  "order": 1
+                },
+                {
+                  "id": "timeline-2",
+                  "title": "Growing Our Impact (2024)",
+                  "description": "As word spread, more volunteers joined our cause, and we expanded our operations to serve the entire Bay Area. We partnered with local schools, sports clubs, and community organizations to reach more athletes in need. Our network of donors and recipients expanded dramatically.",
+                  "order": 2
+                },
+                {
+                  "id": "timeline-3",
+                  "title": "Today & Beyond (2025)",
+                  "description": "Today, New Steps continues to grow, with hundreds of shoes donated and matched with athletes across California. Our vision is to expand nationwide, creating a sustainable ecosystem of sports equipment sharing that benefits communities and the environment. We're constantly innovating our processes to make donating and receiving shoes as seamless as possible.",
+                  "order": 3
+                },
+                {
+                  "id": "timeline-1758073647759",
+                  "title": "test timeline",
+                  "description": "tests timelien",
+                  "order": 4
+                }
+              ]
+            ],
+            "nullCount": 0,
+            "populatedCount": 2,
+            "isNested": false
+          }
+        },
+        "fieldStats": {
+          "_id": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.0": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.1": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.2": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.3": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.4": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.5": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.6": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.7": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.8": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.9": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.10": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "_id.buffer.11": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "key": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "__v": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "lastUpdated": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.0": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.1": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.2": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.3": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.4": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.5": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.6": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.7": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.8": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.9": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.10": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "updatedBy.buffer.11": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          },
+          "value": {
+            "populationRate": "100.0",
+            "dataQuality": "GOOD",
+            "businessImportance": "USEFUL"
+          }
+        },
+        "dataQuality": {},
+        "businessRelevance": "MEDIUM"
+      },
+      "donations": {
+        "documentCount": 0,
+        "sampleSize": 0,
+        "fields": {},
+        "fieldStats": {},
+        "dataQuality": {},
+        "businessRelevance": "HIGH"
+      }
+    },
+    "totalDocuments": 8,
+    "totalFields": 83
+  },
+  "applicationAnalysis": {
+    "formComponents": {
+      "src/app/register/RegisterForm.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "firstName",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "lastName",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "email",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "phone",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "password",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "confirmPassword",
+            "element": "input\n"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/auth/register"
+          }
+        ],
+        "isUserFacing": true,
+        "isDataCollection": true
+      },
+      "src/app/checkout/page.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "firstName",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "lastName",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "email",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "phone",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "address",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "city",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "state",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "zipCode",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "country",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "min-h-[100px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/requests"
+          }
+        ],
+        "isUserFacing": true,
+        "isDataCollection": true
+      },
+      "src/app/volunteer/page.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-24",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "h-24",
+            "element": "textarea\n"
+          }
+        ],
+        "isUserFacing": true,
+        "isDataCollection": true
+      },
+      "src/components/admin/DonationDetailsDialog.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "w-full",
+            "element": "selecttrigger"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/components/admin/DonationStatistics.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "w-[180px]",
+            "element": "selecttrigger"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/components/admin/MobileFilters.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "pl-10 h-10",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "w-full",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "w-full",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "w-full",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "w-full",
+            "element": "selecttrigger"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/components/admin/MoneyDonationDetailsDialog.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "w-full mt-2 h-10",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/money-donations"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/components/admin/RequestDetailsDialog.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "mt-1",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "w-[180px]",
+            "element": "selecttrigger"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/components/admin/UnifiedShoeForm.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "hidden",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "hidden",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "input"
+          },
+          {
+            "type": "input",
+            "name": "resize-y min-h-[100px] h-12",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "resize-y min-h-[140px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "input",
+            "name": "h-12",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/upload"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/components/admin/UserDetailsDialog.tsx": {
+        "fields": [
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/users/reset-password"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": false
+      },
+      "src/components/admin/common/AdminTable.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "w-[180px]",
+            "element": "selecttrigger"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/app/admin/money-donations/add/page.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "h-10",
+            "element": "selecttrigger"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/money-donations"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/app/admin/requests/add/page.tsx": {
+        "fields": [
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/requests"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": false
+      },
+      "src/app/admin/settings/page.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "min-h-[60px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "min-h-[80px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "min-h-[100px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/settings"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/upload/team-photo"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/app/admin/shoe-donations/add/page.tsx": {
+        "fields": [
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/shoe-donations"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": false
+      },
+      "src/app/admin/shoes/add/page.tsx": {
+        "fields": [
+          {
+            "type": "submission",
+            "endpoint": "/api/admin/shoes"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": false
+      },
+      "src/app/admin/shoes/edit/[id]/page.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "hidden",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "hidden",
+            "element": "input\n"
+          },
+          {
+            "type": "input",
+            "name": "resize-y min-h-[100px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "input",
+            "name": "resize-y min-h-[140px]",
+            "element": "textarea\n"
+          },
+          {
+            "type": "submission",
+            "endpoint": "/api/upload"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      },
+      "src/app/admin/shoes/page.tsx": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "pl-10",
+            "element": "input\n"
+          }
+        ],
+        "isUserFacing": false,
+        "isDataCollection": true
+      }
+    },
+    "apiEndpoints": {
+      "src/app/api/admin/donations/convert-to-inventory/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/donations/convert-to-inventory"
+      },
+      "src/app/api/admin/money-donations/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/money-donations"
+      },
+      "src/app/api/admin/orders/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/orders"
+      },
+      "src/app/api/admin/requests/route.ts": {
+        "operations": [
+          {
+            "type": "UPDATE",
+            "operation": ".findOneAndUpdate(\n        { requestId },\n        { $set: updateData }",
+            "data": "{ $set: updateData }"
+          },
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          },
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/requests"
+      },
+      "src/app/api/admin/settings/route.ts": {
+        "operations": [
+          {
+            "type": "UPDATE",
+            "operation": ".findOneAndUpdate(\n        { key },\n        {\n          key,\n          value,\n          lastUpdated: new Date(),\n          updatedBy: user.id\n        }",
+            "data": "{\n          key,\n          value,\n          lastUpdated: new Date(),\n          updatedBy: user.id\n        }"
+          },
+          {
+            "type": "READ",
+            "operation": ".find({})",
+            "data": "{}"
+          }
+        ],
+        "endpoint": "admin/settings"
+      },
+      "src/app/api/admin/shoe-donations/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/shoe-donations"
+      },
+      "src/app/api/admin/shoes/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/shoes"
+      },
+      "src/app/api/admin/users/ensure-admin/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/users/ensure-admin"
+      },
+      "src/app/api/admin/users/reset-admin-password/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/users/reset-admin-password"
+      },
+      "src/app/api/admin/users/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "admin/users"
+      },
+      "src/app/api/debug/fix-inventory/route.ts": {
+        "operations": [
+          {
+            "type": "READ",
+            "operation": ".find({\n      status: 'available',\n      inventoryCount: 0\n    })",
+            "data": "{\n      status: 'available',\n      inventoryCount: 0\n    }"
+          }
+        ],
+        "endpoint": "debug/fix-inventory"
+      },
+      "src/app/api/debug/inventory-paypal/route.ts": {
+        "operations": [
+          {
+            "type": "READ",
+            "operation": ".find({})",
+            "data": "{}"
+          }
+        ],
+        "endpoint": "debug/inventory-paypal"
+      },
+      "src/app/api/donations/money/route.ts": {
+        "operations": [
+          {
+            "type": "CREATE",
+            "operation": ".create({\n      donationId,\n      firstName: data.firstName,\n      lastName: data.lastName,\n      name: data.name || donorName, // Keep for backward compatibility\n      email: data.email,\n      phone: data.phone,\n      amount: parseFloat(data.amount),\n      notes: data.notes || '',\n      status: 'submitted', // Fixed status to use proper enum value\n      userId: session?.user?.id || null, // Associate with user if logged in\n      isOffline: false, // This is an online donation\n      createdAt: new Date(),\n    }",
+            "data": "{\n      donationId,\n      firstName: data.firstName,\n      lastName: data.lastName,\n      name: data.name || donorName, // Keep for backward compatibility\n      email: data.email,\n      phone: data.phone,\n      amount: parseFloat(data.amount),\n      notes: data.notes || '',\n      status: 'submitted', // Fixed status to use proper enum value\n      userId: session?.user?.id || null, // Associate with user if logged in\n      isOffline: false, // This is an online donation\n      createdAt: new Date(),\n    }"
+          }
+        ],
+        "endpoint": "donations/money"
+      },
+      "src/app/api/donations/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "donations"
+      },
+      "src/app/api/requests/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          },
+          {
+            "type": "READ",
+            "operation": ".find({ userId: user._id })",
+            "data": "{ userId: user._id }"
+          }
+        ],
+        "endpoint": "requests"
+      },
+      "src/app/api/test/donations/money/route.ts": {
+        "operations": [
+          {
+            "type": "CREATE",
+            "operation": ".create({\n      donationId,\n      firstName: data.firstName,\n      lastName: data.lastName,\n      name: fullName, // For backward compatibility\n      email: data.email,\n      phone: data.phone,\n      amount: parseFloat(data.amount),\n      notes: data.notes || '',\n      status: 'submitted', // Changed from 'submit' to 'submitted' to match enum\n      createdAt: new Date(),\n    }",
+            "data": "{\n      donationId,\n      firstName: data.firstName,\n      lastName: data.lastName,\n      name: fullName, // For backward compatibility\n      email: data.email,\n      phone: data.phone,\n      amount: parseFloat(data.amount),\n      notes: data.notes || '',\n      status: 'submitted', // Changed from 'submit' to 'submitted' to match enum\n      createdAt: new Date(),\n    }"
+          }
+        ],
+        "endpoint": "test/donations/money"
+      },
+      "src/app/api/test/shoes/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "test/shoes"
+      },
+      "src/app/api/user/profile/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "user/profile"
+      },
+      "src/app/api/volunteer/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "volunteer"
+      },
+      "src/app/api/volunteers/route.ts": {
+        "operations": [
+          {
+            "type": "SAVE",
+            "operation": ".save()",
+            "data": "none"
+          }
+        ],
+        "endpoint": "volunteers"
+      }
+    },
+    "totalInputs": 91,
+    "totalDisplays": 0
+  },
+  "criticalFindings": {
+    "actualBugs": [
+      {
+        "type": "MISSING_UI_DISPLAY",
+        "severity": "HIGH",
+        "collection": "users",
+        "field": "emailVerified",
+        "description": "Critical field 'emailVerified' in 'users' has 100.0% population but no UI display",
+        "impact": "Users cannot see important data that exists in the system",
+        "recommendation": "Add UI display for users.emailVerified in appropriate user interface"
+      },
+      {
+        "type": "MISSING_UI_DISPLAY",
+        "severity": "HIGH",
+        "collection": "shoes",
+        "field": "modelName",
+        "description": "Critical field 'modelName' in 'shoes' has 100.0% population but no UI display",
+        "impact": "Users cannot see important data that exists in the system",
+        "recommendation": "Add UI display for shoes.modelName in appropriate user interface"
+      },
+      {
+        "type": "MISSING_UI_DISPLAY",
+        "severity": "HIGH",
+        "collection": "shoes",
+        "field": "status",
+        "description": "Critical field 'status' in 'shoes' has 100.0% population but no UI display",
+        "impact": "Users cannot see important data that exists in the system",
+        "recommendation": "Add UI display for shoes.status in appropriate user interface"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/register/RegisterForm.tsx",
+        "field": "firstName",
+        "description": "Form input 'firstName' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for firstName"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/register/RegisterForm.tsx",
+        "field": "lastName",
+        "description": "Form input 'lastName' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for lastName"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/register/RegisterForm.tsx",
+        "field": "email",
+        "description": "Form input 'email' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for email"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/register/RegisterForm.tsx",
+        "field": "phone",
+        "description": "Form input 'phone' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for phone"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/register/RegisterForm.tsx",
+        "field": "password",
+        "description": "Form input 'password' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for password"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/register/RegisterForm.tsx",
+        "field": "confirmPassword",
+        "description": "Form input 'confirmPassword' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for confirmPassword"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-24",
+        "description": "Form input 'h-24' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-24"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/volunteer/page.tsx",
+        "field": "h-24",
+        "description": "Form input 'h-24' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-24"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/DonationDetailsDialog.tsx",
+        "field": "w-full",
+        "description": "Form input 'w-full' in 'src/components/admin/DonationDetailsDialog.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-full"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/DonationStatistics.tsx",
+        "field": "w-[180px]",
+        "description": "Form input 'w-[180px]' in 'src/components/admin/DonationStatistics.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-[180px]"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/MobileFilters.tsx",
+        "field": "pl-10 h-10",
+        "description": "Form input 'pl-10 h-10' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for pl-10 h-10"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/MobileFilters.tsx",
+        "field": "w-full",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-full"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/MobileFilters.tsx",
+        "field": "w-full",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-full"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/MobileFilters.tsx",
+        "field": "w-full",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-full"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/MobileFilters.tsx",
+        "field": "w-full",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-full"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/RequestDetailsDialog.tsx",
+        "field": "mt-1",
+        "description": "Form input 'mt-1' in 'src/components/admin/RequestDetailsDialog.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for mt-1"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/RequestDetailsDialog.tsx",
+        "field": "w-[180px]",
+        "description": "Form input 'w-[180px]' in 'src/components/admin/RequestDetailsDialog.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-[180px]"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "hidden",
+        "description": "Form input 'hidden' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for hidden"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "hidden",
+        "description": "Form input 'hidden' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for hidden"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "resize-y min-h-[100px] h-12",
+        "description": "Form input 'resize-y min-h-[100px] h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for resize-y min-h-[100px] h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "resize-y min-h-[140px]",
+        "description": "Form input 'resize-y min-h-[140px]' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for resize-y min-h-[140px]"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/UnifiedShoeForm.tsx",
+        "field": "h-12",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for h-12"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/components/admin/common/AdminTable.tsx",
+        "field": "w-[180px]",
+        "description": "Form input 'w-[180px]' in 'src/components/admin/common/AdminTable.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for w-[180px]"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/admin/shoes/edit/[id]/page.tsx",
+        "field": "hidden",
+        "description": "Form input 'hidden' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for hidden"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/admin/shoes/edit/[id]/page.tsx",
+        "field": "hidden",
+        "description": "Form input 'hidden' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for hidden"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/admin/shoes/edit/[id]/page.tsx",
+        "field": "resize-y min-h-[100px]",
+        "description": "Form input 'resize-y min-h-[100px]' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for resize-y min-h-[100px]"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/admin/shoes/edit/[id]/page.tsx",
+        "field": "resize-y min-h-[140px]",
+        "description": "Form input 'resize-y min-h-[140px]' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for resize-y min-h-[140px]"
+      },
+      {
+        "type": "MISSING_DATA_STORAGE",
+        "severity": "HIGH",
+        "component": "src/app/admin/shoes/page.tsx",
+        "field": "pl-10",
+        "description": "Form input 'pl-10' in 'src/app/admin/shoes/page.tsx' collects user data but has no database storage",
+        "impact": "User data is collected but lost (not persisted)",
+        "recommendation": "Add database field and API handling for pl-10"
+      }
+    ],
+    "missingFeatures": [],
+    "dataInconsistencies": [],
+    "performanceIssues": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_UI_DISPLAY",
+        "description": "Critical field 'emailVerified' in 'users' has 100.0% population but no UI display",
+        "action": "Add UI display for users.emailVerified in appropriate user interface"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_UI_DISPLAY",
+        "description": "Critical field 'modelName' in 'shoes' has 100.0% population but no UI display",
+        "action": "Add UI display for shoes.modelName in appropriate user interface"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_UI_DISPLAY",
+        "description": "Critical field 'status' in 'shoes' has 100.0% population but no UI display",
+        "action": "Add UI display for shoes.status in appropriate user interface"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'firstName' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for firstName"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'lastName' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for lastName"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'email' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for email"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'phone' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for phone"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'password' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for password"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'confirmPassword' in 'src/app/register/RegisterForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for confirmPassword"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-24' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-24"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-24' in 'src/app/volunteer/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-24"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-full' in 'src/components/admin/DonationDetailsDialog.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-full"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-[180px]' in 'src/components/admin/DonationStatistics.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-[180px]"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'pl-10 h-10' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for pl-10 h-10"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-full"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-full"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-full"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-full' in 'src/components/admin/MobileFilters.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-full"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'mt-1' in 'src/components/admin/RequestDetailsDialog.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for mt-1"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-[180px]' in 'src/components/admin/RequestDetailsDialog.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-[180px]"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'hidden' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for hidden"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'hidden' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for hidden"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'resize-y min-h-[100px] h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for resize-y min-h-[100px] h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'resize-y min-h-[140px]' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for resize-y min-h-[140px]"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'h-12' in 'src/components/admin/UnifiedShoeForm.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for h-12"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'w-[180px]' in 'src/components/admin/common/AdminTable.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for w-[180px]"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'hidden' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for hidden"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'hidden' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for hidden"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'resize-y min-h-[100px]' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for resize-y min-h-[100px]"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'resize-y min-h-[140px]' in 'src/app/admin/shoes/edit/[id]/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for resize-y min-h-[140px]"
+      },
+      {
+        "priority": "CRITICAL",
+        "type": "MISSING_DATA_STORAGE",
+        "description": "Form input 'pl-10' in 'src/app/admin/shoes/page.tsx' collects user data but has no database storage",
+        "action": "Add database field and API handling for pl-10"
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": []
+  }
+}

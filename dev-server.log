@@ -175,3 +175,28 @@ Using existing database connection
   syscall: 'open',
   path: '/Users/xinwenzhang/Documents/coding/shoes/.next/static/development/_buildManifest.js.tmp.a8v0v9ueaoc'
 }
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/api/health/[__metadata_id__]/route/app-paths-manifest.json'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/xinwenzhang/Documents/coding/shoes/.next/server/app/api/health/[__metadata_id__]/route/app-paths-manifest.json'
+}
+ ⨯ Error: Cannot find module '../chunks/ssr/[turbopack]_runtime.js'
+Require stack:
+- /Users/xinwenzhang/Documents/coding/shoes/.next/server/pages/_document.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/server/require.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/server/load-components.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/build/utils.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/build/swc/options.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/build/swc/index.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/server/lib/router-server.js
+- /Users/xinwenzhang/Documents/coding/shoes/node_modules/next/dist/server/lib/start-server.js
+    at Object.<anonymous> (.next/server/pages/_document.js:2:17) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ GET /api/health 500 in 425ms
+[?25h
