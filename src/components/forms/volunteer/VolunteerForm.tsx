@@ -356,7 +356,7 @@ export default function VolunteerForm() {
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full md:w-auto px-8"
+                className="w-full md:w-auto px-8 h-12 min-h-[44px] touch-manipulation"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Application'}
               </Button>

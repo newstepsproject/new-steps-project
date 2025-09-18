@@ -207,7 +207,7 @@ export default function ShoesPage() {
             />
             <Button 
               variant="ghost" 
-              className="absolute right-0 top-0 h-full px-3"
+              className="absolute right-0 top-0 h-full px-3 min-h-[44px] touch-manipulation"
               onClick={() => setSearchQuery('')}
             >
               {searchQuery && "Clear"}
@@ -224,7 +224,7 @@ export default function ShoesPage() {
             <div className="flex gap-4">
               <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="md:hidden">
+                  <Button variant="outline" className="md:hidden h-12 px-4 min-h-[44px] touch-manipulation">
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
                     Filters
                   </Button>
@@ -241,7 +241,7 @@ export default function ShoesPage() {
                     <Button 
                       onClick={clearFilters} 
                       variant="outline" 
-                      className="w-full mt-4"
+                      className="w-full mt-4 h-12 min-h-[44px] touch-manipulation"
                     >
                       Clear All Filters
                     </Button>
@@ -251,7 +251,7 @@ export default function ShoesPage() {
               <Button 
                 variant="outline" 
                 onClick={clearFilters} 
-                className="hidden md:flex"
+                className="hidden md:flex h-12 px-4 min-h-[44px] touch-manipulation"
                 disabled={
                   selectedSport === 'all' && 
                   selectedBrand === 'all' && 
@@ -291,7 +291,7 @@ export default function ShoesPage() {
                   <Footprints className="h-12 w-12 mx-auto text-gray-300 mb-4" />
                   <h3 className="text-xl font-bold mb-2">No shoes match your criteria</h3>
                   <p className="text-gray-600 mb-6">Try adjusting your filters to find more options</p>
-                  <Button onClick={clearFilters}>Clear All Filters</Button>
+                  <Button onClick={clearFilters} className="h-12 px-6 min-h-[44px] touch-manipulation">Clear All Filters</Button>
                 </div>
               ) : (
                 <>
@@ -358,7 +358,7 @@ export default function ShoesPage() {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                className="text-xs h-8 px-3 hover:bg-brand hover:text-white transition-colors"
+                                className="text-xs h-10 px-4 min-h-[44px] hover:bg-brand hover:text-white transition-colors touch-manipulation"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   const success = addItem({

@@ -193,7 +193,7 @@ export default function ContactForm() {
           <div className="pt-2">
             <Button 
               type="submit" 
-              className="w-full btn-primary"
+              className="w-full btn-primary h-12 min-h-[44px] touch-manipulation"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}

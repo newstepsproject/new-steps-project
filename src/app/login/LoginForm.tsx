@@ -213,7 +213,7 @@ export function LoginForm() {
             </div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full h-12 min-h-[44px] touch-manipulation"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -238,7 +238,7 @@ export function LoginForm() {
             <Button
               type="button"
               variant="outline"
-              className="w-full mt-4"
+              className="w-full mt-4 h-12 min-h-[44px] touch-manipulation"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
             >

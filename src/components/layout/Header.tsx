@@ -163,7 +163,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden text-gpt-text hover:text-gpt-primary transition-colors p-1 rounded-md"
+            className="md:hidden text-gpt-text hover:text-gpt-primary transition-colors p-3 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >

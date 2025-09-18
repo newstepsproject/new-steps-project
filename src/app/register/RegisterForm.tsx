@@ -212,7 +212,7 @@ export function RegisterForm() {
                 minLength={8}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full h-12 min-h-[44px] touch-manipulation" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
@@ -246,7 +246,7 @@ export function RegisterForm() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full"
+            className="w-full h-12 min-h-[44px] touch-manipulation"
           >
             <FcGoogle className="mr-2 h-5 w-5" /> Google
           </Button>

@@ -455,7 +455,7 @@ function DonationFormContent() {
                 <Button 
                   type="submit"
                   disabled={isSubmitting || formIsSubmitting}
-                  className="w-full"
+                  className="w-full h-12 min-h-[44px] touch-manipulation"
                 >
                   {isSubmitting || formIsSubmitting ? (
                     <div className="flex items-center justify-center">

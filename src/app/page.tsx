@@ -107,12 +107,12 @@ export default async function Home() {
                 Your shoes can get back on the courts, fields, and tracks — helping young athletes today.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Button asChild size="lg" className="bg-gpt-primary hover:bg-gpt-primary/90 text-white rounded-full px-6 py-3 font-semibold transition-all duration-300 transform hover:scale-105">
+                <Button asChild size="lg" className="bg-gpt-primary hover:bg-gpt-primary/90 text-white rounded-full px-6 py-4 min-h-[44px] font-semibold transition-all duration-300 transform hover:scale-105 touch-manipulation">
                   <Link href="/donate/shoes">
                     Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white rounded-full px-6 py-3 font-semibold transition-all duration-300">
+                <Button asChild variant="outline" size="lg" className="border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white rounded-full px-6 py-4 min-h-[44px] font-semibold transition-all duration-300 touch-manipulation">
                   <Link href="/shoes">
                     Get Free Shoes <ShoppingBag className="ml-2 h-4 w-4" />
                   </Link>
