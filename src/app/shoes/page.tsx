@@ -207,7 +207,7 @@ export default function ShoesPage() {
             />
             <Button 
               variant="ghost" 
-              className="absolute right-0 top-0 h-full px-3 min-h-[44px] touch-manipulation"
+              className="absolute right-0 top-0 h-full px-4 min-w-[44px] min-h-[44px] touch-manipulation"
               onClick={() => setSearchQuery('')}
             >
               {searchQuery && "Clear"}
