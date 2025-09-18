@@ -82,7 +82,7 @@ self.addEventListener('fetch', event => {
   
   // NEVER CACHE admin, auth, or account routes - always go to network
   if (shouldNeverCache(url)) {
-    console.log('🚫 SW: NEVER CACHE route:', url.pathname);
+    // Silently skip caching for security routes (auth, admin, account)
     event.respondWith(
       fetch(request, {
         cache: 'no-store',
