@@ -1,6 +1,6 @@
 // Mobile-optimized Service Worker for New Steps Project
-const CACHE_NAME = 'new-steps-mobile-v1';
-const STATIC_CACHE = 'new-steps-static-v1';
+const CACHE_NAME = 'new-steps-mobile-v2';
+const STATIC_CACHE = 'new-steps-static-v2';
 
 // Critical resources to cache for mobile (PUBLIC ONLY - no admin/auth)
 const CRITICAL_RESOURCES = [
