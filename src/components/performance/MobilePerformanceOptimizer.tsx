@@ -15,21 +15,8 @@ export function MobilePerformanceOptimizer({ children }: MobilePerformanceOptimi
       
       // Preload critical resources for mobile
       if (isMobile) {
-        // Preload critical fonts
-        const criticalFonts = [
-          '/fonts/inter-var.woff2',
-          '/fonts/montserrat-var.woff2'
-        ];
-        
-        criticalFonts.forEach(font => {
-          const link = document.createElement('link');
-          link.rel = 'preload';
-          link.href = font;
-          link.as = 'font';
-          link.type = 'font/woff2';
-          link.crossOrigin = 'anonymous';
-          document.head.appendChild(link);
-        });
+        // Preload critical Google Fonts (already handled by Next.js font optimization)
+        // No need to preload local font files since we're using Google Fonts
 
         // DNS prefetch for external resources
         const dnsPrefetchDomains = [
@@ -213,18 +200,26 @@ export function useMobilePerformance() {
  */
 export function preloadCriticalResources() {
   if (typeof window !== 'undefined' && isMobileDevice()) {
-    // Preload critical images
+    // Preload critical images (only if they exist)
     const criticalImages = [
-      '/images/logo-optimized.jpg',
+      '/images/new_logo_no_bg.png', // This exists based on the HTML output we saw
       '/images/home_photo-optimized.jpg'
     ];
 
     criticalImages.forEach(src => {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.href = src;
-      link.as = 'image';
-      document.head.appendChild(link);
+      // Check if image exists before preloading
+      const img = new Image();
+      img.onload = () => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = src;
+        link.as = 'image';
+        document.head.appendChild(link);
+      };
+      img.onerror = () => {
+        console.log(`Skipping preload for non-existent image: ${src}`);
+      };
+      img.src = src;
     });
 
     // Preload critical API endpoints
