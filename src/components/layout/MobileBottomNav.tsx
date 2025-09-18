@@ -17,7 +17,7 @@ export function MobileBottomNav() {
   const navItems = [
     { href: '/', icon: Home, label: 'Home' },
     { href: '/shoes', icon: ShoppingBag, label: 'Shoes' },
-    { href: '/cart', icon: ShoppingCart, label: 'Cart', badge: itemCount },
+    { href: '/cart', icon: ShoppingCart, label: 'Cart', badge: itemCount > 0 ? itemCount : undefined },
     { href: '/donate', icon: Footprints, label: 'Donate' },
     { href: session ? '/account' : '/login', icon: User, label: session ? 'Account' : 'Login' },
   ];
@@ -44,7 +44,7 @@ export function MobileBottomNav() {
             >
               <div className="relative">
                 <item.icon className="h-5 w-5" />
-                {item.badge && item.badge > 0 && (
+                {item.badge && (
                   <span className="absolute -top-2 -right-2 bg-energy text-white text-xs font-medium rounded-full w-4 h-4 flex items-center justify-center">
                     {item.badge}
                   </span>
