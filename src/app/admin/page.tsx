@@ -135,13 +135,13 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+      <div className="grid gap-4 lg:grid-cols-7">
+        <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>Quick Navigation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Link href="/admin/shoe-donations">
                 <Button variant="outline" className="w-full justify-start">
                   <Package className="mr-2 h-5 w-5" />
@@ -170,7 +170,7 @@ export default async function AdminPage() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
+        <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>System Status</CardTitle>
           </CardHeader>
