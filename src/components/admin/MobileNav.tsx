@@ -135,9 +135,9 @@ export default function MobileNav() {
                         Website
                       </Link>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           setSheetOpen(false);
-                          window.location.href = '/auth/signout?callbackUrl=/login';
+                          await signOut({ callbackUrl: '/login' });
                         }}
                         className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-red-600 hover:bg-gray-100"
                       >

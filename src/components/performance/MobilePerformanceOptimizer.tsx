@@ -15,21 +15,8 @@ export function MobilePerformanceOptimizer({ children }: MobilePerformanceOptimi
       
       // Preload critical resources for mobile
       if (isMobile) {
-        // Preload critical fonts
-        const criticalFonts = [
-          '/fonts/inter-var.woff2',
-          '/fonts/montserrat-var.woff2'
-        ];
-        
-        criticalFonts.forEach(font => {
-          const link = document.createElement('link');
-          link.rel = 'preload';
-          link.href = font;
-          link.as = 'font';
-          link.type = 'font/woff2';
-          link.crossOrigin = 'anonymous';
-          document.head.appendChild(link);
-        });
+        // Preload critical Google Fonts (already handled by Next.js font optimization)
+        // No need to preload local font files since we're using Google Fonts
 
         // DNS prefetch for external resources
         const dnsPrefetchDomains = [

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Login Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .test-section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 200px; }
+        .log { background: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Manual Login Test Helper</h1>
+    <p>This page helps debug login issues by testing the authentication API directly.</p>
+
+    <div class="test-section">
+        <h2>1. 🧪 Test NextAuth Endpoints</h2>
+        <button onclick="testEndpoints()">Test API Endpoints</button>
+        <div id="endpoint-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. 🔐 Test Login Credentials</h2>
+        <div>
+            <input type="email" id="email" placeholder="Email" value="newstepsfit@gmail.com">
+            <input type="password" id="password" placeholder="Password" value="Admin123!">
+            <button onclick="testLogin()">Test Login</button>
+        </div>
+        <div id="login-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. 🌐 Navigation Links</h2>
+        <p>Try these links manually:</p>
+        <ul>
+            <li><a href="/login" target="_blank">Login Page</a></li>
+            <li><a href="/account" target="_blank">Account Page</a></li>
+            <li><a href="/admin" target="_blank">Admin Dashboard</a></li>
+            <li><a href="/api/auth/session" target="_blank">Session API</a></li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>4. 📋 Debug Information</h2>
+        <button onclick="getDebugInfo()">Get Debug Info</button>
+        <div id="debug-info"></div>
+    </div>
+
+    <script>
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = isError ? 'log error' : 'log success';
+            return `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+
+        async function testEndpoints() {
+            const results = document.getElementById('endpoint-results');
+            results.innerHTML = '<p>Testing endpoints...</p>';
+            
+            const endpoints = [
+                '/api/auth/session',
+                '/api/auth/providers', 
+                '/api/auth/csrf'
+            ];
+            
+            let html = '';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint);
+                    const status = response.status;
+                    const statusText = status === 200 ? '✅ OK' : '❌ Error';
+                    html += log(`${endpoint}: ${status} ${statusText}`);
+                    
+                    if (endpoint === '/api/auth/session') {
+                        const data = await response.json();
+                        html += log(`Session data: ${JSON.stringify(data, null, 2)}`);
+                    }
+                } catch (error) {
+                    html += log(`${endpoint}: ${error.message}`, true);
+                }
+            }
+            
+            results.innerHTML = html;
+        }
+
+        async function testLogin() {
+            const results = document.getElementById('login-results');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            results.innerHTML = '<p>Testing login...</p>';
+            let html = '';
+            
+            try {
+                // Get CSRF token first
+                html += log('Getting CSRF token...');
+                const csrfResponse = await fetch('/api/auth/csrf');
+                const csrfData = await csrfResponse.json();
+                const csrfToken = csrfData.csrfToken;
+                html += log(`CSRF token: ${csrfToken.substring(0, 20)}...`);
+                
+                // Attempt login
+                html += log('Attempting login...');
+                const loginResponse = await fetch('/api/auth/signin/credentials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        email: email,
+                        password: password,
+                        csrfToken: csrfToken,
+                        redirect: 'false'
+                    })
+                });
+                
+                html += log(`Login response: ${loginResponse.status} ${loginResponse.statusText}`);
+                
+                if (loginResponse.ok) {
+                    html += log('✅ Login API call successful!');
+                    
+                    // Check session after login
+                    setTimeout(async () => {
+                        const sessionResponse = await fetch('/api/auth/session');
+                        const sessionData = await sessionResponse.json();
+                        html += log(`Session after login: ${JSON.stringify(sessionData, null, 2)}`);
+                        results.innerHTML = html;
+                    }, 1000);
+                } else {
+                    const errorText = await loginResponse.text();
+                    html += log(`❌ Login failed: ${errorText}`, true);
+                }
+                
+            } catch (error) {
+                html += log(`❌ Login error: ${error.message}`, true);
+            }
+            
+            results.innerHTML = html;
+        }
+
+        async function getDebugInfo() {
+            const results = document.getElementById('debug-info');
+            let html = '';
+            
+            // Browser info
+            html += log(`User Agent: ${navigator.userAgent}`);
+            html += log(`Current URL: ${window.location.href}`);
+            html += log(`Cookies enabled: ${navigator.cookieEnabled}`);
+            
+            // Local storage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                html += log('Local storage: ✅ Working');
+            } catch (e) {
+                html += log('Local storage: ❌ Not working', true);
+            }
+            
+            // Check for any existing session cookies
+            const cookies = document.cookie;
+            html += log(`Cookies: ${cookies || 'None'}`);
+            
+            results.innerHTML = html;
+        }
+
+        // Auto-test endpoints on page load
+        window.onload = () => {
+            testEndpoints();
+            getDebugInfo();
+        };
+    </script>
+</body>
+</html>
+

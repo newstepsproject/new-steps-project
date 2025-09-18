@@ -1,0 +1,72 @@
+{
+  "test_timestamp": "2025-09-18T11:30:08.490535",
+  "base_url": "http://localhost:3001",
+  "user_flows": {
+    "homepage_desktop": {
+      "status": "passed",
+      "title": "Give New Life to Old Kicks | Donate & Request Free Sports Shoes",
+      "cta_buttons": 9,
+      "load_time": 1395
+    },
+    "shoes_catalog_desktop": {
+      "status": "passed",
+      "shoes_count": 3,
+      "filter_buttons": 2,
+      "add_to_cart_buttons": 3
+    },
+    "mobile_navigation": {
+      "status": "failed",
+      "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"button[aria-label*=\\\"menu\\\"], .hamburger, button:has(svg)\").first\n    - locator resolved to <button type=\"button\" data-state=\"closed\" aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-controls=\"radix-_R_mllb_\" class=\"relative p-2 rounded-full hover:bg-gray-100 transition-colors\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+    },
+    "mobile_touch_targets": {
+      "status": "needs_improvement",
+      "total_buttons_checked": 17,
+      "small_buttons": [
+        {
+          "text": "button_2",
+          "size": "24x44"
+        }
+      ]
+    }
+  },
+  "admin_flows": {},
+  "ui_issues": [
+    {
+      "type": "homepage_title",
+      "message": "Unexpected title: Give New Life to Old Kicks | Donate & Request Free Sports Shoes",
+      "viewport": "desktop",
+      "timestamp": "2025-09-18T11:30:14.257352"
+    },
+    {
+      "type": "desktop_test_error",
+      "message": "'LocalhostUIUXTester' object has no attribute 'test_about_page'",
+      "timestamp": "2025-09-18T11:30:16.966396"
+    },
+    {
+      "type": "touch_targets",
+      "message": "Found 1 buttons smaller than 44x44px",
+      "viewport": "mobile",
+      "timestamp": "2025-09-18T11:30:51.236186"
+    },
+    {
+      "type": "mobile_test_error",
+      "message": "'LocalhostUIUXTester' object has no attribute 'test_mobile_forms'",
+      "timestamp": "2025-09-18T11:30:51.236203"
+    }
+  ],
+  "performance_metrics": {
+    "homepage_desktop": {
+      "loadTime": 0,
+      "domContentLoaded": 0.09999999403953552,
+      "firstPaint": 884,
+      "firstContentfulPaint": 884
+    }
+  },
+  "overall_status": {
+    "total_tests": 4,
+    "passed_tests": 2,
+    "success_rate": 50.0,
+    "ui_issues_count": 4,
+    "status": "needs_improvement"
+  }
+}

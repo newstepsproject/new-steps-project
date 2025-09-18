@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Browser Cache - New Steps</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .warning { background: #fff3cd; border: 1px solid #ffeaa7; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .log { background: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; font-family: monospace; }
+        .step { margin: 10px 0; padding: 10px; background: white; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🧹 Clear Browser Cache for Login Fix</h1>
+    <p><strong>Issue:</strong> Login works in incognito but not regular browser = Cache/Cookie problem</p>
+
+    <div class="section warning">
+        <h2>🎯 Quick Fix Steps</h2>
+        <div class="step">
+            <strong>1. Clear Browser Data (Recommended)</strong>
+            <ul>
+                <li><strong>Chrome:</strong> Ctrl+Shift+Delete → Clear browsing data → Cookies and site data + Cached images</li>
+                <li><strong>Firefox:</strong> Ctrl+Shift+Delete → Cookies + Cache</li>
+                <li><strong>Safari:</strong> Develop menu → Empty Caches + Manage Website Data</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <strong>2. Or use the buttons below to clear programmatically:</strong>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🛠️ Automated Cache Clearing</h2>
+        <button onclick="clearAllStorage()">Clear All Storage</button>
+        <button onclick="clearCookies()">Clear Cookies</button>
+        <button onclick="clearServiceWorker()">Clear Service Worker</button>
+        <button onclick="hardRefresh()">Hard Refresh</button>
+        <div id="results"></div>
+    </div>
+
+    <div class="section">
+        <h2>🔍 Current Browser State</h2>
+        <button onclick="checkBrowserState()">Check Current State</button>
+        <div id="browser-state"></div>
+    </div>
+
+    <div class="section success">
+        <h2>✅ After Clearing Cache</h2>
+        <p><strong>Test Login:</strong> <a href="/login" target="_blank">Go to Login Page</a></p>
+        <p><strong>Credentials:</strong></p>
+        <ul>
+            <li>Email: newstepsfit@gmail.com</li>
+            <li>Password: Admin123!</li>
+        </ul>
+    </div>
+
+    <script>
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = isError ? 'log' : 'log';
+            return `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+
+        async function clearAllStorage() {
+            const results = document.getElementById('results');
+            let html = '';
+
+            try {
+                // Clear localStorage
+                localStorage.clear();
+                html += log('✅ localStorage cleared');
+
+                // Clear sessionStorage
+                sessionStorage.clear();
+                html += log('✅ sessionStorage cleared');
+
+                // Clear IndexedDB (if any)
+                if ('indexedDB' in window) {
+                    // This is more complex, but we'll try a simple approach
+                    html += log('ℹ️ IndexedDB exists (manual clear may be needed)');
+                }
+
+                // Clear any NextAuth specific storage
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('next-auth') || key.includes('auth'))) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                html += log(`✅ Removed ${keysToRemove.length} auth-related storage items`);
+
+                html += log('🎯 All storage cleared! Try logging in now.');
+
+            } catch (error) {
+                html += log(`❌ Error clearing storage: ${error.message}`, true);
+            }
+
+            results.innerHTML = html;
+        }
+
+        async function clearCookies() {
+            const results = document.getElementById('results');
+            let html = '';
+
+            try {
+                // We can't actually clear cookies from JavaScript for security reasons
+                // But we can show what cookies exist
+                const cookies = document.cookie.split(';');
+                html += log(`ℹ️ Found ${cookies.length} cookies`);
+                
+                cookies.forEach(cookie => {
+                    const [name] = cookie.split('=');
+                    if (name.trim().includes('next-auth') || name.trim().includes('auth')) {
+                        html += log(`🍪 Auth cookie found: ${name.trim()}`);
+                        // Try to expire the cookie
+                        document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                    }
+                });
+
+                html += log('⚠️ Some cookies may require manual clearing via browser settings');
+                html += log('💡 Use Ctrl+Shift+Delete to clear all cookies');
+
+            } catch (error) {
+                html += log(`❌ Error with cookies: ${error.message}`, true);
+            }
+
+            results.innerHTML = html;
+        }
+
+        async function clearServiceWorker() {
+            const results = document.getElementById('results');
+            let html = '';
+
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    html += log(`🔧 Found ${registrations.length} service workers`);
+
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                        html += log('✅ Service worker unregistered');
+                    }
+
+                    // Clear caches
+                    if ('caches' in window) {
+                        const cacheNames = await caches.keys();
+                        html += log(`🗂️ Found ${cacheNames.length} caches`);
+
+                        for (const cacheName of cacheNames) {
+                            await caches.delete(cacheName);
+                            html += log(`✅ Deleted cache: ${cacheName}`);
+                        }
+                    }
+
+                    html += log('🎯 Service worker and caches cleared!');
+                } else {
+                    html += log('ℹ️ Service workers not supported');
+                }
+
+            } catch (error) {
+                html += log(`❌ Error clearing service worker: ${error.message}`, true);
+            }
+
+            results.innerHTML = html;
+        }
+
+        function hardRefresh() {
+            const results = document.getElementById('results');
+            results.innerHTML = log('🔄 Performing hard refresh...');
+            
+            // Force hard refresh
+            window.location.reload(true);
+        }
+
+        async function checkBrowserState() {
+            const results = document.getElementById('browser-state');
+            let html = '';
+
+            // Check localStorage
+            html += log(`📦 localStorage items: ${localStorage.length}`);
+            
+            // Check sessionStorage
+            html += log(`📦 sessionStorage items: ${sessionStorage.length}`);
+            
+            // Check cookies
+            const cookies = document.cookie.split(';').filter(c => c.trim());
+            html += log(`🍪 Cookies: ${cookies.length}`);
+            
+            // Check for auth-related items
+            const authCookies = cookies.filter(c => c.includes('next-auth') || c.includes('auth'));
+            html += log(`🔐 Auth cookies: ${authCookies.length}`);
+            
+            // Check service worker
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    html += log(`🔧 Service workers: ${registrations.length}`);
+                } catch (e) {
+                    html += log('🔧 Service workers: Error checking');
+                }
+            }
+
+            // Check caches
+            if ('caches' in window) {
+                try {
+                    const cacheNames = await caches.keys();
+                    html += log(`🗂️ Caches: ${cacheNames.length}`);
+                } catch (e) {
+                    html += log('🗂️ Caches: Error checking');
+                }
+            }
+
+            results.innerHTML = html;
+        }
+
+        // Auto-check state on page load
+        window.onload = () => {
+            checkBrowserState();
+        };
+    </script>
+</body>
+</html>
+

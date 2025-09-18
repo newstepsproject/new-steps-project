@@ -1,0 +1,86 @@
+{
+  "environment": "localhost",
+  "base_url": "http://localhost:3000",
+  "audit_date": "2025-09-18T00:02:20.579731",
+  "total_pages": 6,
+  "total_touch_issues": 18,
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "test_user": "walterzhang10@gmail.com",
+  "pages": [
+    {
+      "page": "public__",
+      "description": "Homepage - Hero & Mobile Navigation",
+      "screenshot": "walter_mobile_audit_localhost/public__.png",
+      "url": "http://localhost:3000/",
+      "touch_issues": [
+        "a 'Send shoes back to action' is 194x24px (needs 44x44px)",
+        "a 'Browse shoes' is 111x24px (needs 44x44px)",
+        "a 'Get involved' is 107x24px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:02.820768"
+    },
+    {
+      "page": "public__shoes",
+      "description": "Browse Shoes - Grid & Touch Targets",
+      "screenshot": "walter_mobile_audit_localhost/public__shoes.png",
+      "url": "http://localhost:3000/shoes",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'unnamed' is 24x44px (needs 44x44px)",
+        "a 'Send Shoes Back to Action' is 329x40px (needs 44x44px)",
+        "a 'Support Our Mission' is 329x40px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:05.394088"
+    },
+    {
+      "page": "public__about",
+      "description": "About Us - Content & Links",
+      "screenshot": "walter_mobile_audit_localhost/public__about.png",
+      "url": "http://localhost:3000/about",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "a 'Join Our Mission' is 162x40px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:07.723364"
+    },
+    {
+      "page": "public__donate",
+      "description": "Donate Landing - CTA Buttons",
+      "screenshot": "walter_mobile_audit_localhost/public__donate.png",
+      "url": "http://localhost:3000/donate",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:10.033399"
+    },
+    {
+      "page": "public__contact",
+      "description": "Contact Form - Input Fields",
+      "screenshot": "walter_mobile_audit_localhost/public__contact.png",
+      "url": "http://localhost:3000/contact",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Send Message' is 279x40px (needs 44x44px)",
+        "a 'Privacy Policy' is 70x14px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:12.270855"
+    },
+    {
+      "page": "public__login",
+      "description": "Login Form - Touch Targets",
+      "screenshot": "walter_mobile_audit_localhost/public__login.png",
+      "url": "http://localhost:3000/login",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Sign in' is 279x40px (needs 44x44px)",
+        "button 'Sign in with Google' is 279x40px (needs 44x44px)",
+        "a 'Forgot your password?' is 129x17px (needs 44x44px)",
+        "a 'Sign up' is 43x17px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:14.734282"
+    }
+  ]
+}

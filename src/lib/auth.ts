@@ -146,6 +146,12 @@ export const authOptions: NextAuthOptions = {
       console.log('🔄 NEXTAUTH REDIRECT CALLBACK:', { url, baseUrl });
       
       try {
+        // If url is the login page, redirect to account instead (prevent login loops)
+        if (url === `${baseUrl}/login` || url === '/login') {
+          console.log('🔄 LOGIN PAGE DETECTED, REDIRECTING TO ACCOUNT');
+          return `${baseUrl}/account`;
+        }
+        
         // Handle relative URLs
         if (url.startsWith('/')) {
           console.log('✅ REDIRECTING TO RELATIVE URL:', url);

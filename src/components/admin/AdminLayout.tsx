@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import { useSafePathname } from '@/hooks/useSafeRouter';
 import { Home, Package, Users, DollarSign, FileText, Settings, LogOut, Footprints } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import MobileNav from './MobileNav';
 
 interface AdminLayoutProps {
@@ -22,8 +23,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { label: 'Settings', href: '/admin/settings', icon: <Settings className="mr-2 h-4 w-4" /> },
   ];
 
-  const handleLogout = () => {
-    window.location.href = '/auth/signout?callbackUrl=/login';
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/login' });
   };
 
   return (

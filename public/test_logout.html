@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout Test</title>
+</head>
+<body>
+    <h1>Production Logout Test</h1>
+    <button onclick="testLogout()">Test Logout</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testLogout() {
+            try {
+                // Method 1: NextAuth signOut
+                const response1 = await fetch('/api/auth/signout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>Logout Test Results:</h3>
+                    <p>Method 1 (POST): ${response1.status}</p>
+                `;
+                
+                // Check session after logout
+                const sessionResponse = await fetch('/api/auth/session');
+                const session = await sessionResponse.json();
+                
+                document.getElementById('result').innerHTML += `
+                    <h3>Session after logout:</h3>
+                    <pre>${JSON.stringify(session, null, 2)}</pre>
+                `;
+                
+                if (Object.keys(session).length === 0) {
+                    document.getElementById('result').innerHTML += '<p>✅ Logout successful!</p>';
+                } else {
+                    document.getElementById('result').innerHTML += '<p>❌ Still logged in</p>';
+                }
+                
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
