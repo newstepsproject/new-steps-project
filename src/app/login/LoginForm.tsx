@@ -92,15 +92,25 @@ export function LoginForm() {
         console.log('🔧 Will try direct API method...');
       }
 
-      // METHOD 2: If NextAuth fails, try direct API call
+      // METHOD 2: If NextAuth fails, try direct API call with proper form data
       console.log('🔄 NEXTAUTH FAILED, TRYING DIRECT API...');
+      
+      // Get CSRF token first
+      const csrfResponse = await fetch('/api/auth/csrf');
+      const csrfData = await csrfResponse.json();
+      const csrfToken = csrfData.csrfToken;
       
       const directResponse = await fetch('/api/auth/signin/credentials', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({ email, password }),
+        body: new URLSearchParams({
+          email,
+          password,
+          csrfToken,
+          redirect: 'false'
+        }),
       });
 
       console.log('🔍 DIRECT API RESPONSE:', directResponse.status);
@@ -121,8 +131,16 @@ export function LoginForm() {
           console.log('🔍 Checking session after direct API login...');
           const sessionCheck = await fetch('/api/auth/session');
           console.log('🔍 SESSION CHECK RESPONSE:', sessionCheck.status);
-          const session = await sessionCheck.json();
-          console.log('🔍 SESSION DATA:', JSON.stringify(session, null, 2));
+          
+          let session = null;
+          try {
+            session = await sessionCheck.json();
+            console.log('🔍 SESSION DATA:', JSON.stringify(session, null, 2));
+          } catch (parseError) {
+            console.error('❌ Failed to parse session response as JSON:', parseError);
+            const sessionText = await sessionCheck.text();
+            console.log('🔍 SESSION RESPONSE TEXT:', sessionText.substring(0, 200));
+          }
           
           if (session?.user) {
             console.log('✅ SESSION ESTABLISHED, redirecting to:', callbackUrl);
