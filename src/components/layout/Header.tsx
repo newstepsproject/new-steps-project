@@ -144,15 +144,25 @@ const Header = () => {
                         </Link>
                       )}
                       <button 
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          
+
                           console.log('🚪 Logging out from header...');
                           setIsLoggedOut(true); // Immediate UI update
-                          
-                          // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
-                          window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
+
+                          try {
+                            const result = await signOut({
+                              callbackUrl: '/login',
+                              redirect: false,
+                            });
+
+                            const targetUrl = result?.url ?? '/login';
+                            window.location.href = targetUrl;
+                          } catch (error) {
+                            console.error('Logout error from header:', error);
+                            window.location.href = '/login';
+                          }
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
                       >

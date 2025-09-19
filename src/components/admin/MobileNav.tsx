@@ -135,12 +135,22 @@ export default function MobileNav() {
                         Website
                       </Link>
         <button
-          onClick={() => {
+          onClick={async () => {
             setSheetOpen(false);
             console.log('🚪 Logging out from admin mobile nav...');
-            
-            // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
-            window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
+
+            try {
+              const result = await signOut({
+                callbackUrl: '/login',
+                redirect: false,
+              });
+
+              const targetUrl = result?.url ?? '/login';
+              window.location.href = targetUrl;
+            } catch (error) {
+              console.error('Logout error from admin mobile nav:', error);
+              window.location.href = '/login';
+            }
           }}
           className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-red-600 hover:bg-gray-100"
         >

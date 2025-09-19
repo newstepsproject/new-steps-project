@@ -1,6 +1,6 @@
 // Mobile-optimized Service Worker for New Steps Project
-const CACHE_NAME = 'new-steps-mobile-v2';
-const STATIC_CACHE = 'new-steps-static-v2';
+const CACHE_NAME = 'new-steps-mobile-v4';
+const STATIC_CACHE = 'new-steps-static-v4';
 
 // Critical resources to cache for mobile (PUBLIC ONLY - no admin/auth)
 const CRITICAL_RESOURCES = [
@@ -75,6 +75,11 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Allow the browser to handle non-GET requests (preserve headers/body)
+  if (request.method !== 'GET') {
+    return;
+  }
+
   // Only handle same-origin requests
   if (url.origin !== location.origin) {
     return;
@@ -82,7 +87,6 @@ self.addEventListener('fetch', event => {
   
   // NEVER CACHE admin, auth, or account routes - always go to network
   if (shouldNeverCache(url)) {
-    // Silently skip caching for security routes (auth, admin, account)
     event.respondWith(
       fetch(request, {
         cache: 'no-store',

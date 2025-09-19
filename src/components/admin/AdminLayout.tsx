@@ -23,11 +23,21 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { label: 'Settings', href: '/admin/settings', icon: <Settings className="mr-2 h-4 w-4" /> },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log('🚪 Logging out from admin layout...');
-    
-    // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
-    window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
+
+    try {
+      const result = await signOut({
+        callbackUrl: '/login',
+        redirect: false,
+      });
+
+      const targetUrl = result?.url ?? '/login';
+      window.location.href = targetUrl;
+    } catch (error) {
+      console.error('Logout error from admin layout:', error);
+      window.location.href = '/login';
+    }
   };
 
   return (

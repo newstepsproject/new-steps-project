@@ -57,17 +57,41 @@ export default function WorkingLoginForm() {
       console.log('🔑 Attempting login with NextAuth signIn...');
       console.log('🎯 Callback URL:', callbackUrl);
       
-      // Use redirect: true to let NextAuth handle everything
-      await signIn('credentials', {
+      const result = await signIn('credentials', {
         email,
         password,
         callbackUrl, // NextAuth will redirect here after successful login
-        redirect: true, // Let NextAuth handle redirect automatically
+        redirect: false, // Handle navigation manually to avoid JSON parse issues
       });
 
-      // This code won't execute if redirect: true works properly
-      console.log('⚠️ signIn completed without redirect - this should not happen');
+      if (result?.error) {
+        console.warn('⚠️ Credentials sign-in returned error:', result.error);
+        setError('Invalid email or password. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+
+      const targetUrl = result?.url ?? callbackUrl;
+      console.log('✅ Credentials sign-in successful, navigating to:', targetUrl);
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('login-success'));
+      }
+
+      router.push(targetUrl);
     } catch (err) {
+      if (err instanceof SyntaxError) {
+        console.warn('⚠️ NextAuth returned non-JSON payload, falling back to manual session refresh');
+        try {
+          const refreshedSession = await update();
+          console.log('✅ Session refreshed after fallback:', refreshedSession);
+          router.push(callbackUrl);
+          return;
+        } catch (refreshError) {
+          console.error('❌ Fallback session refresh failed:', refreshError);
+        }
+      }
+
       console.error('❌ Login exception:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {

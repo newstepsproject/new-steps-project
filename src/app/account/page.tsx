@@ -172,18 +172,13 @@ export default function AccountPage() {
         });
       }
       
-      // Use NextAuth signOut but don't wait for it
-      signOut({ 
+      const result = await signOut({ 
         callbackUrl: '/login',
         redirect: false 
-      }).catch(() => {
-        // Ignore errors, we'll force redirect anyway
       });
-      
-      // Force immediate redirect
-      setTimeout(() => {
-        window.location.replace('/login');
-      }, 100);
+
+      const targetUrl = result?.url ?? '/login';
+      window.location.href = targetUrl;
       
     } catch (error) {
       console.error('Logout error:', error);
