@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -157,8 +157,39 @@ export default function AccountPage() {
     );
   };
 
-  const handleSignOut = () => {
-    router.push('/auth/signout');
+  const handleSignOut = async () => {
+    console.log('🚪 Logging out from account page...');
+    
+    try {
+      // Clear all possible session storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear all cookies
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+      }
+      
+      // Use NextAuth signOut but don't wait for it
+      signOut({ 
+        callbackUrl: '/login',
+        redirect: false 
+      }).catch(() => {
+        // Ignore errors, we'll force redirect anyway
+      });
+      
+      // Force immediate redirect
+      setTimeout(() => {
+        window.location.replace('/login');
+      }, 100);
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if everything fails
+      window.location.replace('/login');
+    }
   };
 
   const handleResendVerification = async () => {

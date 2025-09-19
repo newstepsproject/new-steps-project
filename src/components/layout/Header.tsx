@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { User, Menu, X, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -143,9 +143,21 @@ const Header = () => {
                           Admin Dashboard
                         </Link>
                       )}
-                      <Link href="/auth/signout" className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          
+                          console.log('🚪 Logging out from header...');
+                          setIsLoggedOut(true); // Immediate UI update
+                          
+                          // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
+                          window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                      >
                         Sign out
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </PopoverContent>

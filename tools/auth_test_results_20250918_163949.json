@@ -1,0 +1,85 @@
+{
+  "timestamp": "20250918_163949",
+  "summary": {
+    "total_tests": 5,
+    "successful_logins": 0,
+    "successful_logouts": 0,
+    "login_success_rate": "0.0%",
+    "logout_success_rate": "0.0%",
+    "console_errors_found": 1
+  },
+  "console_errors": [
+    "Login error: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+  ],
+  "detailed_results": [
+    {
+      "test_type": "public_website_desktop",
+      "login": {
+        "success": false,
+        "final_url": "http://localhost:3000/account",
+        "console_errors": [],
+        "expected_redirect": true
+      },
+      "logout": {
+        "success": false,
+        "error": "Login failed"
+      }
+    },
+    {
+      "test_type": "public_website_mobile",
+      "login": {
+        "success": false,
+        "final_url": "http://localhost:3000/login",
+        "console_errors": [
+          "Login error: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+        ],
+        "expected_redirect": false
+      },
+      "logout": {
+        "success": false,
+        "error": "Login failed"
+      }
+    },
+    {
+      "test_type": "admin_dashboard_desktop",
+      "login": {
+        "success": false,
+        "final_url": "http://localhost:3000/account",
+        "console_errors": [],
+        "expected_redirect": true
+      },
+      "logout": {
+        "success": false,
+        "error": "Login failed"
+      }
+    },
+    {
+      "test_type": "admin_dashboard_mobile",
+      "login": {
+        "success": false,
+        "final_url": "http://localhost:3000/login",
+        "console_errors": [
+          "Login error: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+        ],
+        "expected_redirect": false
+      },
+      "logout": {
+        "success": false,
+        "error": "Login failed"
+      }
+    },
+    {
+      "test_type": "account_page",
+      "login": {
+        "success": false,
+        "final_url": "http://localhost:3000/account",
+        "console_errors": [],
+        "expected_redirect": true
+      },
+      "logout": {
+        "success": false,
+        "error": "Login failed"
+      }
+    }
+  ]
+}

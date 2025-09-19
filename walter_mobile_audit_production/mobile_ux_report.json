@@ -1,0 +1,107 @@
+{
+  "environment": "production",
+  "base_url": "https://newsteps.fit",
+  "audit_date": "2025-09-18T00:02:39.968619",
+  "total_pages": 6,
+  "total_touch_issues": 39,
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "test_user": "walterzhang10@gmail.com",
+  "pages": [
+    {
+      "page": "public__",
+      "description": "Homepage - Hero & Mobile Navigation",
+      "screenshot": "walter_mobile_audit_production/public__.png",
+      "url": "https://newsteps.fit/",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "a 'Send shoes back to action' is 194x24px (needs 44x44px)",
+        "a 'Browse shoes' is 111x24px (needs 44x44px)",
+        "a 'Get involved' is 107x24px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:24.536150"
+    },
+    {
+      "page": "public__shoes",
+      "description": "Browse Shoes - Grid & Touch Targets",
+      "screenshot": "walter_mobile_audit_production/public__shoes.png",
+      "url": "https://newsteps.fit/shoes",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'unnamed' is 24x40px (needs 44x44px)",
+        "button 'Filters' is 94x40px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button 'Add to Cart' is 83x32px (needs 44x44px)",
+        "button '12' is 80x40px (needs 44x44px)",
+        "button 'First page' is 34x32px (needs 44x44px)",
+        "button 'Previous page' is 34x32px (needs 44x44px)",
+        "button '1' is 40x32px (needs 44x44px)",
+        "button '2' is 40x32px (needs 44x44px)",
+        "button 'Next page' is 34x32px (needs 44x44px)",
+        "button 'Last page' is 34x32px (needs 44x44px)",
+        "a 'Send Shoes Back to Action' is 329x40px (needs 44x44px)",
+        "a 'Support Our Mission' is 329x40px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:27.033831"
+    },
+    {
+      "page": "public__about",
+      "description": "About Us - Content & Links",
+      "screenshot": "walter_mobile_audit_production/public__about.png",
+      "url": "https://newsteps.fit/about",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "a 'Join Our Mission' is 162x40px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:29.165499"
+    },
+    {
+      "page": "public__donate",
+      "description": "Donate Landing - CTA Buttons",
+      "screenshot": "walter_mobile_audit_production/public__donate.png",
+      "url": "https://newsteps.fit/donate",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:31.167258"
+    },
+    {
+      "page": "public__contact",
+      "description": "Contact Form - Input Fields",
+      "screenshot": "walter_mobile_audit_production/public__contact.png",
+      "url": "https://newsteps.fit/contact",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Send Message' is 279x40px (needs 44x44px)",
+        "a 'Privacy Policy' is 70x14px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:33.179710"
+    },
+    {
+      "page": "public__login",
+      "description": "Login Form - Touch Targets",
+      "screenshot": "walter_mobile_audit_production/public__login.png",
+      "url": "https://newsteps.fit/login",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Sign in' is 279x40px (needs 44x44px)",
+        "button 'Sign in with Google' is 279x40px (needs 44x44px)",
+        "a 'Forgot your password?' is 129x17px (needs 44x44px)",
+        "a 'Sign up' is 43x17px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-18T00:02:35.161335"
+    }
+  ]
+}

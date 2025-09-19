@@ -1,0 +1,62 @@
+{
+  "test_timestamp": "2025-09-18T11:33:28.680325",
+  "base_url": "http://localhost:3001",
+  "user_flows": {
+    "homepage_desktop": {
+      "status": "passed",
+      "title": "Give New Life to Old Kicks | Donate & Request Free Sports Shoes",
+      "cta_buttons": 9,
+      "load_time": 823
+    },
+    "shoes_catalog_desktop": {
+      "status": "passed",
+      "shoes_count": 3,
+      "filter_buttons": 2,
+      "add_to_cart_buttons": 3
+    },
+    "mobile_navigation": {
+      "status": "passed",
+      "mobile_menu_button": true,
+      "menu_opens": false
+    },
+    "mobile_touch_targets": {
+      "status": "passed",
+      "total_buttons_checked": 17,
+      "small_buttons": []
+    }
+  },
+  "admin_flows": {},
+  "ui_issues": [
+    {
+      "type": "homepage_title",
+      "message": "Unexpected title: Give New Life to Old Kicks | Donate & Request Free Sports Shoes",
+      "viewport": "desktop",
+      "timestamp": "2025-09-18T11:33:33.218746"
+    },
+    {
+      "type": "desktop_test_error",
+      "message": "'LocalhostUIUXTester' object has no attribute 'test_about_page'",
+      "timestamp": "2025-09-18T11:33:35.995878"
+    },
+    {
+      "type": "mobile_test_error",
+      "message": "'LocalhostUIUXTester' object has no attribute 'test_mobile_forms'",
+      "timestamp": "2025-09-18T11:33:41.440024"
+    }
+  ],
+  "performance_metrics": {
+    "homepage_desktop": {
+      "loadTime": 0,
+      "domContentLoaded": 0.30000001192092896,
+      "firstPaint": 768,
+      "firstContentfulPaint": 768
+    }
+  },
+  "overall_status": {
+    "total_tests": 4,
+    "passed_tests": 4,
+    "success_rate": 100.0,
+    "ui_issues_count": 3,
+    "status": "excellent"
+  }
+}

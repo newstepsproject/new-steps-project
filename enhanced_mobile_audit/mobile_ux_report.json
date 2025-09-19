@@ -1,0 +1,116 @@
+{
+  "audit_date": "2025-09-18T00:00:07.847250",
+  "total_pages": 8,
+  "pages_with_issues": 8,
+  "total_touch_issues": 28,
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "test_credentials": {
+    "user_email": "mobile.test@example.com",
+    "admin_email": "admin@newsteps.fit"
+  },
+  "pages": [
+    {
+      "page": "public__",
+      "description": "Homepage - Hero & Navigation",
+      "screenshot": "enhanced_mobile_audit/public__.png",
+      "url": "http://localhost:3000/",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "a 'Send shoes back to action' is 194x24px (needs 44x44px)",
+        "a 'Browse shoes' is 111x24px (needs 44x44px)",
+        "a 'Get involved' is 107x24px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:40.010049"
+    },
+    {
+      "page": "public__shoes",
+      "description": "Browse Shoes - Grid & Filters",
+      "screenshot": "enhanced_mobile_audit/public__shoes.png",
+      "url": "http://localhost:3000/shoes",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'unnamed' is 24x44px (needs 44x44px)",
+        "a 'Send Shoes Back to Action' is 329x40px (needs 44x44px)",
+        "a 'Support Our Mission' is 329x40px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:42.625066"
+    },
+    {
+      "page": "public__about",
+      "description": "About Us - Content Layout",
+      "screenshot": "enhanced_mobile_audit/public__about.png",
+      "url": "http://localhost:3000/about",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "a 'Join Our Mission' is 162x40px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:45.144214"
+    },
+    {
+      "page": "public__donate",
+      "description": "Donate Landing - Call to Action",
+      "screenshot": "enhanced_mobile_audit/public__donate.png",
+      "url": "http://localhost:3000/donate",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:47.499817"
+    },
+    {
+      "page": "public__donate_shoes",
+      "description": "Shoe Donation Form",
+      "screenshot": "enhanced_mobile_audit/public__donate_shoes.png",
+      "url": "http://localhost:3000/donate/shoes",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Submit Donation' is 279x40px (needs 44x44px)",
+        "a 'Privacy Policy' is 254x30px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:49.849747"
+    },
+    {
+      "page": "public__contact",
+      "description": "Contact Form",
+      "screenshot": "enhanced_mobile_audit/public__contact.png",
+      "url": "http://localhost:3000/contact",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Send Message' is 279x40px (needs 44x44px)",
+        "a 'Privacy Policy' is 70x14px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:52.106658"
+    },
+    {
+      "page": "public__login",
+      "description": "Login Form",
+      "screenshot": "enhanced_mobile_audit/public__login.png",
+      "url": "http://localhost:3000/login",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Sign in' is 279x40px (needs 44x44px)",
+        "button 'Sign in with Google' is 279x40px (needs 44x44px)",
+        "a 'Forgot your password?' is 129x17px (needs 44x44px)",
+        "a 'Sign up' is 43x17px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:54.378871"
+    },
+    {
+      "page": "public__register",
+      "description": "Registration Form",
+      "screenshot": "enhanced_mobile_audit/public__register.png",
+      "url": "http://localhost:3000/register",
+      "touch_issues": [
+        "button 'Open menu' is 32x32px (needs 44x44px)",
+        "button 'Create Account' is 247x40px (needs 44x44px)",
+        "a 'Privacy Policy' is 186x30px (needs 44x44px)",
+        "a 'Terms of Service' is 82x14px (needs 44x44px)",
+        "button 'Google' is 247x40px (needs 44x44px)",
+        "a 'Sign In' is 41x17px (needs 44x44px)"
+      ],
+      "timestamp": "2025-09-17T23:59:56.583630"
+    }
+  ]
+}

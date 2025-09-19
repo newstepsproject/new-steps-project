@@ -1,0 +1,241 @@
+{
+  "audit_date": "2025-09-17T23:54:38.422365",
+  "total_pages_tested": 21,
+  "viewport": {
+    "width": 375,
+    "height": 812
+  },
+  "pages": [
+    {
+      "page": "public__",
+      "description": "Homepage",
+      "screenshot": "mobile_audit_screenshots/public__.png",
+      "url": "http://localhost:3000/",
+      "issues": [
+        "4 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:41.185043"
+    },
+    {
+      "page": "public__about",
+      "description": "About Us",
+      "screenshot": "mobile_audit_screenshots/public__about.png",
+      "url": "http://localhost:3000/about",
+      "issues": [
+        "2 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:43.590747"
+    },
+    {
+      "page": "public__shoes",
+      "description": "Browse Shoes",
+      "screenshot": "mobile_audit_screenshots/public__shoes.png",
+      "url": "http://localhost:3000/shoes",
+      "issues": [
+        "8 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:46.077210"
+    },
+    {
+      "page": "public__donate",
+      "description": "Donate Shoes",
+      "screenshot": "mobile_audit_screenshots/public__donate.png",
+      "url": "http://localhost:3000/donate",
+      "issues": [
+        "1 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:48.374214"
+    },
+    {
+      "page": "public__donate_shoes",
+      "description": "Shoe Donation Form",
+      "screenshot": "mobile_audit_screenshots/public__donate_shoes.png",
+      "url": "http://localhost:3000/donate/shoes",
+      "issues": [
+        "3 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:51.463383"
+    },
+    {
+      "page": "public__donate_money",
+      "description": "Money Donation",
+      "screenshot": "mobile_audit_screenshots/public__donate_money.png",
+      "url": "http://localhost:3000/donate/money",
+      "issues": [
+        "3 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:54.135331"
+    },
+    {
+      "page": "public__get-involved",
+      "description": "Get Involved",
+      "screenshot": "mobile_audit_screenshots/public__get-involved.png",
+      "url": "http://localhost:3000/get-involved",
+      "issues": [
+        "4 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:56.731277"
+    },
+    {
+      "page": "public__contact",
+      "description": "Contact Us",
+      "screenshot": "mobile_audit_screenshots/public__contact.png",
+      "url": "http://localhost:3000/contact",
+      "issues": [
+        "3 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:53:59.239596"
+    },
+    {
+      "page": "public__login",
+      "description": "Login Page",
+      "screenshot": "mobile_audit_screenshots/public__login.png",
+      "url": "http://localhost:3000/login",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:01.931881"
+    },
+    {
+      "page": "public__register",
+      "description": "Registration Page",
+      "screenshot": "mobile_audit_screenshots/public__register.png",
+      "url": "http://localhost:3000/register",
+      "issues": [
+        "6 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:04.385442"
+    },
+    {
+      "page": "auth__account",
+      "description": "User Account Dashboard",
+      "screenshot": "mobile_audit_screenshots/auth__account.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Faccount",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:10.180566"
+    },
+    {
+      "page": "auth__cart",
+      "description": "Shopping Cart",
+      "screenshot": "mobile_audit_screenshots/auth__cart.png",
+      "url": "http://localhost:3000/cart",
+      "issues": [
+        "2 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:12.363402"
+    },
+    {
+      "page": "auth__checkout",
+      "description": "Checkout Process",
+      "screenshot": "mobile_audit_screenshots/auth__checkout.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fcheckout",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:15.379424"
+    },
+    {
+      "page": "admin__admin",
+      "description": "Admin Dashboard",
+      "screenshot": "mobile_audit_screenshots/admin__admin.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:22.080129"
+    },
+    {
+      "page": "admin__shoes",
+      "description": "Shoe Inventory Management",
+      "screenshot": "mobile_audit_screenshots/admin__shoes.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Fshoes",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:24.248382"
+    },
+    {
+      "page": "admin__requests",
+      "description": "Shoe Requests Management",
+      "screenshot": "mobile_audit_screenshots/admin__requests.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Frequests",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:26.480113"
+    },
+    {
+      "page": "admin__shoe-donations",
+      "description": "Shoe Donations Management",
+      "screenshot": "mobile_audit_screenshots/admin__shoe-donations.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Fshoe-donations",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:28.631233"
+    },
+    {
+      "page": "admin__money-donations",
+      "description": "Money Donations Management",
+      "screenshot": "mobile_audit_screenshots/admin__money-donations.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Fmoney-donations",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:30.829894"
+    },
+    {
+      "page": "admin__users",
+      "description": "User Management",
+      "screenshot": "mobile_audit_screenshots/admin__users.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Fusers",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:33.014128"
+    },
+    {
+      "page": "admin__analytics",
+      "description": "Analytics Dashboard",
+      "screenshot": "mobile_audit_screenshots/admin__analytics.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Fanalytics",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:35.231428"
+    },
+    {
+      "page": "admin__settings",
+      "description": "Admin Settings",
+      "screenshot": "mobile_audit_screenshots/admin__settings.png",
+      "url": "http://localhost:3000/login?callbackUrl=%2Fadmin%2Fsettings",
+      "issues": [
+        "5 touch targets smaller than 44px",
+        "Analysis error: Page.evaluate: SyntaxError: Illegal return statement\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:291:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "timestamp": "2025-09-17T23:54:37.414661"
+    }
+  ]
+}

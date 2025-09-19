@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import SimpleLoginForm from './SimpleLoginForm';
+import WorkingLoginForm from './WorkingLoginForm';
 
 // Loading component for Suspense fallback
 function LoginLoading() {
@@ -20,7 +20,7 @@ function LoginLoading() {
 export default function LoginPage() {
   return (
     <Suspense fallback={<LoginLoading />}>
-      <SimpleLoginForm />
+      <WorkingLoginForm />
     </Suspense>
   );
 } 

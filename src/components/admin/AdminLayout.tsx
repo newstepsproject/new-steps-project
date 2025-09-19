@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import { useSafePathname } from '@/hooks/useSafeRouter';
 import { Home, Package, Users, DollarSign, FileText, Settings, LogOut, Footprints } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import MobileNav from './MobileNav';
 
 interface AdminLayoutProps {
@@ -23,7 +24,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   ];
 
   const handleLogout = () => {
-    window.location.href = '/auth/signout?callbackUrl=/login';
+    console.log('🚪 Logging out from admin layout...');
+    
+    // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
+    window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
   };
 
   return (
