@@ -15,18 +15,20 @@ import { Loader2 } from 'lucide-react';
 export default function WorkingLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [callbackUrl, setCallbackUrl] = useState('/account');
 
-  // If already logged in, redirect immediately
+  // If already logged in, redirect immediately (but only if we're sure)
   useEffect(() => {
-    if (status === 'authenticated' && session) {
-      console.log('✅ Already authenticated, redirecting...');
+    if (status === 'authenticated' && session?.user?.email) {
+      console.log('✅ Already authenticated with valid session, redirecting...');
       router.push(callbackUrl);
+    } else if (status === 'unauthenticated') {
+      console.log('🔓 Confirmed unauthenticated, ready for login');
     }
   }, [status, session, router, callbackUrl]);
 
@@ -37,6 +39,15 @@ export default function WorkingLoginForm() {
     }
   }, [searchParams]);
 
+  // Force session update when component mounts (in case of stale session after logout)
+  useEffect(() => {
+    console.log('🔄 Updating session on login page mount...');
+    // Clear any stale session data
+    update().then(() => {
+      console.log('🔄 Session update completed, current status:', status);
+    });
+  }, [update, status]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -44,26 +55,18 @@ export default function WorkingLoginForm() {
 
     try {
       console.log('🔑 Attempting login with NextAuth signIn...');
+      console.log('🎯 Callback URL:', callbackUrl);
       
-      const result = await signIn('credentials', {
-        redirect: false, // Handle redirect manually
+      // Use redirect: true to let NextAuth handle everything
+      await signIn('credentials', {
         email,
         password,
+        callbackUrl, // NextAuth will redirect here after successful login
+        redirect: true, // Let NextAuth handle redirect automatically
       });
 
-      console.log('🔍 NextAuth signIn result:', result);
-
-      if (result?.error) {
-        console.error('❌ NextAuth signIn error:', result.error);
-        setError(result.error === 'CredentialsSignin' ? 'Invalid email or password.' : 'Login failed. Please try again.');
-      } else if (result?.ok) {
-        console.log('✅ Login successful, redirecting to:', callbackUrl);
-        // Successful login - NextAuth will handle session creation
-        router.push(callbackUrl);
-      } else {
-        console.error('❌ Unexpected signIn result:', result);
-        setError('Login failed. Please try again.');
-      }
+      // This code won't execute if redirect: true works properly
+      console.log('⚠️ signIn completed without redirect - this should not happen');
     } catch (err) {
       console.error('❌ Login exception:', err);
       setError('An unexpected error occurred. Please try again.');
@@ -86,13 +89,25 @@ export default function WorkingLoginForm() {
     }
   };
 
-  // Don't render form if already authenticated
-  if (status === 'authenticated') {
+  // Don't render form if already authenticated with valid session
+  if (status === 'authenticated' && session?.user?.email) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
           <p>Redirecting...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while session status is being determined
+  if (status === 'loading') {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Loading...</p>
         </div>
       </div>
     );

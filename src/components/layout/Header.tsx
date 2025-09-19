@@ -144,7 +144,16 @@ const Header = () => {
                         </Link>
                       )}
                       <button 
-                        onClick={() => signOut({ callbackUrl: '/login' })}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          
+                          console.log('🚪 Logging out from header...');
+                          setIsLoggedOut(true); // Immediate UI update
+                          
+                          // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
+                          window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
+                        }}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
                       >
                         Sign out

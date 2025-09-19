@@ -158,7 +158,38 @@ export default function AccountPage() {
   };
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/login' });
+    console.log('🚪 Logging out from account page...');
+    
+    try {
+      // Clear all possible session storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear all cookies
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+      }
+      
+      // Use NextAuth signOut but don't wait for it
+      signOut({ 
+        callbackUrl: '/login',
+        redirect: false 
+      }).catch(() => {
+        // Ignore errors, we'll force redirect anyway
+      });
+      
+      // Force immediate redirect
+      setTimeout(() => {
+        window.location.replace('/login');
+      }, 100);
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if everything fails
+      window.location.replace('/login');
+    }
   };
 
   const handleResendVerification = async () => {

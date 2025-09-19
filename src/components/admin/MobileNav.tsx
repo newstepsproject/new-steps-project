@@ -134,13 +134,16 @@ export default function MobileNav() {
                         <ExternalLink className="h-4 w-4 mr-2" />
                         Website
                       </Link>
-                      <button
-                        onClick={async () => {
-                          setSheetOpen(false);
-                          await signOut({ callbackUrl: '/login' });
-                        }}
-                        className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-red-600 hover:bg-gray-100"
-                      >
+        <button
+          onClick={() => {
+            setSheetOpen(false);
+            console.log('🚪 Logging out from admin mobile nav...');
+            
+            // Direct redirect to NextAuth signout endpoint - avoids JSON parsing issues
+            window.location.href = '/api/auth/signout?callbackUrl=' + encodeURIComponent('/login');
+          }}
+          className="flex items-center justify-center px-3 py-2 bg-white rounded-md text-sm text-red-600 hover:bg-gray-100"
+        >
                         <LogOut className="h-4 w-4 mr-2" />
                         Sign out
                       </button>

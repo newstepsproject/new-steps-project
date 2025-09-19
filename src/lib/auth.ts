@@ -138,7 +138,6 @@ export const authOptions: NextAuthOptions = {
   }),
   pages: {
     signIn: '/login',
-    signOut: '/auth/signout',
     error: '/login',
   },
   callbacks: {
@@ -146,16 +145,17 @@ export const authOptions: NextAuthOptions = {
       console.log('🔄 NEXTAUTH REDIRECT CALLBACK:', { url, baseUrl });
       
       try {
-        // If url is the login page, redirect to account instead (prevent login loops)
-        if (url === `${baseUrl}/login` || url === '/login') {
-          console.log('🔄 LOGIN PAGE DETECTED, REDIRECTING TO ACCOUNT');
+        // If no specific URL provided, default to account page
+        if (!url || url === baseUrl) {
+          console.log('🏠 NO SPECIFIC URL, DEFAULTING TO ACCOUNT PAGE');
           return `${baseUrl}/account`;
         }
         
         // Handle relative URLs
         if (url.startsWith('/')) {
-          console.log('✅ REDIRECTING TO RELATIVE URL:', url);
-          return `${baseUrl}${url}`;
+          const fullUrl = `${baseUrl}${url}`;
+          console.log('✅ REDIRECTING TO RELATIVE URL:', fullUrl);
+          return fullUrl;
         }
         
         // Handle same-origin URLs 
