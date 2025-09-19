@@ -13,7 +13,8 @@ import Link from 'next/link';
 import { AdminDashboardLink } from '@/components/admin/AdminDashboardLink';
 
 export default function AccountPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
+  const [sessionRefreshed, setSessionRefreshed] = useState(false);
   const router = useRouter();
   const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [verificationMessage, setVerificationMessage] = useState('');
@@ -42,6 +43,23 @@ export default function AccountPage() {
       setCheckingVerification(false);
     }
   }, [session]);
+
+  // Ensure we have the latest session data (e.g., after email verification)
+  useEffect(() => {
+    const refreshSession = async () => {
+      try {
+        await update();
+      } catch (error) {
+        console.error('Failed to refresh session:', error);
+      } finally {
+        setSessionRefreshed(true);
+      }
+    };
+
+    if (status === 'authenticated' && !sessionRefreshed) {
+      refreshSession();
+    }
+  }, [status, sessionRefreshed, update]);
 
   // Fetch user's requests when session is available
   useEffect(() => {
