@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSafePathname } from '@/hooks/useSafeRouter';
 import { Home, Footprints, ShoppingBag, ShoppingCart, User } from 'lucide-react';
@@ -13,11 +13,17 @@ export function MobileBottomNav() {
   const pathname = useSafePathname();
   const { data: session } = useSession();
   const { itemCount } = useCart();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only showing cart badge after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const navItems = [
     { href: '/', icon: Home, label: 'Home' },
     { href: '/shoes', icon: ShoppingBag, label: 'Shoes' },
-    { href: '/cart', icon: ShoppingCart, label: 'Cart', badge: itemCount > 0 ? itemCount : undefined },
+    { href: '/cart', icon: ShoppingCart, label: 'Cart', badge: mounted && itemCount > 0 ? itemCount : undefined },
     { href: '/donate', icon: Footprints, label: 'Donate' },
     { href: session ? '/account' : '/login', icon: User, label: session ? 'Account' : 'Login' },
   ];
