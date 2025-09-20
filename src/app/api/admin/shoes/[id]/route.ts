@@ -72,7 +72,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -82,8 +82,9 @@ export async function DELETE(
     }
 
     await dbConnect();
-    
-    const shoe = await Shoe.findByIdAndDelete(params.id);
+    const { id } = await params;
+
+    const shoe = await Shoe.findByIdAndDelete(id);
     
     if (!shoe) {
       return NextResponse.json({ error: 'Shoe not found' }, { status: 404 });

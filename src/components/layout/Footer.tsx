@@ -71,7 +71,7 @@ const Footer = async () => {
                       href={url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="bg-gray-800 hover:bg-gpt-primary text-gray-300 hover:text-white p-2.5 rounded-full transition-all duration-200"
+                      className="bg-gray-800 hover:bg-brand-500 text-gray-200 hover:text-white p-2.5 rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300"
                       aria-label={platformName}
                       title={platformName}
                     >
@@ -101,18 +101,18 @@ const Footer = async () => {
             <h3 className="text-xl font-bold mb-4 font-display text-white">Contact Us</h3>
             <div className="space-y-4">
               <div className="flex items-start group">
-                <MapPin className="w-5 h-5 mr-3 text-gpt-primary mt-0.5 flex-shrink-0" />
+                <MapPin className="w-5 h-5 mr-3 text-brand-400 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-300 group-hover:text-white transition-colors">
                   {settings.officeAddress.street}<br />
                   {settings.officeAddress.city}, {settings.officeAddress.state} {settings.officeAddress.zipCode}
                 </span>
               </div>
               <div className="flex items-center group">
-                <Phone className="w-5 h-5 mr-3 text-gpt-primary flex-shrink-0" />
+                <Phone className="w-5 h-5 mr-3 text-brand-400 flex-shrink-0" />
                 <a href={`tel:${settings.projectPhone}`} className="text-gray-300 group-hover:text-white transition-colors">{settings.projectPhone}</a>
               </div>
               <div className="flex items-center group">
-                <Mail className="w-5 h-5 mr-3 text-gpt-primary flex-shrink-0" />
+                <Mail className="w-5 h-5 mr-3 text-brand-400 flex-shrink-0" />
                 <a href={`mailto:${settings.projectEmail}`} className="text-gray-300 group-hover:text-white transition-colors">{settings.projectEmail}</a>
               </div>
             </div>
@@ -128,7 +128,7 @@ const Footer = async () => {
           <p className="text-gray-400 text-sm">&copy; {currentYear} {SITE_CONFIG.name}. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex items-center">
             <p className="text-gray-400 text-sm flex items-center">
-                              Made with <Heart className="h-3 w-3 text-gpt-primary mx-1 fill-gpt-primary" /> by young athletes
+                              Made with <Heart className="h-3 w-3 text-brand-400 mx-1 fill-brand-500" /> by young athletes
             </p>
           </div>
         </div>

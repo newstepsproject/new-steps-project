@@ -40,7 +40,7 @@ export function VolunteerCard({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow" data-testid={`volunteer-card-${volunteer.id}`}>
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
           <div>
@@ -105,7 +105,7 @@ export function VolunteerCard({
           <div>
             <p className="text-sm font-medium mb-1">Interests:</p>
             <div className="flex flex-wrap gap-1">
-              {volunteer.interests.map((interest, index) => (
+              {(volunteer.interests ?? []).map((interest, index) => (
                 <Badge key={index} variant="secondary" className="text-xs">
                   {interest}
                 </Badge>

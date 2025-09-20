@@ -10,6 +10,10 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
+    "test:api": "node testing/run-api-tests.mjs --target=http://localhost:3000",
+    "test:workflows": "node testing/run-workflows.mjs --target=http://localhost:3000",
+    "test:ui": "node testing/playwright-tests.mjs",
+    "smoke": "node testing/run-api-tests.mjs",
     "clean": "rm -rf node_modules .next",
     "monitor": "node scripts/monitor-errors.js",
     "dev:monitor": "npm run dev 2>&1 | tee dev.log & sleep 5 && npm run monitor",
@@ -70,6 +74,7 @@
     "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.17",
     "@types/node-fetch": "^2.6.12",
@@ -78,6 +83,7 @@
     "@types/react-dom": "^18.2.19",
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.17",
+    "axe-playwright": "^2.2.2",
     "dotenv": "^16.6.1",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",

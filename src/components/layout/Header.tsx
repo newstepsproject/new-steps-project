@@ -102,15 +102,16 @@ const Header = () => {
               <Link 
                 key={link.href}
                 href={link.href}
-                className={`font-medium text-sm transition-colors duration-200 relative group ${
+                className={`font-medium text-sm transition-colors duration-200 relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
                   isActive(link.activeOn) 
-                    ? 'text-gpt-primary' 
-                    : 'text-gpt-text hover:text-gpt-primary'
+                    ? 'text-brand-700' 
+                    : 'text-gpt-text hover:text-brand-600'
                 }`}
               >
                 {link.label}
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gpt-primary transition-all duration-200 
-                  ${isActive(link.activeOn) ? 'w-full' : 'group-hover:w-full'}`}>
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-brand-600 transition-all duration-200 ${
+                  isActive(link.activeOn) ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}>
                 </span>
               </Link>
             ))}
@@ -123,7 +124,7 @@ const Header = () => {
             {(session && !isLoggedOut) ? (
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="text-gpt-text hover:text-gpt-primary transition-colors" aria-label="User profile">
+                  <button className="text-gpt-text hover:text-brand-600 transition-colors" aria-label="User profile">
                     <User className="h-5 w-5" />
                   </button>
                 </PopoverTrigger>
@@ -185,7 +186,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden text-gpt-text hover:text-gpt-primary transition-colors p-3 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
+            className="md:hidden text-gpt-text hover:text-brand-600 transition-colors p-3 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
@@ -207,8 +208,8 @@ const Header = () => {
                   href={link.href}
                   className={`px-3 py-2 font-medium transition-all duration-200 rounded-md ${
                     isActive(link.activeOn) 
-                      ? 'text-gpt-primary bg-gpt-primary/10 shadow-soft' 
-                      : 'text-gpt-text hover:text-gpt-primary hover:bg-gray-50'
+                      ? 'text-brand-700 bg-brand-50 shadow-soft border border-brand-100' 
+                      : 'text-gpt-text hover:text-brand-600 hover:bg-gray-50'
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -217,7 +218,7 @@ const Header = () => {
               ))}
               <div className="pt-3 mt-2 border-t border-gray-100 grid grid-cols-2 gap-3">
                 <div
-                  className="flex items-center text-gpt-text hover:text-gpt-primary hover:bg-gray-50 p-2 rounded-md transition-colors"
+                  className="flex items-center text-gpt-text hover:text-brand-600 hover:bg-gray-50 p-2 rounded-md transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <CartIcon />

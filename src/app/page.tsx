@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag, CreditCard, Footprints } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { APP_NAME } from '@/constants/config';
 import { getAppSettings, getActiveSocialPlatforms } from '@/lib/settings';
 import { Instagram, Twitter, Facebook, Youtube, Linkedin, Globe } from 'lucide-react';
@@ -103,20 +102,22 @@ export default async function Home() {
                 Give New Life<br />
                 to Old Kicks
               </h1>
-              <p className="text-sm md:text-base lg:text-lg text-gpt-text/80 mb-6 max-w-lg mx-auto lg:mx-0 font-body leading-relaxed">
+              <p className="text-sm md:text-base lg:text-lg text-gpt-text mb-6 max-w-lg mx-auto lg:mx-0 font-body leading-relaxed">
                 Your shoes can get back on the courts, fields, and tracks — helping young athletes today.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Button asChild size="lg" className="bg-gpt-primary hover:bg-gpt-primary/90 text-white rounded-full px-6 py-4 min-h-[44px] font-semibold transition-all duration-300 transform hover:scale-105 touch-manipulation">
-                  <Link href="/donate/shoes">
-                    Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white rounded-full px-6 py-4 min-h-[44px] font-semibold transition-all duration-300 touch-manipulation">
-                  <Link href="/shoes">
-                    Get Free Shoes <ShoppingBag className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <Link
+                  href="/donate/shoes"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-4 min-h-[44px] font-semibold text-white bg-brand-700 hover:bg-brand-600 transition-all duration-300 transform hover:scale-105 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300"
+                >
+                  Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
+                </Link>
+                <Link
+                  href="/shoes"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-4 min-h-[44px] font-semibold border-2 border-brand-700 text-brand-900 hover:bg-brand-50 hover:text-brand-900 transition-all duration-300 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 bg-white"
+                >
+                  Get Free Shoes <ShoppingBag className="ml-2 h-4 w-4" />
+                </Link>
               </div>
             </div>
             <div className="lg:w-1/2 relative animate-fade-in animate-delay-200 flex justify-center">
@@ -150,7 +151,7 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gpt-text font-display">How It Works</h2>
-            <p className="text-gpt-text/70 max-w-2xl mx-auto font-body leading-relaxed">
+            <p className="text-slate-700 max-w-2xl mx-auto font-body leading-relaxed">
               It's simple and impactful. Donate or get shoes in a few steps.
             </p>
           </div>
@@ -158,44 +159,44 @@ export default async function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {/* Step 1 - Shoes */}
             <div className="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-full bg-gpt-primary/10 text-gpt-primary flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-energy-50 text-energy-700 flex items-center justify-center mx-auto mb-4">
                 <Footprints className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Send Shoes Back to Action</h3>
-              <p className="text-gpt-text/70 font-body">
+              <p className="text-slate-700 font-body">
                 Your lovely sports shoes can return to the fields where they belong! Let your cherished kicks
                 continue their athletic journey with young athletes who need quality footwear to pursue their dreams.
               </p>
-              <Link href="/donate/shoes" className="text-gpt-primary font-semibold inline-flex items-center mt-4 hover:text-gpt-primary/80 transition-colors">
+              <Link href="/donate/shoes" className="text-energy-700 font-semibold inline-flex items-center mt-4 hover:text-energy-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-energy-300 focus-visible:ring-offset-2">
                 Send shoes back to action <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
 
             {/* Step 2 - Request */}
             <div className="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-full bg-gpt-highlight/10 text-gpt-highlight flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-700 flex items-center justify-center mx-auto mb-4">
                 <ShoppingBag className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Get Free Shoes</h3>
-              <p className="text-gpt-text/70 font-body leading-relaxed">
+              <p className="text-slate-700 font-body leading-relaxed">
                 Browse quality donated shoes and get what you need — completely free.
               </p>
-              <Link href="/shoes" className="text-gpt-highlight font-semibold inline-flex items-center mt-4 hover:text-gpt-highlight/80 transition-colors">
+              <Link href="/shoes" className="text-brand-700 font-semibold inline-flex items-center mt-4 hover:text-brand-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2">
                 Browse shoes <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
 
             {/* Step 3 - Get Involved */}
             <div className="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-full bg-gpt-secondary/10 text-gpt-secondary flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-success-50 text-success-700 flex items-center justify-center mx-auto mb-4">
                 <CreditCard className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-3 text-gpt-text font-display">Get Involved</h3>
-              <p className="text-gpt-text/70 font-body">
+              <p className="text-slate-700 font-body">
                 Join our community of supporters making sports accessible. Volunteer your time, 
                 contribute financially, or help spread awareness about our mission to connect athletes with equipment.
               </p>
-              <Link href="/get-involved" className="text-gpt-secondary font-semibold inline-flex items-center mt-4 hover:text-gpt-secondary/80 transition-colors">
+              <Link href="/get-involved" className="text-success-700 font-semibold inline-flex items-center mt-4 hover:text-success-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-success-300 focus-visible:ring-offset-2">
                 Get involved <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
@@ -208,7 +209,7 @@ export default async function Home() {
         <section className="py-20 bg-gradient-to-r from-brand-600 to-brand-500 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white font-display">Follow Our Journey</h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8 font-body">
+            <p className="text-xl text-white max-w-2xl mx-auto mb-8 font-body">
               Stay connected with us on social media to see the impact of your donations and 
               follow the stories of young athletes getting back in the game.
             </p>

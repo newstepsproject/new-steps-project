@@ -184,15 +184,15 @@
   }
 
   .btn-primary {
-    @apply bg-gpt-primary hover:bg-gpt-primary/90 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
+    @apply bg-brand-700 hover:bg-brand-600 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300;
   }
 
   .btn-secondary {
-    @apply bg-gpt-secondary hover:bg-gpt-secondary/90 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
+    @apply bg-brand-700 hover:bg-brand-600 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300;
   }
 
   .btn-outline {
-    @apply border-2 border-gpt-highlight text-gpt-highlight hover:bg-gpt-highlight hover:text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide focus:ring-2 focus:ring-gpt-highlight focus:ring-offset-2;
+    @apply border-2 border-brand-700 text-brand-700 hover:bg-brand-50 hover:text-brand-800 font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide focus:ring-2 focus:ring-brand-400 focus:ring-offset-2;
   }
 
   .btn-success {
@@ -200,17 +200,27 @@
   }
   
   .btn-energy {
-    @apply bg-gpt-primary hover:bg-gpt-primary/90 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide;
+    @apply bg-energy-700 hover:bg-energy-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-energy-300;
   }
   
   .animate-fade-in {
-    @apply opacity-0 animate-fadeIn;
-    animation-fill-mode: forwards;
+    opacity: 1;
   }
-  
+
   .animate-slide-up {
-    @apply opacity-0 animate-slideUp;
-    animation-fill-mode: forwards;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .animate-fade-in {
+      @apply animate-fadeIn;
+      animation-fill-mode: forwards;
+    }
+
+    .animate-slide-up {
+      @apply animate-slideUp;
+      animation-fill-mode: forwards;
+    }
   }
   
   .animate-delay-100 {

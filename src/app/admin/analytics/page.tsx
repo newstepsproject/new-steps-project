@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card data-testid="analytics-card-donations">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Shoe Donations</CardTitle>
           </CardHeader>
@@ -123,7 +123,7 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card data-testid="analytics-card-money">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Money Donations</CardTitle>
           </CardHeader>
@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card data-testid="analytics-card-requests">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Shoe Requests</CardTitle>
           </CardHeader>
@@ -147,7 +147,7 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card data-testid="analytics-card-users">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Users</CardTitle>
           </CardHeader>

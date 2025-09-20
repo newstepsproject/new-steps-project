@@ -59,6 +59,7 @@ export default function AdminVolunteersPage() {
     sortField: 'date',
     sortDirection: 'desc'
   });
+  const [lastAction, setLastAction] = useState<string | null>(null);
 
   const statusOptions = ['pending', 'approved', 'rejected'];
 
@@ -80,6 +81,7 @@ export default function AdminVolunteersPage() {
     setVolunteers(prev => 
       prev.map(v => v.id === id ? { ...v, status: 'approved' } : v)
     );
+    setLastAction(`Volunteer ${id} approved`);
     toast({
       title: "Volunteer Approved",
       description: `Volunteer ${id} has been approved.`,
@@ -90,6 +92,7 @@ export default function AdminVolunteersPage() {
     setVolunteers(prev => 
       prev.map(v => v.id === id ? { ...v, status: 'rejected' } : v)
     );
+    setLastAction(`Volunteer ${id} rejected`);
     toast({
       title: "Volunteer Rejected",
       description: `Volunteer ${id} has been rejected.`,
@@ -97,6 +100,7 @@ export default function AdminVolunteersPage() {
   };
 
   const handleContact = (id: string) => {
+    setLastAction(`Contact Volunteer ${id}`);
     toast({
       title: "Contact Volunteer",
       description: `Opening contact form for volunteer ${id}`,
@@ -105,6 +109,7 @@ export default function AdminVolunteersPage() {
 
   const handleArchive = (id: string) => {
     setVolunteers(prev => prev.filter(v => v.id !== id));
+    setLastAction(`Volunteer ${id} archived`);
     toast({
       title: "Volunteer Archived",
       description: `Volunteer ${id} has been archived.`,
@@ -124,22 +129,24 @@ export default function AdminVolunteersPage() {
   });
 
   // Pagination setup
+  const pagination = usePagination({
+    totalItems: filteredVolunteers.length,
+    defaultItemsPerPage: 15,
+  });
+
   const {
     currentPage,
-    setCurrentPage,
     itemsPerPage,
+    setCurrentPage,
     setItemsPerPage,
-    resetToFirstPage,
-    paginatedData: paginatedVolunteers,
     totalPages,
     startIndex,
     endIndex,
-    totalItems
-  } = usePagination({
-    data: filteredVolunteers,
-    initialItemsPerPage: 15,
-    itemsPerPageOptions: [10, 15, 25, 50]
-  });
+    resetToFirstPage,
+  } = pagination;
+
+  const paginatedVolunteers = pagination.getPageData(filteredVolunteers);
+  const totalItems = filteredVolunteers.length;
 
   useEffect(() => {
     if (sessionStatus === 'unauthenticated') {
@@ -153,6 +160,9 @@ export default function AdminVolunteersPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
+      <div role="status" aria-live="polite" data-testid="volunteer-feedback" className="sr-only">
+        {lastAction}
+      </div>
       <h1 className="text-3xl font-bold mb-8">Volunteer Management</h1>
 
       <Card className="mb-8">
@@ -231,13 +241,16 @@ export default function AdminVolunteersPage() {
                       <td className="px-4 py-3 text-sm font-medium text-gray-900">{volunteer.name}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{volunteer.email}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{volunteer.location}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {volunteer.interests.map((interest, idx) => (
-                          <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-1">
-                            {interest}
-                          </span>
-                        ))}
-                      </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {(volunteer.interests ?? []).map((interest, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-1"
+                        >
+                          {interest}
+                        </span>
+                      ))}
+                    </td>
                       <td className="px-4 py-3 text-sm text-gray-600">{volunteer.date}</td>
                       <td className="px-4 py-3 text-sm">
                         <Badge className={

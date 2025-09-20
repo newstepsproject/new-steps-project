@@ -18,11 +18,21 @@ import Image from 'next/image';
 export function CartIcon() {
   const { items, removeItem, clearCart, itemCount, maxItems } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const cartSummary = itemCount > 0
+    ? `${itemCount} ${itemCount === 1 ? 'item' : 'items'} in cart`
+    : 'cart is empty';
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <button
+          type="button"
+          className="relative p-2 rounded-full hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+          aria-label={`Open cart, ${cartSummary}`}
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
+          title={`View cart (${cartSummary})`}
+        >
           <ShoppingCart className="h-5 w-5" />
           {itemCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-energy text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center">
