@@ -14,9 +14,9 @@ _Last updated: $(date +"%Y-%m-%d")_
 |-------|---------|-------|-----------|------------------|
 | **L0 – Static Analysis** | Prevent obvious defects before runtime | TypeScript compilation, ESLint, format checks | CI | Automated |
 | **L1 – API Contract Validation** | Ensure backend endpoints, DB models, and auth flows behave as expected | REST/Next API routes, Mongo models, mailers | QA / Dev | Automated (Node scripts) |
-| **L2 – Workflow Simulation** | Validate core user journeys without browser flakiness | Registration, login, donation, request, admin CRUD | QA | Automated (Playwright API & headless) |
+| **L2 – Workflow Simulation** | Validate core user journeys without browser flakiness | Registration, login, donation, request, cart/checkout, email verification, admin CRUD | QA | Automated (Playwright API & headless) |
 | **L3 – Guided UI Regression** | Confirm UI/UX, responsive layouts, and accessibility | Top 15 screens across visitor/user/admin | QA + Product | Semi-automated (Playwright UI) |
-| **L4 – Exploratory & Multi-user** | Exercise concurrency, email loops, moderation flows | Parallel users, admin fulfillment, notification loops | QA / Volunteers | Manual scripts & checklists |
+| **L4 – Exploratory & Multi-user** | Exercise concurrency, email loops, moderation flows | Parallel users, admin fulfillment, visitor↔admin↔user interactions, fulfillment/inventory loops | QA / Volunteers | Manual scripts & checklists |
 | **L5 – Production Smoke** | Validate release | Key endpoints & health, CDN assets | DevOps | Automated (CURL & PM2 checks) |
 
 ## 3. Environments & Data
@@ -28,7 +28,7 @@ _Last updated: $(date +"%Y-%m-%d")_
 
 ## 4. Tooling
 - **Node/TypeScript Scripts**: Located under `tools/testing/` (new) for API contract checks.
-- **Playwright**: APIRequestContext for workflow simulation; headed mode for UI regression (recorded videos).
+- **Playwright**: APIRequestContext for workflow simulation; headed mode for UI regression (recorded videos, cart flows, multi-tab admin/user sessions).
 - **Accessibility**: `axe-playwright` integration for key pages.
 - **Performance**: `lighthouse-ci` for home, shoes, account, admin dashboard.
 - **Reporting**: Markdown summaries committed to repo under `testing/reports/`.
@@ -41,14 +41,23 @@ A release may proceed only when the following pass on the target environment:
 4. Manual checklist (L3–L4) signed off in `testing/reports/<release>.md`
 5. Production smoke script (`npm run smoke -- --target=https://newsteps.fit`)
 
-## 6. Risk Matrix & Mitigations
+## 6. Scenario Coverage & Risk Matrix
+
+### 6.1 Coverage Domains
+- **Visitor Journeys**: anonymous browsing, shoe filtering, cart interactions, request initiation, get-involved forms, contact submissions.
+- **Authenticated User Journeys**: registration & verification, profile updates, donation submissions (shoe & money), cart checkout, shoe requests, account dashboards.
+- **Admin Journeys**: dashboard access, donation/request triage, status transitions (submitted→confirmed→fulfilled), inventory adjustments, email notifications, manual record entry.
+- **Cross-Role Interactions**: user submits request/donation → admin action → user notification/update; cart checkout flows requiring admin fulfillment.
+- **Data & Notification Integrity**: MongoDB assertions, email queue/delivery inspection, PM2 logs.
 
 | Area | Risk | Likelihood | Impact | Mitigation |
 |------|------|------------|--------|------------|
 | Auth state | Token/cache inconsistency | Medium | High | L1 login checks + L2 session refresh assertions |
-| Donations | Missing required fields from donors | Medium | Medium | API schema validation + admin manual case |
-| Inventory | Wrong status transitions | Medium | High | Workflow tests covering request→fulfillment |
-| Emails | SMTP failure | Low | High | Mock mailer in CI, real Gmail send on staging |
+| Donations | Missing required fields from donors | Medium | Medium | API schema validation + L2/L3 scenario coverage |
+| Requests & Cart | Cart/request data corrupt or mismatched | Medium | High | L2 checkout simulation + L4 multi-user verification |
+| Inventory | Wrong status transitions | Medium | High | L2 admin workflows + DB assertions |
+| Emails | SMTP failure or incorrect templates | Medium | High | L2 email verification, L4 manual Gmail inbox validation |
+| Forms | Get-involved/volunteer forms drop data | Medium | Medium | L2 API checks + L3 UI submissions |
 | Mobile UI | Broken responsive layouts | Medium | Medium | Playwright viewport matrix (360px, 768px, 1280px) |
 | Admin security | Unauthorized access | Medium | High | L1 authz checks + manual attempt w/out token |
 
