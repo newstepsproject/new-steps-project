@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSafePathname } from '@/hooks/useSafeRouter';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useSession, signOut } from 'next-auth/react';
 
@@ -94,6 +94,9 @@ export default function MobileNav() {
               </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="h-[60vh]">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Additional administrator navigation options</SheetTitle>
+              </SheetHeader>
               <div className="py-4">
                 {/* Admin Profile Section */}
                 {session?.user && (
