@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendPartnerInquiryConfirmation, sendCustomEmail } from '@/lib/email';
 import { getEmailAddress, getAppSettings } from '@/lib/settings';
+import { ensureDbConnected } from '@/lib/db-utils';
+import Interest, { InterestType } from '@/models/interest';
+import Counter from '@/models/counter';
 
 // Define the contact form data type
 type ContactFormData = {
@@ -46,6 +49,11 @@ export async function POST(request: NextRequest) {
     
     // Determine inquiry type
     const inquiryType = data.inquiryType || data.type || 'general';
+    const normalizedType: InterestType = ['general', 'partnership', 'volunteer', 'donation'].includes(
+      inquiryType as string
+    )
+      ? (inquiryType as InterestType)
+      : 'general';
     
     console.log('Contact form submitted:', {
       name: contactName,
@@ -58,6 +66,58 @@ export async function POST(request: NextRequest) {
       messageLength: data.message.length
     });
     
+    // Store interest submission in the database
+    try {
+      await ensureDbConnected();
+
+      const sequenceValue = await Counter.getNextSequence('interest');
+      const interestId = `INT-${sequenceValue}`;
+
+      // Attempt to derive individual name parts if they were not explicitly provided
+      let inferredFirstName = data.firstName;
+      let inferredLastName = data.lastName;
+      if ((!inferredFirstName || !inferredLastName) && contactName.trim()) {
+        const nameParts = contactName.trim().split(' ');
+        if (nameParts.length > 1) {
+          inferredFirstName = inferredFirstName || nameParts[0];
+          inferredLastName = inferredLastName || nameParts.slice(1).join(' ');
+        } else {
+          inferredFirstName = inferredFirstName || contactName.trim();
+        }
+      }
+
+      await Interest.create({
+        interestId,
+        type: normalizedType,
+        firstName: inferredFirstName,
+        lastName: inferredLastName,
+        name: contactName,
+        email: data.email,
+        phone: data.phone,
+        organizationName: data.organizationName || data.organization,
+        organizationType: data.organizationType,
+        subject: data.subject,
+        message: data.message,
+        source: data.type || data.inquiryType || 'contact-form',
+        status: 'new',
+        submittedAt: new Date(),
+        metadata: {
+          rawInquiryType: inquiryType,
+        },
+      });
+
+      console.log('✅ Interest submission stored:', interestId);
+    } catch (persistenceError) {
+      console.error('❌ Failed to persist interest submission:', persistenceError);
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Failed to record your submission. Please try again later.',
+        },
+        { status: 500 }
+      );
+    }
+
     // Send notification email to the team
     try {
       const contactEmail = await getEmailAddress('contact');
@@ -68,7 +128,7 @@ export async function POST(request: NextRequest) {
       
       await sendCustomEmail(
         contactEmail,
-        `New Contact Form Submission: ${data.subject}`,
+        `[Contact] New Contact Form Submission: ${data.subject}`,
         `
           <h2>New Contact Form Submission</h2>
           <p><strong>From:</strong> ${contactName} (${data.email})</p>
@@ -104,7 +164,7 @@ export async function POST(request: NextRequest) {
         // Send general contact confirmation
         await sendCustomEmail(
           data.email,
-          'Thank you for contacting New Steps Project',
+          '[Contact] Thank you for contacting New Steps Project',
           `
             <h1>Thank you for reaching out!</h1>
             <p>Dear ${contactName},</p>

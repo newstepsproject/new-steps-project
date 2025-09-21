@@ -13,7 +13,7 @@ type VolunteerFormData = {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  phone?: string;
   city: string;
   state: string;
   availability: string;
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const fullName = `${data.firstName} ${data.lastName}`.trim();
     
     // Validate required fields
-    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
+    if (!data.firstName || !data.lastName || !data.email || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields' },
         { status: 400 }
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       lastName: data.lastName,
       name: fullName,
       email: data.email,
-      phone: data.phone,
+      phone: data.phone?.trim() || undefined,
       city: data.city,
       state: data.state,
       availability: data.availability,
@@ -113,7 +113,11 @@ export async function POST(request: NextRequest) {
     console.error('Error submitting volunteer form:', error);
     
     return NextResponse.json(
-      { success: false, message: 'Failed to submit volunteer application', error: error instanceof Error ? error.message : 'Unknown error' },
+      { 
+        success: false, 
+        message: `Failed to submit volunteer application${error instanceof Error && error.message ? `: ${error.message}` : ''}`,
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      },
       { status: 500 }
     );
   }
@@ -129,7 +133,7 @@ export async function PUT(request: NextRequest) {
     const fullName = `${data.firstName} ${data.lastName}`.trim();
     
     // Validate required fields
-    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
+    if (!data.firstName || !data.lastName || !data.email || !data.city || !data.state || !data.availability || !data.interests || data.interests.length === 0) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields' },
         { status: 400 }

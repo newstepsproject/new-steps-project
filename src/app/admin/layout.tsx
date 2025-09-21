@@ -19,7 +19,9 @@ import {
   ExternalLink,
   Plus,
   UserCircle,
-  Shield
+  Shield,
+  HeartHandshake,
+  MessageCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
@@ -33,6 +35,8 @@ const navigation = [
   { name: 'Shoe Donations', href: '/admin/shoe-donations', icon: Package },
   { name: 'Money Donations', href: '/admin/money-donations', icon: DollarSign },
   { name: 'Shoe Inventory', href: '/admin/shoes', icon: Package },
+  { name: 'Volunteers', href: '/admin/volunteers', icon: HeartHandshake },
+  { name: 'Partnerships', href: '/admin/interests', icon: MessageCircle },
   { name: 'Users', href: '/admin/users', icon: User },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Settings', href: '/admin/settings', icon: Settings },

@@ -6,6 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { ensureDbConnected } from '@/lib/db-utils';
+import Donation from '@/models/donation';
+import MoneyDonation from '@/models/MoneyDonation';
+import ShoeRequest from '@/models/shoeRequest';
+import UserModel from '@/models/user';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +21,39 @@ export default async function AdminPage() {
   if (!session?.user || session.user.role !== 'admin') {
     redirect('/login');
   }
+
+  await ensureDbConnected();
+
+  const [
+    shoeDonationsCount,
+    moneyDonationAggregate,
+    shoeRequestsCount,
+    totalUsers,
+  ] = await Promise.all([
+    Donation.countDocuments({ donationType: 'shoes' }),
+    MoneyDonation.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalAmount: 1,
+        },
+      },
+    ]),
+    ShoeRequest.countDocuments({}),
+    UserModel.countDocuments({}),
+  ]);
+
+  const totalMoneyDonations = moneyDonationAggregate[0]?.totalAmount ?? 0;
+  const formattedMoneyTotal = totalMoneyDonations.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   return (
     <div className="space-y-6">
@@ -34,7 +72,7 @@ export default async function AdminPage() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{shoeDonationsCount}</div>
             <p className="text-xs text-muted-foreground">
               +0% from last month
             </p>
@@ -47,7 +85,7 @@ export default async function AdminPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$0</div>
+            <div className="text-2xl font-bold">${formattedMoneyTotal}</div>
             <p className="text-xs text-muted-foreground">
               +0% from last month
             </p>
@@ -60,7 +98,7 @@ export default async function AdminPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{shoeRequestsCount}</div>
             <p className="text-xs text-muted-foreground">
               +0% from last month
             </p>
@@ -73,7 +111,7 @@ export default async function AdminPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{totalUsers}</div>
             <p className="text-xs text-muted-foreground">
               +0% from last month
             </p>

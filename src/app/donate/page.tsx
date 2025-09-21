@@ -16,10 +16,10 @@ export default function DonateShoesPage() {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-b from-offwhite to-white">
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-b from-offwhite to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Make Your Lovely Shoes Back to Fields Again!</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Make Your Lovely Shoes Back to Fields Again!</h1>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-8">
             Your cherished sports shoes can return to where they belong - on the fields, courts, and tracks with young athletes. 
             Give your beloved kicks the chance to continue their athletic journey and make new memories.
           </p>

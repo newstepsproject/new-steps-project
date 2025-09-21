@@ -169,7 +169,7 @@ export default function GetInvolvedContent() {
       {cards.map((card) => (
         <Card 
           key={card.id}
-          className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2 bg-white/80 backdrop-blur-sm"
+          className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2 bg-white/80 backdrop-blur-sm flex flex-col"
         >
           <CardHeader className="pb-4">
             <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${card.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
@@ -183,8 +183,8 @@ export default function GetInvolvedContent() {
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="pt-0">
-            <div className="space-y-4 mb-6">
+          <CardContent className="pt-0 flex flex-col flex-1">
+            <div className="space-y-4 mb-6 flex-1">
               {card.features.map((feature, index) => (
                 <div key={index} className="flex items-center space-x-3 text-sm">
                   <feature.icon className="w-4 h-4 text-gray-500" />
@@ -195,7 +195,7 @@ export default function GetInvolvedContent() {
             
             <Button 
               onClick={() => openForm(card.id as ActiveForm)}
-              className={`w-full bg-gradient-to-r ${card.gradient} hover:opacity-90 transition-all duration-200 group-hover:shadow-lg`}
+              className={`w-full bg-gradient-to-r ${card.gradient} hover:opacity-90 transition-all duration-200 group-hover:shadow-lg mt-auto`}
             >
               Get Started
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

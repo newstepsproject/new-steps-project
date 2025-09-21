@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     
     // Send confirmation email to the partner
     try {
-      const subject = 'Partnership Inquiry Received - New Steps Project';
+      const subject = '[Partnership] Inquiry Received - New Steps Project';
       const htmlContent = `
         <h2>Partnership Inquiry Confirmation</h2>
         <p>Dear ${fullName},</p>
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     
     // Send notification email to admin
     try {
-      const adminSubject = 'New Partnership Inquiry - New Steps Project';
+      const adminSubject = '[Partnership] New Partnership Inquiry - New Steps Project';
       const adminHtmlContent = `
         <h2>New Partnership Inquiry Received</h2>
         <p>A new partnership inquiry has been submitted:</p>

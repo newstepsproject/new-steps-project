@@ -8,7 +8,7 @@ export interface VolunteerDocument extends Document {
   lastName: string;
   name?: string; // Keep for backward compatibility
   email: string;
-  phone: string;
+  phone?: string;
   city: string;
   state: string;
   availability: string;
@@ -51,7 +51,8 @@ const volunteerSchema = new Schema<VolunteerDocument>(
     },
     phone: {
       type: String,
-      required: true
+      required: false,
+      default: undefined,
     },
     city: {
       type: String,
@@ -112,7 +113,16 @@ volunteerSchema.index({ email: 1 });
 volunteerSchema.index({ status: 1 });
 volunteerSchema.index({ submittedAt: 1 });
 
-// Create and export the model, checking if it already exists to avoid Next.js hot reload issues
+const existingVolunteerModel = mongoose.models.Volunteer as Model<VolunteerDocument> | undefined;
+
+if (existingVolunteerModel) {
+  const phonePath = existingVolunteerModel.schema.path('phone');
+  const phoneIsRequired = (phonePath?.options as { required?: boolean })?.required;
+  if (phoneIsRequired) {
+    delete mongoose.models.Volunteer;
+  }
+}
+
 const Volunteer = (mongoose.models.Volunteer || mongoose.model<VolunteerDocument>('Volunteer', volunteerSchema)) as Model<VolunteerDocument>;
 
 export default Volunteer

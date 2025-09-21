@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -84,24 +84,36 @@ export default function VolunteerForm() {
     },
   });
 
+  useEffect(() => {
+    register('availability');
+    register('interests');
+  }, [register]);
+
   const onSubmit = async (data: VolunteerFormData) => {
     try {
       setIsSubmitting(true);
-      console.log('Submitting volunteer form data:', data);
+      const payload = {
+        ...data,
+        phone: data.phone?.trim() ? data.phone.trim() : undefined,
+      };
+
+      console.log('Submitting volunteer form data:', payload);
       
-      // Use the test endpoint to avoid authentication requirement
       const response = await fetch('/api/volunteers', {
-        method: 'PUT', // Use PUT for test endpoint
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        credentials: 'include',
+        body: JSON.stringify(payload),
       });
       
       const result = await response.json();
       
       if (!response.ok) {
-        throw new Error(result.message || 'Failed to submit form');
+        const errorDetail = typeof result.error === 'string' ? result.error : JSON.stringify(result.error);
+        const message = result.message || 'Failed to submit form';
+        throw new Error(errorDetail ? `${message} (${errorDetail})` : message);
       }
       
       // Show success toast
@@ -127,6 +139,7 @@ export default function VolunteerForm() {
   };
 
   const watchedInterests = watch('interests');
+  const availabilityValue = watch('availability');
 
   const handleInterestChange = (checked: boolean | "indeterminate", id: string) => {
     if (checked === true) {
@@ -282,6 +295,7 @@ export default function VolunteerForm() {
                 Availability <span className="text-red-500">*</span>
               </Label>
               <Select
+                value={availabilityValue}
                 onValueChange={(value) => setValue('availability', value, { shouldValidate: true })}
               >
                 <SelectTrigger id="availability">

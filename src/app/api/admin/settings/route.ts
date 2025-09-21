@@ -5,6 +5,7 @@ import connectToDatabase from '@/lib/db';
 import { SettingsModel } from '@/models/settings';
 import { SessionUser } from '@/types/user';
 import { clearSettingsCache } from '@/lib/settings';
+import { SITE_CONFIG } from '@/constants/config';
 
 // Force dynamic to handle request-specific data
 export const dynamic = 'force-dynamic';
@@ -40,59 +41,26 @@ export async function GET(request: NextRequest) {
 
     // Provide default values if settings don't exist
     const defaultSettings = {
-      founderName: 'Walter Zhang',
-      founderBio: '9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.',
+      founderName: '',
+      founderBio: '',
       officeAddress: {
-        street: '348 Cardona Cir',
-        city: 'San Ramon',
-        state: 'CA',
-        zipCode: '94583',
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
         country: 'USA',
       },
-      projectOfficers: [
-        {
-          id: 'founder-director',
-          role: 'Founder & Director',
-          firstName: 'Walter',
-          lastName: 'Zhang',
-          name: 'Walter Zhang',
-          duty: 'Providing visionary leadership, setting strategic direction, making key decisions, and ensuring the mission of connecting athletes with quality sports shoes remains at the heart of every initiative',
-          bio: '9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.',
-          photo: '',
-          canRemove: false,
-        },
-        {
-          id: 'operation-manager',
-          role: 'Operation Manager',
-          firstName: '',
-          lastName: '',
-          name: '',
-          duty: 'Overseeing daily operations, managing inventory systems, coordinating donation logistics, processing shoe requests, and ensuring efficient workflows from donation intake to delivery',
-          bio: '',
-          photo: '',
-          canRemove: true,
-        },
-        {
-          id: 'volunteer-coordinator',
-          role: 'Volunteer Coordinator',
-          firstName: '',
-          lastName: '',
-          name: '',
-          duty: 'Recruiting and training volunteers, organizing community events, building partnerships with schools and sports clubs, and coordinating volunteer activities to expand our reach',
-          bio: '',
-          photo: '',
-          canRemove: true,
-        },
-      ],
+      projectOfficers: [],
+      ourStory: [],
       shippingFee: 5,
       paypalClientId: '',
       paypalSandboxMode: true,
       maxShoesPerRequest: 2,
-      projectEmail: 'newstepsfit@gmail.com',
-      projectPhone: '(916) 582-7090',
-      contactEmail: 'newstepsfit@gmail.com',
-      supportEmail: 'newstepsfit@gmail.com',
-      donationsEmail: 'newstepsfit@gmail.com',
+      projectEmail: SITE_CONFIG.contactEmail,
+      projectPhone: '',
+      contactEmail: SITE_CONFIG.contactEmail,
+      supportEmail: SITE_CONFIG.supportEmail,
+      donationsEmail: SITE_CONFIG.donationsEmail,
     };
 
     // Merge with defaults (only non-null values from DB will override defaults)

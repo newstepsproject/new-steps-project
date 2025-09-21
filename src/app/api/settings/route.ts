@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAppSettings } from '@/lib/settings';
+import { SITE_CONFIG } from '@/constants/config';
 
 export async function GET() {
   try {
@@ -21,8 +22,8 @@ export async function GET() {
     return NextResponse.json({
       maxShoesPerRequest: 2,
       shippingFee: 5,
-      projectEmail: 'newstepsfit@gmail.com',
-      projectPhone: '(916) 582-7090',
+      projectEmail: SITE_CONFIG.contactEmail,
+      projectPhone: '',
     });
   }
-} 
+}

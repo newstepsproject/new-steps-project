@@ -27,9 +27,9 @@ export default async function AboutPage() {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 animate-fade-in">About New Steps</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">About New Steps</h1>
           <p className="text-lg max-w-3xl mx-auto text-gray-700 animate-fade-in animate-delay-100">
             We're on a mission to make sports accessible for everyone by connecting 
             gently used sports shoes with athletes who need them.

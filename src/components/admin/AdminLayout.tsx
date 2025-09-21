@@ -3,7 +3,7 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import { useSafePathname } from '@/hooks/useSafeRouter';
-import { Home, Package, Users, DollarSign, FileText, Settings, LogOut, Footprints } from 'lucide-react';
+import { Home, Package, Users, DollarSign, FileText, Settings, LogOut, Footprints, MessageCircle, HeartHandshake } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import MobileNav from './MobileNav';
 
@@ -17,6 +17,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const navItems = [
     { label: 'Dashboard', href: '/admin', icon: <Home className="mr-2 h-4 w-4" /> },
     { label: 'Shoes', href: '/admin/shoes', icon: <Package className="mr-2 h-4 w-4" /> },
+    { label: 'Volunteers', href: '/admin/volunteers', icon: <HeartHandshake className="mr-2 h-4 w-4" /> },
+    { label: 'Partnerships', href: '/admin/interests', icon: <MessageCircle className="mr-2 h-4 w-4" /> },
     { label: 'Users', href: '/admin/users', icon: <Users className="mr-2 h-4 w-4" /> },
     { label: 'Donations', href: '/admin/shoe-donations', icon: <FileText className="mr-2 h-4 w-4" /> },
     { label: 'Money Donations', href: '/admin/money-donations', icon: <DollarSign className="mr-2 h-4 w-4" /> },

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { SessionUser } from '@/types/user';
 import { ensureDbConnected } from '@/lib/db-utils';
-import Volunteer, { VolunteerDocument } from '@/models/volunteer';
+import Interest, { InterestDocument } from '@/models/interest';
 import type { FilterQuery } from 'mongoose';
 
 export const dynamic = 'force-dynamic';
@@ -25,37 +25,44 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
+    const type = searchParams.get('type') ?? 'partnership';
     const search = searchParams.get('search');
+    const limitParam = searchParams.get('limit');
+    const limit = Math.min(Number(limitParam ?? '250') || 250, 500);
 
-    const query: FilterQuery<VolunteerDocument> = {};
+    const query: FilterQuery<InterestDocument> = {};
 
     if (status && status !== 'all') {
       query.status = status;
     }
 
+    if (type && type !== 'all') {
+      query.type = type;
+    }
+
     if (search) {
-      const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(escaped, 'i');
+      const regex = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
       query.$or = [
-        { volunteerId: regex },
-        { email: regex },
         { name: regex },
-        { firstName: regex },
-        { lastName: regex },
-        { city: regex },
-        { state: regex },
+        { email: regex },
+        { organizationName: regex },
+        { subject: regex },
       ];
     }
 
-    const volunteers = await Volunteer.find(query)
-      .sort({ submittedAt: -1, createdAt: -1 })
+    const interests = await Interest.find(query)
+      .sort({ submittedAt: -1 })
+      .limit(limit)
       .lean();
 
-    return NextResponse.json({ success: true, volunteers });
+    return NextResponse.json({
+      success: true,
+      interests,
+    });
   } catch (error) {
-    console.error('Error fetching volunteers:', error);
+    console.error('Error fetching interest submissions:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch volunteers' },
+      { error: 'Failed to fetch partnership submissions' },
       { status: 500 }
     );
   }

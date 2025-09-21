@@ -309,26 +309,6 @@ export default function UsersPage() {
         </div>
       </div>
 
-      {/* Built-in Admin User Information */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardContent className="pt-6">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-semibold text-sm">ℹ️</span>
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-medium text-blue-900">Built-in Admin User</h3>
-              <p className="mt-1 text-sm text-blue-700">
-                The system maintains a built-in admin user (<strong>admin@newsteps.fit</strong>) for system administration. 
-                All other users must register through the public interface and can be promoted to admin roles through this interface.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Mobile Filters */}
       <MobileFilters
         filters={filters}

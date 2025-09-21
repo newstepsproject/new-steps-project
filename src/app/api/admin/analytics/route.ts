@@ -85,14 +85,26 @@ export async function GET(request: NextRequest) {
       return acc;
     }, {} as Record<string, number>);
 
-    // Top brands donated (mock data for now)
-    const topBrands = [
-      { name: 'Nike', count: 78 },
-      { name: 'Adidas', count: 52 },
-      { name: 'New Balance', count: 38 },
-      { name: 'Puma', count: 25 },
-      { name: 'Other', count: 94 }
-    ];
+    // Top brands donated based on tracked inventory
+    const topBrandResults = await Shoe.aggregate([
+      {
+        $group: {
+          _id: { $ifNull: ['$brand', 'Unknown'] },
+          count: { $sum: { $ifNull: ['$inventoryCount', 1] } },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          name: '$_id',
+          count: 1,
+        },
+      },
+    ]);
+
+    const topBrands = topBrandResults;
 
     // Money Donation metrics
     const totalMoneyDonations = await MoneyDonation.countDocuments();
@@ -141,14 +153,63 @@ export async function GET(request: NextRequest) {
       createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth } 
     });
 
-    // Request status breakdown (mock data for now)
-    const requestStatusBreakdown = {
-      pending: 15,
-      approved: 22,
-      shipped: 31,
-      delivered: 18,
-      rejected: 12
-    };
+    // Request status breakdown
+    const requestStatusResults = await ShoeRequest.aggregate([
+      {
+        $group: {
+          _id: { $ifNull: ['$currentStatus', 'submitted'] },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const requestStatusBreakdown = requestStatusResults.reduce((acc, curr) => {
+      const status = curr._id as string;
+      acc[status] = curr.count;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Request item aggregation for top sizes and sports
+    const topSizesResults = await ShoeRequest.aggregate([
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: { $ifNull: ['$items.size', 'Unspecified'] },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          size: '$_id',
+          count: 1,
+        },
+      },
+    ]);
+
+    const topTypesResults = await ShoeRequest.aggregate([
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: { $ifNull: ['$items.sport', 'Unspecified'] },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          type: '$_id',
+          count: 1,
+        },
+      },
+    ]);
+
+    const topSizes = topSizesResults;
+    const topTypes = topTypesResults;
 
     // User metrics
     const totalUsers = await User.countDocuments();
@@ -156,8 +217,23 @@ export async function GET(request: NextRequest) {
       createdAt: { $gte: startOfMonth } 
     });
     
-    // For active users, we could check last login date, but for now let's mock it
-    const activeUsersThisMonth = Math.round(totalUsers * 0.4); // 40% of users as a placeholder
+    // Estimate active users based on recent profile updates
+    const activeUsersThisMonth = await User.countDocuments({
+      updatedAt: { $gte: startOfMonth },
+    });
+
+    // Derive total donated items from donation records (fallback to tracked inventory)
+    const donationItemsResult = await Donation.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalShoes: { $sum: { $ifNull: ['$numberOfShoes', 0] } },
+        },
+      },
+    ]);
+
+    const trackedInventoryCount = await Shoe.countDocuments();
+    const totalShoeItemsDonated = donationItemsResult[0]?.totalShoes || trackedInventoryCount;
 
     // Return aggregated analytics data
     return NextResponse.json({
@@ -166,7 +242,7 @@ export async function GET(request: NextRequest) {
         thisMonth: donationsThisMonth,
         lastMonth: donationsLastMonth,
         statusBreakdown: formattedDonationStatus,
-        itemsCount: totalDonations * 2, // A rough estimate; in a real implementation, we'd count actual items
+        itemsCount: totalShoeItemsDonated,
         topBrands
       },
       moneyDonations: {
@@ -181,21 +257,8 @@ export async function GET(request: NextRequest) {
         thisMonth: requestsThisMonth,
         lastMonth: requestsLastMonth,
         statusBreakdown: requestStatusBreakdown,
-        // Mocked data for now
-        topSizes: [
-          { size: '9 (Men)', count: 22 },
-          { size: '8 (Women)', count: 18 },
-          { size: '10 (Men)', count: 15 },
-          { size: '7 (Women)', count: 14 },
-          { size: 'Other', count: 29 }
-        ],
-        topTypes: [
-          { type: 'Running', count: 41 },
-          { type: 'Athletic', count: 24 },
-          { type: 'Basketball', count: 17 },
-          { type: 'Walking', count: 10 },
-          { type: 'Other', count: 6 }
-        ]
+        topSizes,
+        topTypes
       },
       users: {
         total: totalUsers,

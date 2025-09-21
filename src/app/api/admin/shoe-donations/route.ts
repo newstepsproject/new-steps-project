@@ -433,7 +433,7 @@ export async function PATCH(request: NextRequest) {
 
           switch (status) {
             case 'received':
-              subject = 'Your shoe donation has been received - New Steps Project';
+              subject = '[Shoe Donation] Your shoe donation has been received - New Steps Project';
               content = `
                 <h2>Donation Received</h2>
                 <p>Dear ${donorName},</p>
@@ -451,7 +451,7 @@ export async function PATCH(request: NextRequest) {
               break;
 
             case 'processed':
-              subject = 'Thank you - your shoe donation has been processed - New Steps Project';
+              subject = '[Shoe Donation] Thank you - your shoe donation has been processed - New Steps Project';
               content = `
                 <h2>Donation Processed</h2>
                 <p>Dear ${donorName},</p>
@@ -470,7 +470,7 @@ export async function PATCH(request: NextRequest) {
               break;
 
             case 'cancelled':
-              subject = 'Update on your shoe donation - New Steps Project';
+              subject = '[Shoe Donation] Update on your shoe donation - New Steps Project';
               content = `
                 <h2>Donation Update</h2>
                 <p>Dear ${donorName},</p>

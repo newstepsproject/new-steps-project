@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Package, Users, Plus, Menu, User, Settings, ExternalLink, LogOut } from 'lucide-react';
+import { Home, Package, Users, Plus, Menu, User, Settings, ExternalLink, LogOut, MessageCircle, HeartHandshake } from 'lucide-react';
 import Link from 'next/link';
 import { useSafePathname } from '@/hooks/useSafeRouter';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,8 @@ const allNavItems = [
   { name: 'Shoe Requests', href: '/admin/requests', icon: Users },
   { name: 'Shoe Donations', href: '/admin/shoe-donations', icon: Package },
   { name: 'Money Donations', href: '/admin/money-donations', icon: Package },
+  { name: 'Volunteers', href: '/admin/volunteers', icon: HeartHandshake },
+  { name: 'Partnerships', href: '/admin/interests', icon: MessageCircle },
   { name: 'Shoe Inventory', href: '/admin/shoes', icon: Package },
   { name: 'Users', href: '/admin/users', icon: Users },
 ];

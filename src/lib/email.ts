@@ -71,7 +71,7 @@ function resetTransporter() {
 // Define template functions
 const templates = {
   [EmailTemplate.DONATION_CONFIRMATION]: (data: any) => ({
-    subject: 'Thank You for Your Donation to New Steps Project',
+    subject: '[Shoe Donation] Thank You for Your Donation to New Steps Project',
     html: `
       <h1>Thank You for Your Donation!</h1>
       <p>Dear ${data.name},</p>
@@ -90,7 +90,7 @@ const templates = {
   [EmailTemplate.MONEY_DONATION_CONFIRMATION]: async (data: any) => {
     const settings = await getAppSettings();
     return {
-      subject: 'Thank You for Your Financial Contribution to New Steps Project',
+    subject: '[Financial Support] Thank You for Your Financial Contribution to New Steps Project',
       html: `
         <h1>Thank You for Your Donation!</h1>
         <p>Dear ${data.name},</p>
@@ -118,7 +118,7 @@ const templates = {
     };
   },
   [EmailTemplate.VOLUNTEER_CONFIRMATION]: (data: any) => ({
-    subject: 'Thank You for Your Interest in Volunteering - New Steps Project',
+    subject: '[Volunteer] Thank You for Your Interest in Volunteering - New Steps Project',
     html: `
       <h1>Welcome to the New Steps Project Family!</h1>
       <p>Dear ${data.name},</p>
@@ -147,7 +147,7 @@ const templates = {
     `,
   }),
   [EmailTemplate.PARTNER_INQUIRY]: (data: any) => ({
-    subject: 'Thank You for Your Partnership Inquiry - New Steps Project',
+    subject: '[Partnership] Thank You for Your Partnership Inquiry - New Steps Project',
     html: `
       <h1>Thank You for Your Interest in Partnering with Us!</h1>
       <p>Dear ${data.name},</p>

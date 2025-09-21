@@ -13,7 +13,7 @@ type VolunteerFormData = {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  phone?: string;
   location?: string;
   city?: string;
   state?: string;
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const fullName = `${data.firstName} ${data.lastName}`.trim();
     
     // Validate required fields
-    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.availability) {
+    if (!data.firstName || !data.lastName || !data.email || !data.availability) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields' },
         { status: 400 }
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       lastName: data.lastName,
       name: fullName,
       email: data.email,
-      phone: data.phone,
+      phone: data.phone?.trim() || undefined,
       location: data.location || `${data.city || ''}, ${data.state || ''}`.trim().replace(/^,\s*|,\s*$/g, ''),
       city: data.city,
       state: data.state,

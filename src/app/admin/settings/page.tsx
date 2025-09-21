@@ -15,6 +15,7 @@ import { Loader2, Save, Settings, User, MapPin, DollarSign, CreditCard, Plus, X,
 import { Checkbox } from '@/components/ui/checkbox';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { SITE_CONFIG } from '@/constants/config';
 
 // Settings schema
 const settingsSchema = z.object({
@@ -41,7 +42,7 @@ const settingsSchema = z.object({
     canRemove: z.boolean(),
   })).refine(
     (officers) => officers.some(officer => !officer.canRemove), 
-    { message: 'At least one required officer (Founder & Director) must be present' }
+    { message: 'At least one primary officer must remain on the team list' }
   ),
   
   // Our Story timeline
@@ -222,76 +223,50 @@ export default function SettingsPage() {
     resolver: zodResolver(settingsSchema) as any,
     defaultValues: {
       officeAddress: {
-        street: '348 Cardona Cir',
-        city: 'San Ramon',
-        state: 'CA',
-        zipCode: '94583',
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
         country: 'USA',
       },
       projectOfficers: [
         {
-          id: 'founder-director',
-          role: 'Founder & Director',
-          firstName: 'Walter',
-          lastName: 'Zhang',
-          name: 'Walter Zhang',
-          duty: 'Providing visionary leadership, setting strategic direction, making key decisions, and ensuring the mission of connecting athletes with quality sports shoes remains at the heart of every initiative',
-          bio: '9th grade student, Doughty Valley High School, San Ramon, CA, and a soccer player in MLSNext 2010B, De Anza Force Soccer Club.',
+          id: 'primary-officer',
+          role: 'Primary Officer',
+          firstName: '',
+          lastName: '',
+          name: '',
+          duty: '',
+          bio: '',
           photo: '',
           canRemove: false,
-        },
-        {
-          id: 'operation-manager',
-          role: 'Operation Manager',
-          firstName: '',
-          lastName: '',
-          name: '',
-          duty: 'Overseeing daily operations, managing inventory systems, coordinating donation logistics, processing shoe requests, and ensuring efficient workflows from donation intake to delivery',
-          bio: '',
-          photo: '',
-          canRemove: true,
-        },
-        {
-          id: 'volunteer-coordinator',
-          role: 'Volunteer Coordinator',
-          firstName: '',
-          lastName: '',
-          name: '',
-          duty: 'Recruiting and training volunteers, organizing community events, building partnerships with schools and sports clubs, and coordinating volunteer activities to expand our reach',
-          bio: '',
-          photo: '',
-          canRemove: true,
         },
       ],
       ourStory: [
         {
           id: 'timeline-1',
-          title: 'The Beginning (2023)',
-          description: 'New Steps was founded by Walter Zhang after noticing the large number of perfectly usable sports shoes being discarded while many student athletes couldn\'t afford the equipment they needed. What started as a small community initiative in San Ramon quickly grew into something bigger.',
+          title: '',
+          description: '',
           order: 1,
-        },
-        {
-          id: 'timeline-2',
-          title: 'Growing Our Impact (2024)',
-          description: 'As word spread, more volunteers joined our cause, and we expanded our operations to serve the entire Bay Area. We partnered with local schools, sports clubs, and community organizations to reach more athletes in need. Our network of donors and recipients expanded dramatically.',
-          order: 2,
-        },
-        {
-          id: 'timeline-3',
-          title: 'Today & Beyond (2025)',
-          description: 'Today, New Steps continues to grow, with hundreds of shoes donated and matched with athletes across California. Our vision is to expand nationwide, creating a sustainable ecosystem of sports equipment sharing that benefits communities and the environment. We\'re constantly innovating our processes to make donating and receiving shoes as seamless as possible.',
-          order: 3,
         },
       ],
       shippingFee: 5,
       paypalClientId: '',
       paypalSandboxMode: true,
       maxShoesPerRequest: 2,
-      projectEmail: 'newstepsfit@gmail.com',
-      projectPhone: '(916) 582-7090',
-      contactEmail: 'newstepsfit@gmail.com',
-      supportEmail: 'newstepsfit@gmail.com',
-      donationsEmail: 'newstepsfit@gmail.com',
+      projectEmail: SITE_CONFIG.contactEmail,
+      projectPhone: '',
+      contactEmail: SITE_CONFIG.contactEmail,
+      supportEmail: SITE_CONFIG.supportEmail,
+      donationsEmail: SITE_CONFIG.donationsEmail,
+      socialPlatforms: {
+        instagram: '',
+        twitter: '',
+        facebook: '',
+        tiktok: '',
+        youtube: '',
+        linkedin: '',
+      },
     },
   });
 

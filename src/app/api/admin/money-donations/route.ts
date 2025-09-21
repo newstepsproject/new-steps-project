@@ -241,7 +241,7 @@ export async function PATCH(request: NextRequest) {
 
           switch (status) {
             case 'received':
-              subject = 'Your donation has been received - New Steps Project';
+              subject = '[Financial Support] Your donation has been received - New Steps Project';
               content = `
                 <h2>Donation Received</h2>
                 <p>Dear ${donorName},</p>
@@ -260,7 +260,7 @@ export async function PATCH(request: NextRequest) {
               break;
               
             case 'processed':
-              subject = 'Thank you - your donation has been processed - New Steps Project';
+              subject = '[Financial Support] Thank you - your donation has been processed - New Steps Project';
               content = `
                 <h2>Donation Processed</h2>
                 <p>Dear ${donorName},</p>
@@ -282,7 +282,7 @@ export async function PATCH(request: NextRequest) {
               break;
               
             case 'cancelled':
-              subject = 'Update on your donation - New Steps Project';
+              subject = '[Financial Support] Update on your donation - New Steps Project';
               content = `
                 <h2>Donation Update</h2>
                 <p>Dear ${donorName},</p>
@@ -434,7 +434,7 @@ export async function POST(request: NextRequest) {
       try {
         await sendEmail({
           to: donorInfo.email,
-          subject: 'Thank You for Your Donation - New Steps Project',
+          subject: '[Financial Support] Thank You for Your Donation - New Steps Project',
           html: `
             <h2>Thank You for Your Donation!</h2>
             <p>Dear ${donorFullName},</p>

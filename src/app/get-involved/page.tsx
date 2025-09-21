@@ -14,13 +14,13 @@ export default function GetInvolvedPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-energy-50">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-24 lg:py-32 bg-gradient-to-br from-offwhite-300 to-white overflow-hidden">
+      <section className="relative py-12 md:py-16 lg:py-20 bg-gradient-to-br from-offwhite-300 to-white overflow-hidden">
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900">
+            <h1 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
               Get Involved
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed">
+            <p className="text-lg text-gray-700 mb-8 leading-relaxed">
               Join our mission to connect donated sports shoes with athletes in need. 
               Every contribution makes a difference in a young athlete's journey.
             </p>
