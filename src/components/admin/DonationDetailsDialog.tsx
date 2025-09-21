@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -50,6 +50,7 @@ interface DonationDetailsDialogProps {
     referenceNumber?: string;
     isBayArea?: boolean;
     numberOfShoes?: number;
+    pickupPreference?: string;
   };
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -102,6 +103,7 @@ export default function DonationDetailsDialog({
   const [isBayArea, setIsBayArea] = useState(donation.isBayArea || false);
   const [numberOfShoes, setNumberOfShoes] = useState(donation.numberOfShoes || 
     (donation.items?.reduce((total, item) => total + (item.quantity || 0), 0) || 1));
+  const [pickupPreference, setPickupPreference] = useState(donation.pickupPreference || (donation.isBayArea ? 'pickup' : 'ship'));
 
   // Update ZIP code handler to check for Bay Area status
   const handleZipCodeChange = (zipValue: string) => {
@@ -113,6 +115,14 @@ export default function DonationDetailsDialog({
       });
     }
   };
+
+  useEffect(() => {
+    if (!isBayArea) {
+      setPickupPreference('ship');
+    } else if (pickupPreference === 'ship') {
+      setPickupPreference('pickup');
+    }
+  }, [isBayArea, pickupPreference]);
 
   const handleStatusChange = async () => {
     // Check if any fields have changed
@@ -128,7 +138,8 @@ export default function DonationDetailsDialog({
       state !== donation.donorAddress?.state ||
       zipCode !== donation.donorAddress?.zipCode ||
       country !== donation.donorAddress?.country ||
-      numberOfShoes !== donation.numberOfShoes;
+      numberOfShoes !== donation.numberOfShoes ||
+      pickupPreference !== (donation.pickupPreference || (donation.isBayArea ? 'pickup' : 'ship'));
     
     if (!isChanged) {
       onOpenChange(false);
@@ -188,6 +199,7 @@ export default function DonationDetailsDialog({
             country
           },
           isBayArea,
+          pickupPreference,
           numberOfShoes
         }),
       });
@@ -436,7 +448,7 @@ export default function DonationDetailsDialog({
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label htmlFor="zipCode">ZIP Code</Label>
@@ -462,7 +474,28 @@ export default function DonationDetailsDialog({
                     />
                   </div>
                 </div>
-                
+
+                <div className="space-y-2">
+                  <Label htmlFor="pickupPreference">Pickup Preference</Label>
+                  <Select
+                    value={pickupPreference}
+                    onValueChange={(value) => setPickupPreference(value as 'pickup' | 'dropoff' | 'ship')}
+                    disabled={!isBayArea}
+                  >
+                    <SelectTrigger id="pickupPreference">
+                      <SelectValue placeholder="Select preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pickup">Volunteer pickup</SelectItem>
+                      <SelectItem value="dropoff">Donor drop-off</SelectItem>
+                      <SelectItem value="ship">Ship to warehouse</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {!isBayArea && (
+                    <p className="text-xs text-gray-500">Outside Bay Area donors must ship their donation.</p>
+                  )}
+                </div>
+
                 <div className="p-3 bg-blue-50 border border-blue-100 rounded-md">
                   <p className="text-sm text-blue-700">
                     {isBayArea 

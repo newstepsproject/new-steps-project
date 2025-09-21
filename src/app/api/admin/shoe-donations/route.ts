@@ -154,7 +154,8 @@ export async function GET(request: NextRequest) {
         createdBy: donation.createdBy,
         referenceNumber: donation.donationId,
         isBayArea: donation.isBayArea || false,
-        numberOfShoes: donation.numberOfShoes || numberOfShoes
+        numberOfShoes: donation.numberOfShoes || numberOfShoes,
+        pickupPreference: donation.pickupPreference || (donation.isBayArea ? 'pickup' : 'ship')
       };
     });
 
@@ -234,7 +235,7 @@ export async function PATCH(request: NextRequest) {
     // Get request data
     const data = await request.json();
     console.log('[PATCH] Request data:', data);
-    const { donationId, status, note, donorInfo, items, donorAddress, isBayArea, numberOfShoes } = data;
+    const { donationId, status, note, donorInfo, items, donorAddress, isBayArea, numberOfShoes, pickupPreference } = data;
 
     if (!donationId) {
       return NextResponse.json(
@@ -364,6 +365,14 @@ export async function PATCH(request: NextRequest) {
       // Update isBayArea if provided
       if (isBayArea !== undefined) {
         updateFields.isBayArea = isBayArea;
+      }
+
+      if (pickupPreference) {
+        updateFields.pickupPreference = pickupPreference;
+      }
+
+      if (isBayArea === false) {
+        updateFields.pickupPreference = 'ship';
       }
       
       // Update numberOfShoes if provided

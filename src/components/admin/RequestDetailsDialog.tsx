@@ -270,6 +270,8 @@ export default function RequestDetailsDialog({
   const [note, setNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showRejectionConfirm, setShowRejectionConfirm] = useState(false);
+
+  const requesterInputFocusClass = 'focus-visible:ring-brand focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:border-brand';
   
   // Add state for editable requestor information
   const [requestorInfo, setRequestorInfo] = useState({
@@ -430,6 +432,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.firstName}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, firstName: e.target.value })}
                   placeholder="First name"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">
@@ -439,6 +442,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.lastName}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, lastName: e.target.value })}
                   placeholder="Last name"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">
@@ -449,6 +453,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.email}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, email: e.target.value })}
                   placeholder="Email address"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">
@@ -458,6 +463,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.phone}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, phone: e.target.value })}
                   placeholder="Phone number"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">
@@ -467,6 +473,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.schoolName}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, schoolName: e.target.value })}
                   placeholder="School name"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">
@@ -476,6 +483,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.grade}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, grade: e.target.value })}
                   placeholder="Grade level"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">
@@ -485,6 +493,7 @@ export default function RequestDetailsDialog({
                   value={requestorInfo.sportClub}
                   onChange={(e) => setRequestorInfo({ ...requestorInfo, sportClub: e.target.value })}
                   placeholder="Sport or club"
+                  className={requesterInputFocusClass}
                 />
               </div>
               <div className="space-y-2">

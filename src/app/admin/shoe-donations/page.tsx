@@ -37,6 +37,9 @@ interface ShoeDonation {
   updatedAt: string;
   notes?: string;
   referenceNumber?: string;
+  isBayArea?: boolean;
+  pickupPreference?: string;
+  numberOfShoes?: number;
 }
 
 export default function ShoeDonationsPage() {

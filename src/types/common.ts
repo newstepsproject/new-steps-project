@@ -208,6 +208,7 @@ export interface RequestStatusHistory {
 export interface ShoeRequest {
   _id: string;
   requestId: string;
+  orderId?: string;
   requestorInfo: {
     firstName: string;
     lastName: string;
@@ -267,6 +268,8 @@ export interface Order {
   _id: string;
   orderId: string;
   userId: string;
+  customerId?: string | null;
+  customerEmail?: string | null;
   items: OrderItem[];
   shippingAddress: ShippingAddress;
   shippingFee: number;

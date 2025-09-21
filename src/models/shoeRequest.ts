@@ -57,6 +57,7 @@ export interface ShoeItem {
 // Document interface
 export interface ShoeRequestDocument extends Document {
   requestId: string;
+  orderId?: string;
   requestorInfo: RequestorInfo;
   items: ShoeItem[];
   statusHistory: StatusHistoryEntry[];
@@ -119,6 +120,7 @@ const StatusHistoryEntrySchema = new Schema<StatusHistoryEntry>({
 const ShoeRequestSchema = new Schema<ShoeRequestDocument>(
   {
     requestId: { type: String, required: true, unique: true },
+    orderId: { type: String, required: false },
     requestorInfo: { type: RequestorInfoSchema, required: true },
     items: [ShoeItemSchema],
     statusHistory: [StatusHistoryEntrySchema],

@@ -54,7 +54,10 @@ export default function OrdersPage() {
       sortable: true,
       render: (_, order) => (
         <div>
-          <div className="font-medium">{order.userId}</div>
+          <div className="font-medium">{order.userId || 'Unknown Customer'}</div>
+          {order.customerEmail && (
+            <div className="text-xs text-gray-500">{order.customerEmail}</div>
+          )}
           <div className="text-sm text-gray-500">
             {order.shippingAddress.city}, {order.shippingAddress.state}
           </div>

@@ -68,11 +68,25 @@ export async function GET(request: NextRequest) {
       .populate('userId', 'name email phone')
       .lean();
 
+    const transformedOrders = orders.map((order: any) => {
+      const populatedUser = order.userId && typeof order.userId === 'object' ? order.userId : null;
+      const customerName = populatedUser?.name || populatedUser?.email || String(order.userId);
+      const customerEmail = populatedUser?.email || null;
+      const customerId = populatedUser?._id ? String(populatedUser._id) : (typeof order.userId === 'string' ? order.userId : null);
+
+      return {
+        ...order,
+        userId: customerName,
+        customerEmail,
+        customerId,
+      };
+    });
+
     // Get total count for pagination
     const totalOrders = await Order.countDocuments(query);
 
     return NextResponse.json({
-      orders,
+      orders: transformedOrders,
       pagination: {
         total: totalOrders,
         page,

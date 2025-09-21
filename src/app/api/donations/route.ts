@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
 
     // Determine if donor is in Bay Area
     const isBayArea = data.isBayArea || false;
+    const pickupPreference = data.pickupPreference || (isBayArea ? 'pickup' : 'ship');
 
     // Create donation record based on authentication status
     const donationData: any = {
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
       notes: isBayArea 
         ? 'Donor is in Bay Area - can arrange for pickup or drop-off'
         : 'Donor is outside Bay Area - will need shipping instructions',
+      pickupPreference,
       isOffline: false, // This is an online donation
       isBayArea: isBayArea,
       numberOfShoes: data.numberOfShoes || 1,

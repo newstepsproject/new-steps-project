@@ -13,6 +13,7 @@ import { BAY_AREA_ZIP_CODES } from '@/constants/config';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 // Form Schema
 const donationFormSchema = z.object({
@@ -27,6 +28,7 @@ const donationFormSchema = z.object({
   country: z.string().min(2, { message: 'Country is required' }),
   numberOfShoes: z.number().min(1, { message: 'Please enter the number of shoes you are donating' }),
   donationDescription: z.string().min(10, { message: 'Please describe what you\'re donating (at least 10 characters)' }),
+  pickupPreference: z.enum(['pickup', 'dropoff', 'ship']).optional(),
   isBayArea: z.boolean().optional(),
 }).refine((data) => {
   // Additional validation for phone number only if provided
@@ -92,6 +94,7 @@ function DonationFormContent() {
       country: 'USA',
       numberOfShoes: 1,
       donationDescription: '',
+      pickupPreference: 'pickup',
       isBayArea: false,
     },
     mode: 'onChange',
@@ -101,12 +104,24 @@ function DonationFormContent() {
 
   // Watch for ZIP code changes to determine if the donor is in the Bay Area
   const zipCode = watch('zipCode');
+  const isBayAreaDonor = watch('isBayArea');
+  const pickupPreference = watch('pickupPreference');
   React.useEffect(() => {
     if (zipCode && zipCode.length === 5) {
       const isInBayArea = BAY_AREA_ZIP_CODES.includes(zipCode);
       setValue('isBayArea', isInBayArea);
     }
   }, [zipCode, setValue]);
+
+  React.useEffect(() => {
+    if (isBayAreaDonor) {
+      if (pickupPreference !== 'pickup' && pickupPreference !== 'dropoff') {
+        setValue('pickupPreference', 'pickup');
+      }
+    } else {
+      setValue('pickupPreference', 'ship');
+    }
+  }, [isBayAreaDonor, pickupPreference, setValue]);
 
   const onSubmit = async (data: DonationFormData) => {
     console.log('Submit button clicked, form data:', data);
@@ -131,6 +146,7 @@ function DonationFormContent() {
         donationDescription: data.donationDescription,
         numberOfShoes: data.numberOfShoes,
         isBayArea: data.isBayArea,
+        pickupPreference: data.pickupPreference || (data.isBayArea ? 'pickup' : 'ship'),
         address: {
           street: data.street,
           city: data.city,
@@ -400,12 +416,49 @@ function DonationFormContent() {
                     {errors.country && (
                       <p className="text-sm text-red-500">{errors.country.message}</p>
                     )}
-                  </div>
                 </div>
               </div>
-              
-              <div className="space-y-2 mt-6">
-                <h3 className="text-lg font-medium">Donation Details</h3>
+            </div>
+
+            <div className="space-y-2">
+              <Label>How will you get the shoes to us?</Label>
+              {isBayAreaDonor ? (
+                <RadioGroup
+                  value={pickupPreference || 'pickup'}
+                  onValueChange={(value) => setValue('pickupPreference', value as 'pickup' | 'dropoff' | 'ship', { shouldValidate: true })}
+                  className="grid gap-3 sm:grid-cols-2"
+                >
+                  <div className="p-3 rounded-md border">
+                    <div className="flex items-start gap-2">
+                      <RadioGroupItem value="pickup" id="pickup-option" />
+                      <div>
+                        <Label htmlFor="pickup-option" className="font-medium">Walter can pick them up</Label>
+                        <p className="text-xs text-gray-600">A volunteer will coordinate a convenient time with you.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-md border">
+                    <div className="flex items-start gap-2">
+                      <RadioGroupItem value="dropoff" id="dropoff-option" />
+                      <div>
+                        <Label htmlFor="dropoff-option" className="font-medium">I'll drop them off</Label>
+                        <p className="text-xs text-gray-600">We'll share Bay Area drop-off spots after submission.</p>
+                      </div>
+                    </div>
+                  </div>
+                </RadioGroup>
+              ) : (
+                <div className="p-3 rounded-md border border-blue-200 bg-blue-50 text-sm text-blue-700">
+                  You’re outside of the Bay Area, so please plan to ship your donation to us. We’ll share the mailing address and label instructions by email.
+                </div>
+              )}
+              {errors.pickupPreference && (
+                <p className="text-sm text-red-500">{errors.pickupPreference.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2 mt-6">
+              <h3 className="text-lg font-medium">Donation Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="numberOfShoes">

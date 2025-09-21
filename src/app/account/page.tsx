@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { User, Package, Gift, Settings, LogOut, AlertTriangle, CheckCircle, Clock, CheckSquare, Truck } from 'lucide-react';
+import { User, Package, Gift, Settings, LogOut, AlertTriangle, CheckCircle, Clock, CheckSquare, Truck, Hash } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
 import { AdminDashboardLink } from '@/components/admin/AdminDashboardLink';
@@ -385,15 +385,23 @@ export default function AccountPage() {
                                   <p className="text-sm text-gray-600">
                                     Submitted on {new Date(request.createdAt).toLocaleDateString()}
                                   </p>
-                                  {request.referenceId && (
-                                    <div className="flex items-center mt-1">
-                                      <Package className="h-4 w-4 text-brand mr-1" />
-                                      <span className="text-xs font-mono text-brand font-semibold">
-                                        Track: {request.referenceId}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
+                                {request.referenceId && (
+                                  <div className="flex items-center mt-1">
+                                    <Package className="h-4 w-4 text-brand mr-1" />
+                                    <span className="text-xs font-mono text-brand font-semibold">
+                                      Track: {request.referenceId}
+                                    </span>
+                                  </div>
+                                )}
+                                {request.orderId && (
+                                  <div className="flex items-center mt-1">
+                                    <Hash className="h-4 w-4 text-gray-500 mr-1" />
+                                    <span className="text-xs font-mono text-gray-600">
+                                      Order: {request.orderId}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
                                 {getRequestStatusBadge(request.currentStatus)}
                               </div>
                               

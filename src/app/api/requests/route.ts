@@ -5,7 +5,8 @@ import connectToDatabase from '@/lib/db';
 import User from '@/models/user';
 import ShoeRequest, { ShoeRequestStatus } from '@/models/shoeRequest';
 import Shoe from '@/models/shoe';
-import { generateRequestId } from '@/lib/utils';
+import Order from '@/models/order';
+import { generateOrderId, generateRequestId } from '@/lib/utils';
 import { sendEmail, EmailTemplate } from '@/lib/email';
 import { getAppSettings } from '@/lib/settings';
 
@@ -36,7 +37,9 @@ export async function POST(req: NextRequest) {
       zipCode,
       country,
       deliveryMethod,
-      notes
+      notes,
+      shippingPaymentAgreed,
+      shippingPaymentMethod
     } = requestData;
 
     // DEBUG: Log the extracted shipping address fields
@@ -153,6 +156,22 @@ export async function POST(req: NextRequest) {
     const shippingFee = deliveryMethod === 'pickup' ? 0 : settings.shippingFee;
     const totalCost = shippingFee;
 
+    if (deliveryMethod === 'shipping' && totalCost > 0) {
+      if (!shippingPaymentMethod) {
+        return NextResponse.json(
+          { error: 'Shipping payment method is required when shipping incurs a fee' },
+          { status: 400 }
+        );
+      }
+
+      if (!shippingPaymentAgreed) {
+        return NextResponse.json(
+          { error: 'Shipping payment agreement is required for shipping requests' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create shipping info only if delivery method is shipping
     const shippingInfo = deliveryMethod === 'shipping' ? {
       street: address,
@@ -204,6 +223,76 @@ export async function POST(req: NextRequest) {
       console.log(`[INVENTORY] Allocated shoe ${item.shoeId} for request ${requestId}`);
     }
 
+    let createdOrderId: string | null = null;
+
+    if (deliveryMethod === 'shipping') {
+      try {
+        const orderId = generateOrderId();
+        const orderItems = processedItems.map((item) => ({
+          shoeId: item.shoeId,
+          shoeName: item.name || item.brand || 'Unknown Shoe',
+          quantity: 1,
+          price: 0,
+        }));
+
+        const order = new Order({
+          orderId,
+          userId: user._id,
+          items: orderItems,
+          shippingAddress: {
+            street: address,
+            city,
+            state,
+            zipCode,
+            country: country || 'USA',
+          },
+          shippingFee,
+          totalCost,
+          paymentInfo: {
+            provider: 'stripe',
+            transactionId: `MANUAL-${orderId}`,
+            status: 'pending',
+          },
+          status: 'pending',
+          statusHistory: [
+            {
+              status: 'pending',
+              timestamp: new Date(),
+              note: 'Order created from shoe request submission',
+            },
+          ],
+        });
+
+        const savedOrder = await order.save();
+        createdOrderId = savedOrder.orderId;
+
+        await ShoeRequest.findByIdAndUpdate(shoeRequest._id, { orderId: savedOrder.orderId });
+        shoeRequest.orderId = savedOrder.orderId;
+
+        // Link shoes to the order for downstream fulfillment tracking
+        const inventoryIds = processedItems
+          .map((item) => item.inventoryId)
+          .filter(Boolean);
+
+        if (inventoryIds.length) {
+          await Shoe.updateMany(
+            { _id: { $in: inventoryIds } },
+            { $set: { order: savedOrder._id } }
+          );
+        }
+
+        // Attach order reference to the user profile for account overview
+        await User.updateOne(
+          { _id: user._id },
+          { $addToSet: { orders: savedOrder._id } }
+        );
+
+        console.log(`[ORDER] Created order ${orderId} for request ${requestId}`);
+      } catch (orderError) {
+        console.error('[ORDER] Failed to create order for shipping request:', orderError);
+      }
+    }
+
     // Send confirmation email
     try {
       await sendEmail(
@@ -234,7 +323,8 @@ export async function POST(req: NextRequest) {
       requestId,
       message: 'Shoe request submitted successfully',
       totalCost,
-      shippingFee
+      shippingFee,
+      orderId: createdOrderId
     });
 
   } catch (error) {

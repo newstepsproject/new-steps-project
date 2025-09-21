@@ -22,6 +22,7 @@ interface DonationCardProps {
     createdAt: string;
     notes?: string;
     referenceNumber?: string;
+    pickupPreference?: string;
   };
 }
 
@@ -50,6 +51,12 @@ export function DonationCard({ donation }: DonationCardProps) {
           </div>
         )) || <div className="text-sm text-gray-500">No items</div>}
       </div>
+
+      {donation.pickupPreference && (
+        <div className="text-sm text-gray-600">
+          Preference: {donation.pickupPreference === 'pickup' ? 'Volunteer pickup' : donation.pickupPreference === 'dropoff' ? 'Donor drop-off' : 'Ship to warehouse'}
+        </div>
+      )}
 
       {/* Date */}
       <div className="text-sm text-gray-500">
