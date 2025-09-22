@@ -426,23 +426,33 @@ export default function ShoesPage() {
       </section>
 
       {/* Call to Action for Donations */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gradient-to-r from-brand-600 to-brand-500 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Keep the Cycle Going - Send Your Shoes Back to Fields</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-white/90 max-w-2xl mx-auto mb-8">
             When you're ready, your lovely shoes can return to action too! Help other young athletes
             by sending your cherished kicks back to the fields, courts, and tracks where they belong.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild variant="default" className="shadow-sm">
+            <Button
+              asChild
+              size="lg"
+              variant="default"
+              className="shadow-sm bg-energy-600 hover:bg-energy-700 text-white focus-visible:ring-energy-300"
+            >
               <Link href="/donate/shoes">
                 Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" className="border-energy text-energy hover:bg-energy hover:text-white">
-                              <Link href="/get-involved#money-donation">
-                  Support Our Mission <CreditCard className="ml-2 h-4 w-4" />
-                </Link>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white hover:bg-white/10 shadow-soft"
+            >
+              <Link href="/get-involved#money-donation">
+                Support Our Mission <CreditCard className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>

@@ -95,7 +95,7 @@ export default function GetInvolvedPage() {
             in your community and help make sports accessible for everyone.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-white hover:bg-gray-100 text-brand hover:text-brand-600 border-white shadow-soft">
+            <Button asChild size="lg" className="bg-energy-600 hover:bg-energy-700 text-white focus-visible:ring-energy-300 shadow-soft">
               <Link href="/donate">Donate Shoes</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="border-white hover:bg-white/10 shadow-soft">

@@ -23,7 +23,7 @@ export default function DonateShoesPage() {
             Your cherished sports shoes can return to where they belong - on the fields, courts, and tracks with young athletes. 
             Give your beloved kicks the chance to continue their athletic journey and make new memories.
           </p>
-          <Button size="lg" className="btn-brand shadow-lg" asChild>
+          <Button size="lg" className="bg-energy-600 hover:bg-energy-700 text-white focus-visible:ring-energy-300 shadow-lg" asChild>
             <Link href="/donate/shoes">
               Send Shoes Back to Action <Footprints className="ml-2 h-5 w-5" />
             </Link>
@@ -38,8 +38,8 @@ export default function DonateShoesPage() {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="text-center">
-              <div className="bg-brand-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Heart className="h-8 w-8 text-brand" />
+              <div className="bg-energy-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Heart className="h-8 w-8 text-energy" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Return Shoes to Young Athletes</h3>
               <p className="text-gray-600">
@@ -81,7 +81,7 @@ export default function DonateShoesPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="bg-brand text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <div className="bg-energy text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   1
                 </div>
                 <h3 className="font-semibold mb-2">Fill Out Form</h3>
@@ -91,7 +91,7 @@ export default function DonateShoesPage() {
               </div>
               
               <div className="text-center">
-                <div className="bg-brand text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <div className="bg-energy text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   2
                 </div>
                 <h3 className="font-semibold mb-2">Get Confirmation</h3>
@@ -101,7 +101,7 @@ export default function DonateShoesPage() {
               </div>
               
               <div className="text-center">
-                <div className="bg-brand text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <div className="bg-energy text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   3
                 </div>
                 <h3 className="font-semibold mb-2">Send or Schedule</h3>
@@ -111,7 +111,7 @@ export default function DonateShoesPage() {
               </div>
               
               <div className="text-center">
-                <div className="bg-brand text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <div className="bg-energy text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   4
                 </div>
                 <h3 className="font-semibold mb-2">Make Impact</h3>
@@ -212,10 +212,19 @@ export default function DonateShoesPage() {
             Start the donation process today!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="outline" className="bg-white hover:bg-gray-100 text-brand border-white" asChild>
+            <Button
+              size="lg"
+              className="bg-energy-600 hover:bg-energy-700 text-white focus-visible:ring-energy-300 shadow-soft"
+              asChild
+            >
               <Link href="/donate/shoes">Send Your Shoes Back to Action</Link>
             </Button>
-            <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-brand transition-colors" asChild>
+            <Button
+              size="lg"
+              className="bg-white hover:bg-gray-100 text-gray-900 border-white shadow-soft"
+              variant="outline"
+              asChild
+            >
               <Link href="/get-involved">Other Ways to Help</Link>
             </Button>
           </div>
