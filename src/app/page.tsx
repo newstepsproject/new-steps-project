@@ -108,7 +108,7 @@ export default async function Home() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <Link
                   href="/donate/shoes"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-4 min-h-[44px] font-semibold text-white bg-brand-700 hover:bg-brand-600 transition-all duration-300 transform hover:scale-105 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-4 min-h-[44px] font-semibold text-white bg-energy-600 hover:bg-energy-700 transition-all duration-300 transform hover:scale-105 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-energy-300"
                 >
                   Send Shoes Back to Action <Footprints className="ml-2 h-4 w-4" />
                 </Link>
